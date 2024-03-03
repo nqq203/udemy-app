@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
+import SignUp from './page/SignUp';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" />
+          <Route path="/sign-up" element={<SignUp />}/>
         </Routes>
       </main>
       <Footer/>
