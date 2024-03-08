@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
-import SignUp from './page/SignUp';
+import SignUp from './page/SignUp/SignUp';
 
 export default function App() {
   return (
