@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { SignUpWrapper, SignUpTitle, SignUpStateWrapper, CustomFormGroup, InputLabel, Input, FormControl } from "./SignUpStyle";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "../../components/Button/Button";
+import Notification from "../../components/Notification/Notification";
 
 export default function SignUp() {
   const inputRefFullname = useRef(null);
@@ -20,6 +21,10 @@ export default function SignUp() {
   const [fullname, setFullname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [notification, setNotification] = useState({
+    content: '',
+    valid: false
+  });
 
   function checkPasswordStrong(password) {
     const veryStrong = /^(?=.*[a-z])(?=.*\d)(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,}$/;
@@ -97,10 +102,15 @@ export default function SignUp() {
   }
   
   async function handleOnSubmitRegistration() {
-    
+    setNotification({
+      content: 'Sign up successfully!',
+      valid: true
+    });
   }
+
   return (
     <SignUpWrapper>
+      <Notification message={notification?.content} visible={notification?.valid} onClose={() => setNotification({content: '', valid: false})}/>
       <SignUpTitle>Sign up and start learning</SignUpTitle>
       <CustomFormGroup>
         <FormControl onClick={() => inputRefFullname.current.focus()}>
