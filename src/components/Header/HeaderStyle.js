@@ -88,12 +88,12 @@ export const HeaderWrapper = styled.header`
       color: var(--color-blue-300);
     }
 
-    .sign-up {
+    .signup {
       background-color: black;
       color: var(--color-white);
     }
 
-    .sign-up:hover {
+    .signup:hover {
       background-color: var(--color-gray-400);
     }
   }
