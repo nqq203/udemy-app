@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
+import HomePage from './page/homepage/homepage';
 
 export default function App() {
   return (
@@ -13,7 +14,7 @@ export default function App() {
       <Header />
       <main>
         <Routes>
-          <Route path="/" />
+          <Route path="/" element={<HomePage />}/>
         </Routes>
       </main>
       <Footer/>

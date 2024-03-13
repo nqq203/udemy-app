@@ -1,0 +1,364 @@
+import styled, { css } from "styled-components"
+import {Card, Box, CardContent,Typography,CardMedia, Rating,Chip} from '@mui/material';
+import StarIcon from '@mui/icons-material/Star';
+import {Button} from "../../components/Button/Button.js"
+import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { useRef } from "react";
+import { Link } from 'react-router-dom';
+
+export const HomePageWrapper = styled.div`
+    height: 100%;
+    width: auto;
+    background-color: white;
+    margin-bottom: 20px;
+
+    .margin-left{
+        margin-left: 20px;
+    }
+`
+
+export const Herobanner = styled.div`
+    height: 400px;
+    width: auto;
+    display: flex;
+    align-items: center;
+    background-image: url('/imgs/herobanner.png');
+    padding-bottom: 20px;
+`
+
+export const QuoteCard = () => {
+    return (
+        <Box maxWidth='500px' sx={{ marginLeft: '80px' }} >
+            <Card>
+                <CardContent>
+                    <Typography gutterBottom variant="h3" component='div' fontWeight={800} fontFamily={"serif"}>
+                        Did you forget something?
+                    </Typography>
+                    <Typography variant="body2" color="GrayText" marginBottom="20px">
+                        Get what you left in your cart for less during this limited-time “don’t leave learning behind” sale.
+                    </Typography>
+
+                    <Button background-color="var(--color-black)" color="var(--color-white)" >
+                        Go to Cart
+                    </Button>
+                </CardContent>
+            </Card>
+        </Box>
+    )
+}
+
+export const CustomRating = ({rates}) => {
+    const value = parseFloat(rates) || 0;
+  
+    return (
+      <Box
+        sx={{
+          width: 200,
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <Box sx={{ fontWeight: 600}}>{value}</Box>
+
+        <Rating
+          name="text-feedback"
+          value={value}
+          readOnly
+          precision={0.5}
+          emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+          sx={{
+            marginLeft: '4px',
+            fontSize: '1.2rem',
+            
+          }}
+        />
+        
+      </Box>
+    );
+}
+
+export const ChipStyle = styled.div`
+    width: max-content;
+    height: 15px;
+    border-radius: 0;
+    background-color: var(--color-yellow-300);
+    color: var(--color-yellow-500);
+    display: flex;
+    align-items: center;
+    padding-top: 3px;
+    font-size: small;
+    font-weight: 700;
+    padding-bottom: 3px;
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-top: 8px;
+`
+
+export const CustomChip = ({label}) => {
+    return (
+        <ChipStyle>
+            {label} 
+        </ChipStyle>
+    )
+}
+
+export const StyleH1 = styled.h1`
+    margin-left: 25px;
+    font-weight: 700;
+`;
+
+export const StyleH2 = styled.h2`
+    margin-left: 25px;
+    font-weight: 700;
+`;
+
+export const StyleH4 = styled.h4`
+    margin: 0px;
+    font-weight: 700;
+    margin-bottom: 3px;
+    font-size: 17px;
+`;
+
+export const CourseItem = ({k, title,author, rating,price,image, isBestSeller} ) => {
+    const key = k
+    const titleCourse = title || "None"
+    const authorCourse = author || "None"
+    const ratingCourse = rating || "0"
+    const priceCourse = price || "0"
+    const imgCourse = image || "/imgs/courses/web.jpg"
+    const chipLabel = isBestSeller
+
+    return(
+        <Card sx={{ width: 240 ,height:400, boxShadow:"none",objectFit:"cover"}}>
+            <CardMedia
+                component="img"
+                alt="green iguana"
+                height="140"
+                image={imgCourse}
+            />
+            <CardContent sx={{padding: 0, mt: 2}}>
+                <StyleH4>
+                    {/* The Complete 2024 Web Development Bootcamp */}
+                    {titleCourse}
+                </StyleH4>
+
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                    {authorCourse}
+                </Typography>
+
+                <CustomRating rates={ratingCourse} />
+
+                <StyleH4>
+                    <u>đ</u>{priceCourse}
+                </StyleH4>
+
+                {chipLabel && <CustomChip label="Bestseller"/>}
+            </CardContent>
+        </Card>
+    )
+}
+
+export const ListCourseStyle = styled.div`
+    position: relative;
+    scroll-snap-type: x mandatory;
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    gap: 18px;
+    list-style: none;
+    scrollbar-width: none;
+    overflow-x: auto;
+`;
+
+export const SliderWrapperStyle = styled.div`
+    position: relative;
+
+    .floating-button{
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        top: 30%;
+        color: #fff;
+        background-color: var(--color-gray-500);
+        font-size: 2.2rem;
+        border: 1px solid var(--color-gray-250);
+        outline: none;
+        cursor: pointer;
+        border-radius: 50%;
+        transform: translateY(-100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 3;
+
+        &:hover{
+            background-color: var(--color-gray-400);
+        }
+    }
+
+    .position-right{
+        right: -20px;
+    }
+
+    .position-left{
+        left: -20px;
+        display: none;
+    }
+`;
+
+export const SliderContainerStyle = styled.div`
+    /* Max numbers of courses: 10 */
+    max-width: 3000px;
+    width: 96%;
+    transform: translateX(2%);
+`;
+
+
+export const SliderContainer = ({courses}) => {
+    const allCourse = courses || []
+
+    const listCourse = useRef(null)
+    const courseScroll = 260
+     
+    function slideAction(event){
+        const id = event.target.id
+        let direction = 0;
+
+        if(id === "prev-slide"){
+            direction = -1
+        } else if(id === "next-slide"){
+            direction = 1
+        }
+
+        if(direction !== 0){
+            const scrollAmount = courseScroll*direction;
+            listCourse.current.scrollBy({left:scrollAmount, behavior: "smooth"})
+        }
+        // handleSlideButtons()
+    }
+
+    function handleSlideButtons(){
+        const width = 154
+        const listCourses = listCourse.current;
+        const maxScrollLeft = (allCourse.length - 1) * width; //1543.5
+        const slideButtons = [
+            document.getElementById('prev-slide'),
+            document.getElementById('next-slide')
+          ];
+
+        slideButtons[0].style.display = listCourses.scrollLeft <= 0 ? "none" : "flex";
+        slideButtons[1].style.display = listCourses.scrollLeft >= maxScrollLeft ? "none" : "flex";
+    }
+
+
+    return(
+        <SliderContainerStyle>
+            <SliderWrapperStyle>
+                <div className="floating-button position-left" id="prev-slide" onClick={slideAction}>
+                    <ArrowBackIosNewIcon id="prev-slide" onClick={slideAction}></ArrowBackIosNewIcon>
+                </div>
+                <div className="floating-button position-right" id="next-slide" onClick={slideAction}>
+                    <ArrowForwardIosRoundedIcon id="next-slide" onClick={slideAction}></ArrowForwardIosRoundedIcon>
+                </div>
+
+                <ListCourseStyle ref={listCourse} onScroll={handleSlideButtons}>
+                    {allCourse.map((course, index) => (
+                        <CourseItem
+                            key={index}
+                            title={course.title}
+                            author={course.author}
+                            rating={course.rating}
+                            price={course.price}
+                            image={course.image}
+                            isBestSeller={course.chipLabel}
+                        />
+                    ))}
+                </ListCourseStyle>
+
+            </SliderWrapperStyle>
+        </SliderContainerStyle>
+    )
+}
+
+export const UserWelcomeStyle = styled.div`
+    display: flex;
+    justify-content: space-between;
+    padding: 25px;
+
+    .text-button{
+        background-color: transparent;
+        font-weight: 800;
+        text-decoration: underline;
+        color: var(--color-blue-300);
+        text-underline-position: under;
+    }
+`;
+
+
+export const UserWelcome = ({username}) => {
+    return(
+        <UserWelcomeStyle>
+            <Typography gutterBottom variant="h4" component='div' fontWeight={800} fontFamily={"serif"} > 
+                            Let's start learning, {username}
+            </Typography>
+
+            <Button className="text-button">
+                        My learning
+            </Button>
+        </UserWelcomeStyle>
+    )
+}
+
+export const CatogoryStyle = styled.div`
+    display: flex;
+    width: auto;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-white);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 4px 12px rgba(0, 0, 0, .08);
+
+    ul{
+        list-style: none;
+        display: flex;
+        gap: 10px;
+        padding-left: 90px;
+
+    }
+
+    .long-item {
+        width: 155px;
+    }
+
+    ul li {
+        width: 90px;
+        text-align: center;
+    }
+
+    ul li a {
+        color: var(--color-gray-500);
+        text-decoration: none;
+        font-family: var(--font-stack-text);
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    ul li a:hover {
+        color: var(--color-blue-300);
+    }
+`;
+
+export const CatogoriesList = () => {
+    return(
+        <CatogoryStyle>
+            <ul>
+                <li><Link to="/">IT & Software</Link></li>
+                <li><Link to="/">Bussiness</Link></li>
+                <li><Link to="/">Finance</Link></li>
+                <li><Link to="/">Design</Link></li>
+                <li className='long-item'><Link to="/">Personal Development</Link></li>
+                <li><Link to="/">Marketing</Link></li>
+                <li className='long-item'><Link to="/">Office Productivity</Link></li>
+            </ul>
+        </CatogoryStyle>
+    )
+}
