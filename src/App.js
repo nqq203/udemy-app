@@ -7,6 +7,7 @@ import {
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import HomePage from './page/homepage/homepage';
+import ViewListSearch from './page/viewListSearch/viewListSearch';
 
 export default function App() {
   return (
@@ -14,7 +15,7 @@ export default function App() {
       <Header />
       <main>
         <Routes>
-          <Route path="/" element={<HomePage />}/>
+          <Route path="/" element={<ViewListSearch />}/>
         </Routes>
       </main>
       <Footer/>
