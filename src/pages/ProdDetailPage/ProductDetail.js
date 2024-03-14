@@ -1,7 +1,7 @@
-import TitleCard from "../../components/TitleCard/TitleCard";
-import ContentListCard from "../../components/ContentListCard/ContentListCard";
+import TitleCard from "../../components/ProductDetail/TitleCard/TitleCard";
+import ContentListCard from "../../components/ProductDetail/ContentListCard/ContentListCard";
 import SideBarCard from "../../components/SideBarCard/SideBarCard";
-import CourseContent from "../../components/CourseContent/CourseContent";
+import CourseContent from "../../components/ProductDetail/CourseContent/CourseContent";
 import { ProductDetailWrapper } from "./ProductDetailStyle";
 const whatYoullLearn = [
   "Extensive, informative and interesting video lecture",
@@ -84,7 +84,10 @@ const ProductDetail = () => {
       <div className="product-detail-body">
         <div className="product-detail-main-content">
           {/* What you'll learn */}
-          <ContentListCard title={"What you'll learn"} listOfContent={whatYoullLearn}/>
+          <ContentListCard
+            title={"What you'll learn"}
+            listOfContent={whatYoullLearn}
+          />
 
           {/* Course content */}
           <CourseContent sections={sections} />

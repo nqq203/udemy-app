@@ -9,21 +9,15 @@ const CourseContent = ({ sections }) => {
   // input is an array of sections
 
   const calculateSectionLength = (sections) => {
-    let total = sections.reduce(
-      (acc, curValue) => {
-        return (
-          acc +
-          curValue.lectures.reduce(
-            (acc, curValue) => acc + curValue.duration,
-            0
-          )
-        );
-      },
-      0
-    );
+    let total = sections.reduce((acc, curValue) => {
+      return (
+        acc +
+        curValue.lectures.reduce((acc, curValue) => acc + curValue.duration, 0)
+      );
+    }, 0);
     let hours = Math.floor(total / 60);
     let minutes = total % 60;
-    console.log(total)
+    console.log(total);
     return [hours, minutes];
   };
 
