@@ -3,7 +3,7 @@ import ContentListCard from "../../components/ContentListCard/ContentListCard";
 import SideBarCard from "../../components/SideBarCard/SideBarCard";
 import CourseContent from "../../components/CourseContent/CourseContent";
 import { ProductDetailWrapper } from "./ProductDetailStyle";
-const content = [
+const whatYoullLearn = [
   "Extensive, informative and interesting video lecture",
   "Lab Exercises",
   "All Powerpoint Demonstrations Used in Course",
@@ -11,23 +11,84 @@ const content = [
   "All Powerpoint Demonstrations Used in Course",
 ];
 
-const courseContent = {
-  "Module 1": ["item 1", "item 2", "item 3"],
-  "Module 2": ["item 1", "item 2", "item 3"],
-  "Module 3": ["item 1", "item 2", "item 3"],
-};
+const sections = [
+  {
+    name: "Introduction to the course",
+    lectures: [
+      {
+        title: "Introduction to the course",
+        duration: 60,
+      },
+      {
+        title: "Introduction to the course",
+        duration: 60,
+      },
+      {
+        title: "Introduction to the course",
+        duration: 10,
+      },
+      {
+        title: "Introduction to the course",
+        duration: 10,
+      },
+    ],
+  },
+  {
+    name: "Introduction to the course 2",
+
+    lectures: [
+      {
+        title: "Introduction to the course 2",
+        duration: 10,
+      },
+      {
+        title: "Introduction to the course 2",
+        duration: 10,
+      },
+      {
+        title: "Introduction to the course 2",
+        duration: 10,
+      },
+    ],
+  },
+  {
+    name: "Introduction to the course 3",
+    lectures: [
+      {
+        title: "Introduction to the course 3",
+        duration: 10,
+      },
+      {
+        title: "Introduction to the course 3",
+        duration: 10,
+      },
+      {
+        title: "Introduction to the course 3",
+        duration: 10,
+      },
+    ],
+  },
+];
 
 const ProductDetail = () => {
   return (
     <ProductDetailWrapper>
       <div style={{ position: "relative" }}>
-        <TitleCard title="hello" ratings={3} />
+        {/* Title Card */}
+        <TitleCard title="Example course" ratings={4} />
+
+        {/* Sticky Sidebar */}
         <SideBarCard />
       </div>
 
       <div className="product-detail-body">
-        <ContentListCard title={"What you'll learn"} listOfContent={content} />
-        <CourseContent courseContent={courseContent} />
+        <div className="product-detail-main-content">
+          {/* What you'll learn */}
+          <ContentListCard title={"What you'll learn"} listOfContent={whatYoullLearn}/>
+
+          {/* Course content */}
+          <CourseContent sections={sections} />
+        </div>
       </div>
     </ProductDetailWrapper>
   );

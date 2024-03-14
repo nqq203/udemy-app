@@ -8,11 +8,11 @@ const TitleCard = ({ title, description, ratings, instructor }) => {
         <div className="inner-container">
           <div className="inner-text-container">
             <div><h1>{title}</h1></div>
-            <h4>{description} abc</h4>
+            <h4>{description}</h4>
             <div>
               <span>
                 {ratings}{" "}
-                <Rating size="small" defaultValue={ratings} readOnly />
+                <Rating size="small" defaultValue={0} value={ratings} readOnly />
               </span>
             </div>
 

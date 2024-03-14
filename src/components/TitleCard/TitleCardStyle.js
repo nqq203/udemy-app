@@ -18,8 +18,5 @@ export const TitleCardWrapper = styled.div`
     box-sizing: border-box;
   }
 
-  .inner-text-container {
-    margin-left: 4.8rem;
-    margin-right: 4.8rem;
-  }
+  
 `;

@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
-export const ModuleContentWrapper = styled.div`
-  margin: 0vh 40vw 0vh 12vw;
-  .moduleName {
+export const SectionContentWrapper = styled.div`
+  .section-name {
     font-size: 16px;
+    font-family: var(--font-stack-heading);
     margin: 0;
     cursor: pointer;
     border: 1px solid #e0e0e0;

@@ -1,14 +1,21 @@
 import styled from "styled-components";
 
 export const ContentListCardWrapper = styled.div`
-  h1 {
-    margin: 0 0 1rem 0;
+  border: 1px solid #d1d7dc;
+  padding-bottom: 16px;
+  padding: 24px 0;
+  margin-bottom: 3.2rem;
+
+  .course-content-list{
+    margin: 0 24px;
   }
-  margin: 5vh 40vw 5vh 12vw;
-  border: 1px solid #e0e0e0;
-  padding: 1.5rem;
+
+  h2 {
+    margin: 0 24px 16px;
+  }
 
   ul {
+    
     list-style: none;
     margin: 0 0;
     padding: 0 0;
@@ -18,6 +25,7 @@ export const ContentListCardWrapper = styled.div`
   }
 
   li {
+    font-family: var(--font-stack-text);
     padding: 3px 0;
     width: 300px;
     display: flex;

@@ -3,7 +3,8 @@ import { ContentListCardWrapper } from "./ContentListCardStyle";
 const ContentListCard = ({ title, listOfContent }) => {
   return (
     <ContentListCardWrapper>
-      <h1>{title}</h1>
+      <h2>{title}</h2>
+      <div className="course-content-list">
       <ul>
         {listOfContent.map((content, index) => {
           return (
@@ -14,6 +15,8 @@ const ContentListCard = ({ title, listOfContent }) => {
           );
         })}
       </ul>
+      </div>
+      
     </ContentListCardWrapper>
   );
 };
