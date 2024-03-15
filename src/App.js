@@ -7,6 +7,7 @@ import {
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import SignUp from './page/SignUp/SignUp';
+import InstructorCourse from './page/Course/InstructorCourse';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Routes>
           <Route path="/" />
           <Route path="/sign-up" element={<SignUp />}/>
+          <Route path="/instructor/courses" element={<InstructorCourse />}/>
         </Routes>
       </main>
       <Footer/>
