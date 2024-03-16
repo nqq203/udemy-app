@@ -1,7 +1,10 @@
 import styled, { css } from "styled-components"
-import {Card, Box, CardContent,Typography,CardMedia, Rating,Chip} from '@mui/material';
+import {Card, Box, CardContent,Typography,CardMedia, Rating} from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import {Button} from "../../components/Button/Button.js"
+import {Chip} from "../../components/Chip/Chip.js"
+import {CustomRating} from "../../components/Rating/Rating.js"
+
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useRef } from "react";
@@ -48,61 +51,6 @@ export const QuoteCard = () => {
     )
 }
 
-export const CustomRating = ({rates}) => {
-    const value = parseFloat(rates) || 0;
-  
-    return (
-      <Box
-        sx={{
-          width: 200,
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Box sx={{ fontWeight: 600}}>{value}</Box>
-
-        <Rating
-          name="text-feedback"
-          value={value}
-          readOnly
-          precision={0.5}
-          emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-          sx={{
-            marginLeft: '4px',
-            fontSize: '1.2rem',
-            
-          }}
-        />
-        
-      </Box>
-    );
-}
-
-export const ChipStyle = styled.div`
-    width: max-content;
-    height: 15px;
-    border-radius: 0;
-    background-color: var(--color-yellow-300);
-    color: var(--color-yellow-500);
-    display: flex;
-    align-items: center;
-    padding-top: 3px;
-    font-size: small;
-    font-weight: 700;
-    padding-bottom: 3px;
-    padding-right: 10px;
-    padding-left: 10px;
-    margin-top: 8px;
-`
-
-export const CustomChip = ({label}) => {
-    return (
-        <ChipStyle>
-            {label} 
-        </ChipStyle>
-    )
-}
-
 export const StyleH1 = styled.h1`
     margin-left: 25px;
     font-weight: 700;
@@ -120,15 +68,16 @@ export const StyleH4 = styled.h4`
     font-size: 17px;
 `;
 
-export const CourseItem = ({k, title,author, rating,price,image, isBestSeller} ) => {
-    const key = k
-    const titleCourse = title || "None"
-    const authorCourse = author || "None"
-    const ratingCourse = rating || "0"
-    const priceCourse = price || "0"
-    const imgCourse = image || "/imgs/courses/web.jpg"
-    const chipLabel = isBestSeller
+export const CourseItem = (props ) => {
+    const id = props.id
+    const titleCourse = props.title || "None"
+    const authorCourse = props.author || "None"
+    const ratingCourse = props.rating || "0"
+    const priceCourse = props.price || "0"
+    const imgCourse = props.image || "/imgs/courses/web.jpg"
+    const chipLabel = props.chipLabel
 
+    const formattedPrice = priceCourse.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
     return(
         <Card sx={{ width: 240 ,height:400, boxShadow:"none",objectFit:"cover"}}>
             <CardMedia
@@ -150,10 +99,10 @@ export const CourseItem = ({k, title,author, rating,price,image, isBestSeller} )
                 <CustomRating rates={ratingCourse} />
 
                 <StyleH4>
-                    <u>đ</u>{priceCourse}
+                    <u>đ</u>{formattedPrice}
                 </StyleH4>
 
-                {chipLabel && <CustomChip label="Bestseller"/>}
+                {chipLabel && <Chip>Bestseller</Chip>}
             </CardContent>
         </Card>
     )
@@ -265,12 +214,13 @@ export const SliderContainer = ({courses}) => {
                     {allCourse.map((course, index) => (
                         <CourseItem
                             key={index}
+                            id = {"Course_" + index}
                             title={course.title}
                             author={course.author}
                             rating={course.rating}
                             price={course.price}
                             image={course.image}
-                            isBestSeller={course.chipLabel}
+                            chipLabel={course.chipLabel}
                         />
                     ))}
                 </ListCourseStyle>
