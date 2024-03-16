@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import { SignUpWrapper, SignUpTitle, SignUpStateWrapper, CustomFormGroup, InputLabel, Input, FormControl } from "./SignUpStyle";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "../../components/Button/Button";
@@ -103,7 +102,7 @@ export default function SignUp() {
     return;
   }
 
-  const mutation = useMutation(registerUser, {
+  const mutation = useMutation(callApiCreateAccount, {
     onSuccess: (data) => {
       setNotification({
         content: 'Sign up successfully!',

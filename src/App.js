@@ -4,7 +4,11 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-import { QueryProvider, QueryClient } from 'react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from 'react-query'
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import SignUp from './page/SignUp/SignUp';
@@ -14,7 +18,7 @@ const queryClient = new QueryClient();
 export default function App() {
   return (
     <BrowserRouter>
-      <QueryProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
         <Header />
         <main>
           <Routes>
@@ -23,7 +27,7 @@ export default function App() {
           </Routes>
         </main>
         <Footer/>
-      </QueryProvider> 
+      </QueryClientProvider> 
     </BrowserRouter>
   );
 }
