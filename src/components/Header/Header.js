@@ -17,7 +17,7 @@ const Header = () => (
       <ul>
         <li className='three-words-item'><Link to="/">Teach on Udemy</Link></li>
         <li><Link to="/courses">Instructor</Link></li>
-        <li><Link to="/about">My learning</Link></li>
+        <li><Link to="/my-courses/learning">My learning</Link></li>
       </ul>
     </nav>
     <div className='header-forth'>
