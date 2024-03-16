@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React from 'react';
 import {
   BrowserRouter,
@@ -20,21 +19,11 @@ import ProfilePrivacy from './page/profile/profilePrivacy';
 import MyWishList from './page/myLearning/myWishList';
 import MyArchived from './page/myLearning/myArchived';
 import MyLearningTools from './page/myLearning/myLearningTools';
+import ProductDetail from "./pages/ProdDetailPage/ProductDetail";
+
 
 
 const queryClient = new QueryClient();
-
-=======
-import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-//import 'bootstrap/dist/css/bootstrap.min.css';
-
-
-import Header from "./components/Header/Header";
-import Footer from "./components/Footer/Footer";
-
-import ProductDetail from "./pages/ProdDetailPage/ProductDetail";
->>>>>>> 22fe4fb167898c300f49645d271375aaa2c9149d
 
 export default function App() {
   return (
