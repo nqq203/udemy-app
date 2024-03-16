@@ -13,9 +13,10 @@ import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import HomePage from './page/homepage/homepage';
 import SignUp from './page/SignUp/SignUp';
+import ViewListSearch from './page/viewListSearch/viewListSearch';
+
 
 const queryClient = new QueryClient();
-import ViewListSearch from './page/viewListSearch/viewListSearch';
 
 export default function App() {
   return (
