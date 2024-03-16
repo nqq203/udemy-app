@@ -1,8 +1,10 @@
 import TitleCard from "../../components/ProductDetail/TitleCard/TitleCard";
 import ContentListCard from "../../components/ProductDetail/ContentListCard/ContentListCard";
-import SideBarCard from "../../components/SideBarCard/SideBarCard";
+import SideBarCard from "../../components/ProductDetail/SideBarCard/SideBarCard";
 import CourseContent from "../../components/ProductDetail/CourseContent/CourseContent";
 import { ProductDetailWrapper } from "./ProductDetailStyle";
+import StudentAlsoBought from "../../components/ProductDetail/StudentsAlsoBought/StudentsAlsoBought";
+
 const whatYoullLearn = [
   "Extensive, informative and interesting video lecture",
   "Lab Exercises",
@@ -70,6 +72,23 @@ const sections = [
   },
 ];
 
+const courses = [
+  {
+    name: "Course 1",
+    description: "This is a course description",
+    instructor: "Instructor 1",
+    ratings: 4,
+    price: 100
+  },
+  {
+    name: "Course 2",
+    description: "This is a course description 2",
+    instructor: "Instructor 2",
+    ratings: 5,
+    price: 200
+  }
+]
+
 const ProductDetail = () => {
   return (
     <ProductDetailWrapper>
@@ -91,6 +110,7 @@ const ProductDetail = () => {
 
           {/* Course content */}
           <CourseContent sections={sections} />
+          <StudentAlsoBought courses={courses}></StudentAlsoBought>
         </div>
       </div>
     </ProductDetailWrapper>

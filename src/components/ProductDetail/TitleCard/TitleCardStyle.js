@@ -6,8 +6,8 @@ export const TitleCardWrapper = styled.div`
   box-sizing: border-box;
   margin: 0 auto;
   padding: 0;
-  padding-top: 3.2rem;
-  padding-bottom: 3.2rem;
+  padding-top: 32px;
+  padding-bottom: 32px;
   h1 {
     margin: 0;
   }

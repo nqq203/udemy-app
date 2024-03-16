@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const CourseContentWrapper = styled.div`
     .course-content-stats {
-        margin: 0.8rem 0;
+        margin: 8px 0;
         display: block;
     }
 

@@ -4,7 +4,7 @@ export const ContentListCardWrapper = styled.div`
   border: 1px solid #d1d7dc;
   padding-bottom: 16px;
   padding: 24px 0;
-  margin-bottom: 3.2rem;
+  margin-bottom: 32px;
 
   .course-content-list{
     margin: 0 24px;
