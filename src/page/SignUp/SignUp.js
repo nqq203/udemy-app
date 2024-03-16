@@ -3,6 +3,8 @@ import { SignUpWrapper, SignUpTitle, SignUpStateWrapper, CustomFormGroup, InputL
 import { useEffect, useRef, useState } from "react";
 import { Button } from "../../components/Button/Button";
 import Notification from "../../components/Notification/Notification";
+import { useMutation } from "react-query";
+import { callApiCreateAccount } from "../../api/user";
 
 export default function SignUp() {
   const inputRefFullname = useRef(null);
@@ -100,12 +102,31 @@ export default function SignUp() {
       setFocusInputFullname(false);
     return;
   }
+
+  const mutation = useMutation(registerUser, {
+    onSuccess: (data) => {
+      setNotification({
+        content: 'Sign up successfully!',
+        valid: true
+      });
+    },
+    onError: (error) => {
+      setNotification({
+        content: error.response.data,
+        valid: false
+      });
+    },
+  });
   
   async function handleOnSubmitRegistration() {
-    setNotification({
-      content: 'Sign up successfully!',
-      valid: true
-    });
+    const newUser = {
+      fullname: fullname,
+      email: email,
+      password: password,
+      role: "LEARNER",
+      gender: "OTHER"
+    }
+    mutation.mutate(newUser);
   }
 
   return (
