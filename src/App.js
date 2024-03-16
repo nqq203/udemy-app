@@ -11,14 +11,9 @@ import {
 } from 'react-query'
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
-<<<<<<< HEAD
 import HomePage from './page/homepage/homepage';
 import SignUp from './page/SignUp/SignUp';
 import ViewListSearch from './page/viewListSearch/viewListSearch';
-
-
-const queryClient = new QueryClient();
-=======
 import Cart from './page/cart/cart';
 import Payment from './page/payment/payment';
 import MyCourses from './page/myLearning/myCourses';
@@ -28,12 +23,14 @@ import ProfilePrivacy from './page/profile/profilePrivacy';
 import MyWishList from './page/myLearning/myWishList';
 import MyArchived from './page/myLearning/myArchived';
 import MyLearningTools from './page/myLearning/myLearningTools';
->>>>>>> c2464143fed7cfafd01cf566a295cd8e165cf3b0
+
+
+const queryClient = new QueryClient();
+
 
 export default function App() {
   return (
     <BrowserRouter>
-<<<<<<< HEAD
       <QueryClientProvider client={queryClient}>
         <Header />
         <main>
@@ -41,33 +38,23 @@ export default function App() {
             <Route path="/" element={<HomePage />}/>
             <Route path="/sign-up" element={<SignUp />}/>
             <Route path="/view-list-courses" element={<ViewListSearch />}/>
+            <Route path="/profile">
+              <Route path="info" element={<ProfileInfo />} />
+              <Route path="photo" element={<ProfilePhoto />} />
+              <Route path="privacy" element={<ProfilePrivacy />} />
+            </Route>
+            <Route path="cart" element={<Cart />} />
+            <Route path="payment" element={<Payment />} />
+            <Route path="my-courses">
+              <Route path="learning" element={<MyCourses />} />
+              <Route path="wishlist" element={<MyWishList />}/>
+              <Route path="archived" element={<MyArchived />}/>
+              <Route path="learning-tools" element={<MyLearningTools />} />
+            </Route>
           </Routes>
         </main>
         <Footer/>
       </QueryClientProvider> 
-=======
-      <Header />
-      <main> 
-        <Routes>
-          <Route path="/" />
-          <Route path="profile">
-            <Route path="info" element={<ProfileInfo />} />
-            <Route path="photo" element={<ProfilePhoto />} />
-            <Route path="privacy" element={<ProfilePrivacy />} />
-          </Route>
-
-          <Route path="cart" element={<Cart />} />
-          <Route path="payment" element={<Payment />} />
-          <Route path="my-courses">
-            <Route path="learning" element={<MyCourses />} />
-            <Route path="wishlist" element={<MyWishList />}/>
-            <Route path="archived" element={<MyArchived />}/>
-            <Route path="learning-tools" element={<MyLearningTools />} />
-          </Route>
-        </Routes>
-      </main>
-      <Footer/>
->>>>>>> c2464143fed7cfafd01cf566a295cd8e165cf3b0
     </BrowserRouter>
   );
 }
