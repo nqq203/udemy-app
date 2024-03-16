@@ -4,7 +4,7 @@ import SideBarCard from "../../components/ProductDetail/SideBarCard/SideBarCard"
 import CourseContent from "../../components/ProductDetail/CourseContent/CourseContent";
 import { ProductDetailWrapper } from "./ProductDetailStyle";
 import StudentAlsoBought from "../../components/ProductDetail/StudentsAlsoBought/StudentsAlsoBought";
-
+import ReviewCard from "../../components/ProductDetail/ReviewCard/ReviewCard";
 const whatYoullLearn = [
   "Extensive, informative and interesting video lecture",
   "Lab Exercises",
@@ -111,6 +111,8 @@ const ProductDetail = () => {
           {/* Course content */}
           <CourseContent sections={sections} />
           <StudentAlsoBought courses={courses}></StudentAlsoBought>
+          <ReviewCard />
+          <ReviewCard />
         </div>
       </div>
     </ProductDetailWrapper>
