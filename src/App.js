@@ -8,6 +8,8 @@ import { QueryProvider, QueryClient } from 'react-query';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import SignUp from './page/SignUp/SignUp';
+import HomePage from './page/homepage/homepage';
+
 
 const queryClient = new QueryClient();
 
@@ -18,12 +20,12 @@ export default function App() {
         <Header />
         <main>
           <Routes>
-            <Route path="/" />
+            <Route path="/" element={<HomePage />}/>
             <Route path="/sign-up" element={<SignUp />}/>
           </Routes>
         </main>
         <Footer/>
-      </QueryProvider> 
+      </QueryProvider>
     </BrowserRouter>
   );
 }
