@@ -15,6 +15,7 @@ import HomePage from './page/homepage/homepage';
 import SignUp from './page/SignUp/SignUp';
 
 const queryClient = new QueryClient();
+import ViewListSearch from './page/viewListSearch/viewListSearch';
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<HomePage />}/>
             <Route path="/sign-up" element={<SignUp />}/>
+            <Route path="/view-list-courses" element={<ViewListSearch />}/>
           </Routes>
         </main>
         <Footer/>
