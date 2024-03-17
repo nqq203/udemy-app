@@ -17,13 +17,13 @@ const Header = () => (
       <ul>
         <li className='three-words-item'><Link to="/">Teach on Udemy</Link></li>
         <li><Link to="/courses">Instructor</Link></li>
-        <li><Link to="/about">My learning</Link></li>
+        <li><Link to="/my-courses/learning">My learning</Link></li>
       </ul>
     </nav>
     <div className='header-forth'>
       <MdOutlineShoppingCart size={31} className="shopping"/>
-      <Link to="/login" className="btn login">Log in</Link>
-      <Link to="/signup" className="btn signup">Sign up</Link>
+      <Link to="/log-in" className="btn login">Log in</Link>
+      <Link to="/sign-up" className="btn signup">Sign up</Link>
       <MdLanguage className="language" size={31}/>
     </div>
   </HeaderWrapper>

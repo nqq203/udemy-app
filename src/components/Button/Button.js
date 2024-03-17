@@ -13,4 +13,9 @@ export const Button = styled.button`
   height: ${({height}) => height ? height : 'auto'};
   padding: ${({padding}) => padding ? padding : '15px'};
   margin: ${({margin}) => margin ? margin : 0};
+
+  &:hover {
+    cursor: pointer;
+    background-color: ${({hoverBgColor}) => hoverBgColor ? hoverBgColor: 'var(--color-gray-400)'};
+  }
 `
