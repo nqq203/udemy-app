@@ -4,6 +4,11 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from 'react-query'
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import SignUp from './page/SignUp/SignUp';
