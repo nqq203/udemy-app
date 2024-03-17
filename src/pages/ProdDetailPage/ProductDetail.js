@@ -1,10 +1,10 @@
-import TitleCard from "../../components/ProductDetail/TitleCard/TitleCard";
-import ContentListCard from "../../components/ProductDetail/ContentListCard/ContentListCard";
-import SideBarCard from "../../components/ProductDetail/SideBarCard/SideBarCard";
-import CourseContent from "../../components/ProductDetail/CourseContent/CourseContent";
+import TitleCard from "../../components/TitleCard/TitleCard";
+import ContentListCard from "../../components/ContentListCard/ContentListCard";
+import SideBarCard from "../../components/SideBarCard/SideBarCard";
+import CourseContent from "../../components/CourseContent/CourseContent";
 import { ProductDetailWrapper } from "./ProductDetailStyle";
-import StudentAlsoBought from "../../components/ProductDetail/StudentsAlsoBought/StudentsAlsoBought";
-import ReviewCard from "../../components/ProductDetail/ReviewCard/ReviewCard";
+import StudentAlsoBought from "../../components/StudentsAlsoBought/StudentsAlsoBought";
+import ReviewCard from "../../components/ReviewCard/ReviewCard";
 const whatYoullLearn = [
   "Extensive, informative and interesting video lecture",
   "Lab Exercises",

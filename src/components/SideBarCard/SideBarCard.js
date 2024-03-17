@@ -1,6 +1,6 @@
 import { SideBarCardWrapper } from "./SideBarCardStyle";
-import { Button } from "../../Button/Button";
-import useScrollPosition from "../../../hook/useScrollPosition";
+import { Button } from "../Button/Button";
+import useScrollPosition from "../../hook/useScrollPosition";
 import { useState, useEffect } from "react";
 const SideBarCard = ({ thumbnailImage, price }) => {
   const scrollPosition = useScrollPosition();
