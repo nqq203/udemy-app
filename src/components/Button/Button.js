@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Button = styled.button`
-  font-family: ${({fontFamily}) => fontFamily ? fontFamily : 'var(--font-stack-text'};
+  font-family: ${({fontFamily}) => fontFamily ? fontFamily : 'var(--font-stack-text)'};
   cursor: pointer;
   background-color: ${({bgColor}) => bgColor ? bgColor : 'var(--color-gray-500)'};
   border: ${({border}) => border ? border : 'none'};

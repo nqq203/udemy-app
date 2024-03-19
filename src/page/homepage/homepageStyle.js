@@ -1,14 +1,31 @@
-import styled, { css } from "styled-components"
+import styled from "styled-components"
+
 import {Card, Box, CardContent,Typography,CardMedia, Rating} from '@mui/material';
-import StarIcon from '@mui/icons-material/Star';
+import { Link } from 'react-router-dom';
+import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { useRef } from "react";
+
 import {Button} from "../../components/Button/Button.js"
 import {Chip} from "../../components/Chip/Chip.js"
 import {CustomRating} from "../../components/Rating/Rating.js"
 
-import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { useRef } from "react";
-import { Link } from 'react-router-dom';
+export const StyleH1 = styled.h1`
+    margin-left: 25px;
+    font-weight: 700;
+`;
+
+export const StyleH2 = styled.h2`
+    margin-left: 25px;
+    font-weight: 700;
+`;
+
+export const StyleH4 = styled.h4`
+    margin: 0px;
+    font-weight: 700;
+    margin-bottom: 3px;
+    font-size: 17px;
+`;
 
 export const HomePageWrapper = styled.div`
     height: 100%;
@@ -42,7 +59,7 @@ export const QuoteCard = () => {
                         Get what you left in your cart for less during this limited-time “don’t leave learning behind” sale.
                     </Typography>
 
-                    <Button background-color="var(--color-black)" color="var(--color-white)" >
+                    <Button background-color="var(--color-black)" color="var(--color-white)" width="fit-content">
                         Go to Cart
                     </Button>
                 </CardContent>
@@ -51,22 +68,86 @@ export const QuoteCard = () => {
     )
 }
 
-export const StyleH1 = styled.h1`
-    margin-left: 25px;
-    font-weight: 700;
+export const CatogoryStyle = styled.div`
+    display: flex;
+    width: auto;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-white);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 4px 12px rgba(0, 0, 0, .08);
+
+    ul{
+        list-style: none;
+        display: flex;
+        gap: 10px;
+        padding-left: 90px;
+
+    }
+
+    .long-item {
+        width: 155px;
+    }
+
+    ul li {
+        width: 90px;
+        text-align: center;
+    }
+
+    ul li a {
+        color: var(--color-gray-500);
+        text-decoration: none;
+        font-family: var(--font-stack-text);
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    ul li a:hover {
+        color: var(--color-blue-300);
+    }
 `;
 
-export const StyleH2 = styled.h2`
-    margin-left: 25px;
-    font-weight: 700;
+export const CatogoriesList = () => {
+    return(
+        <CatogoryStyle>
+            <ul>
+                <li><Link to="/">IT & Software</Link></li>
+                <li><Link to="/">Bussiness</Link></li>
+                <li><Link to="/">Finance</Link></li>
+                <li><Link to="/">Design</Link></li>
+                <li className='long-item'><Link to="/">Personal Development</Link></li>
+                <li><Link to="/">Marketing</Link></li>
+                <li className='long-item'><Link to="/">Office Productivity</Link></li>
+            </ul>
+        </CatogoryStyle>
+    )
+}
+
+export const UserWelcomeStyle = styled.div`
+    display: flex;
+    justify-content: space-between;
+    padding: 25px;
+
+    .text-button{
+        background-color: transparent;
+        font-weight: 800;
+        text-decoration: underline;
+        color: var(--color-blue-300);
+        text-underline-position: under;
+    }
 `;
 
-export const StyleH4 = styled.h4`
-    margin: 0px;
-    font-weight: 700;
-    margin-bottom: 3px;
-    font-size: 17px;
-`;
+export const UserWelcome = ({username}) => {
+    return(
+        <UserWelcomeStyle>
+            <Typography variant="h4" component='div' fontWeight={800} fontFamily={"serif"}>Let's start learning, {username}</Typography>
+
+            <Button className="text-button">
+                My learning
+            </Button>
+        </UserWelcomeStyle>
+    )
+}
+
 
 export const CourseItem = (props ) => {
     const id = props.id
@@ -227,88 +308,5 @@ export const SliderContainer = ({courses}) => {
 
             </SliderWrapperStyle>
         </SliderContainerStyle>
-    )
-}
-
-export const UserWelcomeStyle = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: 25px;
-
-    .text-button{
-        background-color: transparent;
-        font-weight: 800;
-        text-decoration: underline;
-        color: var(--color-blue-300);
-        text-underline-position: under;
-    }
-`;
-
-
-export const UserWelcome = ({username}) => {
-    return(
-        <UserWelcomeStyle>
-            <Typography gutterBottom variant="h4" component='div' fontWeight={800} fontFamily={"serif"} > 
-                            Let's start learning, {username}
-            </Typography>
-
-            <Button className="text-button">
-                        My learning
-            </Button>
-        </UserWelcomeStyle>
-    )
-}
-
-export const CatogoryStyle = styled.div`
-    display: flex;
-    width: auto;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--color-white);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 4px 12px rgba(0, 0, 0, .08);
-
-    ul{
-        list-style: none;
-        display: flex;
-        gap: 10px;
-        padding-left: 90px;
-
-    }
-
-    .long-item {
-        width: 155px;
-    }
-
-    ul li {
-        width: 90px;
-        text-align: center;
-    }
-
-    ul li a {
-        color: var(--color-gray-500);
-        text-decoration: none;
-        font-family: var(--font-stack-text);
-        font-weight: 500;
-        font-size: 15px;
-    }
-
-    ul li a:hover {
-        color: var(--color-blue-300);
-    }
-`;
-
-export const CatogoriesList = () => {
-    return(
-        <CatogoryStyle>
-            <ul>
-                <li><Link to="/">IT & Software</Link></li>
-                <li><Link to="/">Bussiness</Link></li>
-                <li><Link to="/">Finance</Link></li>
-                <li><Link to="/">Design</Link></li>
-                <li className='long-item'><Link to="/">Personal Development</Link></li>
-                <li><Link to="/">Marketing</Link></li>
-                <li className='long-item'><Link to="/">Office Productivity</Link></li>
-            </ul>
-        </CatogoryStyle>
     )
 }
