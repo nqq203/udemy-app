@@ -1,40 +1,49 @@
 import styled from "styled-components";
 import { Button } from "../../components/Button/Button";
+import { useNavigate } from "react-router-dom";
 
 export default function InstructorCourse() {
+  const navigate = useNavigate();
+  function onNavgigateToCreate() {
+    // navigate("/instructor/courses/create");
+  }; 
+
   return <InstructorCourseWrapper>
     <CourseCreation>
       <div className="course-creation_text">Jump Into Course Creation</div>
-      <Button bgColor={'var(--color-purple-300)'} fontWeight={700} hoverBgColor={'var(--color-purple-400)'}>Create Your Course</Button>
+      <Button bgColor={'var(--color-purple-300)'} fontWeight={700} hoverBgColor={'var(--color-purple-400)'} onClick={onNavgigateToCreate}>Create Your Course</Button>
     </CourseCreation>
     <div className="course-creation_description">Based on your experience, we think these resources will be helpful.</div>
     <CourseGetStarted>
-      <div className="course-getstarted_engage">
-        <img src="../../../assets/engaging-course.jpg"/>
-        <div className="course-engagement">
-          <h4 className="course-engagement-title">Create an Engaging Course</h4>
-          <div className="course-engagement-description">Whether you've been teaching for years or are teaching for the first time, you can make an engaging course. We've compiled resources and best practices to help you get to the next level, no matter where you're starting.</div>
+      <div className="course-one-box">
+        <img src="../../../assets/engaging-course.jpg" alt="engaging-course"/>
+        <div className="course-one-box_content">
+          <h4>Create an Engaging Course</h4>
+          <div>Whether you've been teaching for years or are teaching for the first time, you can make an engaging course. We've compiled resources and best practices to help you get to the next level, no matter where you're starting.</div>
         </div>
       </div>
-      <div className="course-creation-and-audience">
+      <div className="course-two-box">
         <div className="course-create-video">
-          <img src="../../../assets/video-creation.jpg"/>
+          <img src="../../../assets/video-creation.jpg" alt="video-creation"/>
           <div className="video-creation">
             <h4 className="video-creation-title">Get Started with Video</h4>
             <div className="video-creation-description">Quality video lectures can set your course apart. Use our resources to learn the basics.</div>
           </div>
         </div>
         <div className="course-build-audience">
-          <img src="../../../assets/build-audience.jpg"/>
+          <img src="../../../assets/build-audience.jpg" alt="build-audience"/>
           <div className="build-audience">
             <h4 className="build-audience-title">Build Your Audience</h4>
             <div className="build-audience-description">Set your course up for success by building your audience.</div>
           </div>
         </div>
       </div>
-      <div className="course-newcomer">
-        <h4 className="course-newcomer-title"></h4>
-        <div className="course-newcomer-description">Get exclusive tips and resources designed to help you launch your first course faster! Eligible instructors who publish their first course on time will receive a special bonus to celebrate. Start today!</div>
+      <div className="course-one-box" style={{marginTop: "20px"}}>
+        <img src="../../../assets/engaging-course.jpg" alt="engaging-course"/>
+        <div className="course-one-box_content">
+          <h4>Join the New Instructor Challenge!</h4>
+          <div>Get exclusive tips and resources designed to help you launch your first course faster! Eligible instructors who publish their first course on time will receive a special bonus to celebrate. Start today!</div>
+        </div>
       </div>
     </CourseGetStarted>
   </InstructorCourseWrapper>
@@ -83,7 +92,7 @@ const CourseGetStarted = styled.div`
   flex-direction: column;
   margin: 50px 100px;
   
-  .course-getstarted_engage {
+  .course-one-box {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -93,13 +102,13 @@ const CourseGetStarted = styled.div`
     box-shadow: 0 2px 4px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.08);
 
     img {
-      width: 200px;
+      width: 15%;
       height: auto;
-      padding-bottom: 40px;
+      padding: 2vh;
     }
 
     div {
-      width: 610px;
+      width: 80%;
 
       h4 {
         font-weight: 500;
@@ -107,27 +116,27 @@ const CourseGetStarted = styled.div`
       }
       div {
         padding-bottom: 40px;
-        font-weight: 500;
       }
     }
   }
 
-  .course-creation-and-audience {
+  .course-two-box {
     margin-top: 20px;
     display: flex;
     flex-direction: row;
     gap: 20px;
 
     img {
-      width: 200px;
+      width: 30%;
       padding-bottom: 40px;
+      padding: 2vh;
     }
 
     .course-create-video,
     .course-build-audience {
       display: flex;
       flex-direction: row;
-      width: 50%;
+      width: 100%;
       justify-content: space-around;
       border: 1px solid var(--color-gray-200);
       box-shadow: 0 2px 4px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.08);
@@ -139,10 +148,10 @@ const CourseGetStarted = styled.div`
       }
 
       div {
-        width: 400px;
+        width: 70%;
         display: flex;
         flex-direction: column;
-        padding-bottom: 40px;
+        padding-bottom: 40px;                              
       }
     }
   }
