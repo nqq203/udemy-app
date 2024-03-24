@@ -27,9 +27,9 @@ import {
   EmptyCartImage,
   WhitelistedCourses,
   WhitelistedTitle,
-} from './CartStyle';
+} from './ShoppingCartStyle';
 
-const Cart = () => {
+const ShoppingCart = () => {
   const [coupon, setCoupon] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState('');
 
@@ -192,4 +192,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default ShoppingCart;

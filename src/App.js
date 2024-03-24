@@ -13,7 +13,7 @@ import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import SignUp from './page/SignUp/SignUp';
 import SignIn from './page/SignIn/SignIn';
-import Cart from './page/Cart/Cart';
+import Cart from './page/ShoppingCart/ShoppingCart';
 export default function App() {
   return (
     <BrowserRouter>
