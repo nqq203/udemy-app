@@ -9,6 +9,7 @@ import Footer from './components/Footer/Footer';
 import SignUp from './page/SignUp/SignUp';
 import InstructorCourse from './page/CreateCourse/InstructorCourse';
 import InstructorCreateCourse from './page/CreateCourse/InstructorCreateCourse';
+import InstructorCourseLandingPage from './page/CreateCourse/InstructorCourseLandingPage';
 
 export default function App() { 
   return (
@@ -16,7 +17,7 @@ export default function App() {
       <Header />
       <main>
         <Routes>
-          <Route path="/" />
+          <Route path="/login" />
           <Route path="/sign-up" element={<SignUp />}/>
           <Route path="/instructor/courses" element={<InstructorCourse />}/>
           <Route path="/instructor/courses/create" element={<InstructorCreateCourse />}/>

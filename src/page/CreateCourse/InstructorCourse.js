@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 export default function InstructorCourse() {
   const navigate = useNavigate();
   function onNavgigateToCreate() {
-    // navigate("/instructor/courses/create");
-  }; 
+    navigate("/instructor/courses/create");
+  };
 
   return <InstructorCourseWrapper>
     <CourseCreation>
@@ -52,6 +52,7 @@ export default function InstructorCourse() {
 const InstructorCourseWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  font-family: var(--font-stack-text);
 
   .course-creation_description {
     display: flex;
@@ -113,6 +114,7 @@ const CourseGetStarted = styled.div`
       h4 {
         font-weight: 500;
         font-size: 25px;
+        font-family: var(--font-stack-heading-serif);
       }
       div {
         padding-bottom: 40px;
@@ -144,6 +146,7 @@ const CourseGetStarted = styled.div`
       align-items: center;
 
       h4 {
+        font-family: var(--font-stack-heading-serif);
         padding: 30px 0px 0px 0;
       }
 
