@@ -3,13 +3,14 @@ import {
   BrowserRouter,
   Route,
   Routes,
-} from "react-router-dom";
+x} from "react-router-dom";
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import SignUp from './page/SignUp/SignUp';
 import InstructorCourse from './page/CreateCourse/InstructorCourse';
 import InstructorCreateCourse from './page/CreateCourse/InstructorCreateCourse';
 import InstructorCourseLandingPage from './page/CreateCourse/InstructorCourseLandingPage';
+import InstructorNavbar from './components/InstructorNavbar/InstructorNavbar';
 
 export default function App() { 
   return (
@@ -21,7 +22,7 @@ export default function App() {
           <Route path="/sign-up" element={<SignUp />}/>
           <Route path="/instructor/courses" element={<InstructorCourse />}/>
           <Route path="/instructor/courses/create" element={<InstructorCreateCourse />}/>
-          
+
         </Routes>
       </main>
       <Footer/>
