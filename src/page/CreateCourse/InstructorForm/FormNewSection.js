@@ -1,7 +1,7 @@
-import { Button } from "../../components/Button/Button";
+import { Button } from "../../../components/Button/Button";
 import { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
-import { generateUuid } from "../../utils/Utils";
+import { generateUuid } from "../../../utils/Utils";
 
 export default function FormNewSection({ sections, setSections, setIsOpenCreateNewSection }) {
   const [sectionTitle, setSectionTitle] = useState(null);

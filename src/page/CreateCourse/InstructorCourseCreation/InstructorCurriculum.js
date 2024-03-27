@@ -1,12 +1,12 @@
 import styled from "styled-components";
-import { Button } from "../../components/Button/Button";
+import { Button } from "../../../components/Button/Button";
 import { LuPlus } from "react-icons/lu";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useEffect, useState } from "react";
-import FormEditSection from "./FormEditSection";
-import FormNewSection from "./FormNewSection";
-import FormNewLecture from "./FormNewLecture";
-import FormEditLecture from "./FormEditLecture";
+import FormEditSection from "../InstructorForm/FormEditSection";
+import FormNewSection from "../InstructorForm/FormNewSection";
+import FormNewLecture from "../InstructorForm/FormNewLecture";
+import FormEditLecture from "../InstructorForm/FormEditLecture";
 
 export default function InstructorCurriculum() {
   const [lectures, setLectures] = useState([]);

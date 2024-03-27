@@ -16,7 +16,7 @@ const Header = () => (
     <nav className='header-third'>
       <ul>
         <li className='three-words-item'><Link to="/">Teach on Udemy</Link></li>
-        <li><Link to="/courses">Instructor</Link></li>
+        <li><Link to="/instructor/courses">Instructor</Link></li>
         <li><Link to="/about">My learning</Link></li>
       </ul>
     </nav>

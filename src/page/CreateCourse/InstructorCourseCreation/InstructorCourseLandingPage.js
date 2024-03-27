@@ -4,7 +4,7 @@ import { useState } from "react";
 import { FaBold, FaItalic, FaListOl, FaListUl } from "react-icons/fa";
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import Notification from "../../components/Notification/Notification";
+import Notification from "../../../components/Notification/Notification";
 import ReactCrop from "react-image-crop";
 import { useDropzone } from 'react-dropzone';
 

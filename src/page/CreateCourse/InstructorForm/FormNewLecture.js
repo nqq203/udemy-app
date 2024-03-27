@@ -1,9 +1,9 @@
-import { Button } from "../../components/Button/Button";
+import { Button } from "../../../components/Button/Button";
 import { LuPlus } from "react-icons/lu";
 import { IoMdClose } from "react-icons/io";
 import { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
-import { generateUuid } from "../../utils/Utils";
+import { generateUuid } from "../../../utils/Utils";
 
 
 function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCreateNewLecture, setLectures, lectures, sectionId}) {

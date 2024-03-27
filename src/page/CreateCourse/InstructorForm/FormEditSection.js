@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Button } from "../../components/Button/Button";
+import { Button } from "../../../components/Button/Button";
 import { useState } from "react";
 
 export default function FormEditSection({setIsOpenFormEditSection, sectionTitle, setSections, sections, sectionId, idx}) {

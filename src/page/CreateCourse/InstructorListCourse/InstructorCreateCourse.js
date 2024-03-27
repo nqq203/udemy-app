@@ -1,21 +1,20 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Button } from "../../components/Button/Button";
-import InstructorCourseLandingPage from "./InstructorCourseLandingPage";
-import InstructorCurriculum from "./InstructorCurriculum";
-import InstructorLevel from "./InstructorMessage";
-import InstructorPricing from "./IntructorPricing";
+import { Button } from "../../../components/Button/Button";
+import InstructorCourseLandingPage from "../InstructorCourseCreation/InstructorCourseLandingPage";
+import InstructorCurriculum from "../InstructorCourseCreation/InstructorCurriculum";
+import InstructorPricing from "../InstructorCourseCreation/IntructorPricing";
 
 export default function InstructorCreateCourse() {
   const [activeItem, setActiveItem] = useState(1);
-  const [contentItems, setContentItems] = useState([
+  const contentItems = [
     {
       id: 1,
       title: "Curriculum",
 
     }
-  ]);
-  const [publishItems, setPublishItems] = useState([
+  ];
+  const publishItems = [
     {
       id: 2,
       title: "Course landing page",
@@ -24,7 +23,7 @@ export default function InstructorCreateCourse() {
       id: 3,
       title: "Pricing",
     }
-  ]);
+  ];
 
   const getItemClassname = (id) => id === activeItem ? "is-active create-bar-item" : "create-bar-item";
 

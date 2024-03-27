@@ -1,61 +1,71 @@
 import styled from "styled-components";
-import { Button } from "../../components/Button/Button";
+import { Button } from "../../../components/Button/Button";
 import { Link, Outlet } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import { useState } from "react";
-import FilterDropdown from "../../components/FilterDropdown/FilterDropdown";
+import FilterDropdown from "../../../components/FilterDropdown/FilterDropdown";
 import moment from "moment";
+import { useQuery } from "react-query";
+import { callApiGetListCourses } from "../../../api/course";
 
 export default function InstructorCourse() {
-  const initialData = [{
-    id: 1, 
-    title: "Basic C++ for Beginners",
-    price: "$29.99",
-    amountSold: 300,
-    published: moment("12/02/2023").format("DD/MM/YYYY")
-  }, {
-    id: 2, 
-    title: "Basic Python for Beginners",
-    price: "$39.99",
-    amountSold: 123,
-    published: moment("12/01/2023").format("DD/MM/YYYY")
-  }, {
-    id: 3, 
-    title: "Advanced Java, Java Spring",
-    price: "$49.99",
-    amountSold: 30,
-    published: moment("11/10/2022").format("DD/MM/YYYY")
-  }, {
-    id: 4, 
-    title: "Design with AI",
-    price: "$59.99",
-    amountSold: 12,
-    published: moment("23/12/2023").format("DD/MM/YYYY")
-  }, {
-    id: 5, 
-    title: "Training Model in Machine Learning",
-    price: "$69.99",
-    amountSold: 100,
-    published: moment("01/01/2023").format("DD/MM/YYYY")
-  }, {
-    id: 6, 
-    title: "Machine Learning for Beginners",
-    price: "$79.99",
-    amountSold: 100,
-    published: moment("12/05/2023").format("DD/MM/YYYY")
-  }, {
-    id: 7, 
-    title: "XYADSYASDGFASDF",
-    price: "$89.99",
-    amountSold: 100,
-    published: moment("12/02/2023").format("DD/MM/YYYY")
-  }, {
-    id: 8, 
-    title: "IIIOOOZXCVZXC",
-    price: "$99.99",
-    amountSold: 100,
-    published: moment("12/02/2021").format("DD/MM/YYYY")
-  }];
+  // const initialData = [{
+  //   id: 1, 
+  //   title: "Basic C++ for Beginners",
+  //   price: "$29.99",
+  //   amountSold: 300,
+  //   published: moment("12/02/2023").format("DD/MM/YYYY")
+  // }, {
+  //   id: 2, 
+  //   title: "Basic Python for Beginners",
+  //   price: "$39.99",
+  //   amountSold: 123,
+  //   published: moment("12/01/2023").format("DD/MM/YYYY")
+  // }, {
+  //   id: 3, 
+  //   title: "Advanced Java, Java Spring",
+  //   price: "$49.99",
+  //   amountSold: 30,
+  //   published: moment("11/10/2022").format("DD/MM/YYYY")
+  // }, {
+  //   id: 4, 
+  //   title: "Design with AI",
+  //   price: "$59.99",
+  //   amountSold: 12,
+  //   published: moment("23/12/2023").format("DD/MM/YYYY")
+  // }, {
+  //   id: 5, 
+  //   title: "Training Model in Machine Learning",
+  //   price: "$69.99",
+  //   amountSold: 100,
+  //   published: moment("01/01/2023").format("DD/MM/YYYY")
+  // }, {
+  //   id: 6, 
+  //   title: "Machine Learning for Beginners",
+  //   price: "$79.99",
+  //   amountSold: 100,
+  //   published: moment("12/05/2023").format("DD/MM/YYYY")
+  // }, {
+  //   id: 7, 
+  //   title: "XYADSYASDGFASDF",
+  //   price: "$89.99",
+  //   amountSold: 100,
+  //   published: moment("12/02/2023").format("DD/MM/YYYY")
+  // }, {
+  //   id: 8, 
+  //   title: "IIIOOOZXCVZXC",
+  //   price: "$99.99",
+  //   amountSold: 100,
+  //   published: moment("12/02/2021").format("DD/MM/YYYY")
+  // }];
+  const initialData = useQuery(() => callApiGetListCourses("6603c2c0ec6ca06713093b35"), {
+    onSuccess: (data) => {
+
+    },
+    onError: (err) => {
+
+    }
+  });
   const [filteredItems, setFilteredItems] = useState(initialData);
 
   return <InstructorCourseWrapper>
@@ -67,7 +77,7 @@ export default function InstructorCourse() {
           <Button style={{display: "flex", alignItems: "center"}}><IoSearch /></Button>
         </div>
         <FilterDropdown items={initialData} setFilteredItems={setFilteredItems} />
-        <Button className="course-management-header_newcourse">New Course</Button>
+        <Link to="/instructor/create"><Button className="course-management-header_newcourse">New Course</Button></Link>
       </div>
       <div className="course-management-main">
             {filteredItems.map(item => (
@@ -87,7 +97,7 @@ export default function InstructorCourse() {
     </CourseManagement>
     <CourseCreation>
       <div className="course-creation_text">Jump Into Course Creation</div>
-      <Link to="/instructor/courses/create">
+      <Link to="/instructor/create">
         <Button bgColor={'var(--color-purple-300)'} fontWeight={700} hoverBgColor={'var(--color-purple-400)'}>Create Your Course</Button>
       </Link>
     </CourseCreation>
