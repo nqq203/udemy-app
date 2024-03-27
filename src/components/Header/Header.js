@@ -22,7 +22,7 @@ const Header = () => (
     </nav>
     <div className='header-forth'>
       <MdOutlineShoppingCart size={31} className="shopping"/>
-      <Link to="/log-in" className="btn login">Log in</Link>
+      <Link to="/sign-in" className="btn login">Log in</Link>
       <Link to="/sign-up" className="btn signup">Sign up</Link>
       <MdLanguage className="language" size={31}/>
     </div>
