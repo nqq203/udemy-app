@@ -24,6 +24,7 @@ import MyWishList from './page/myLearning/myWishList';
 import MyArchived from './page/myLearning/myArchived';
 import MyLearningTools from './page/myLearning/myLearningTools';
 import ProductDetail from "./pages/ProdDetailPage/ProductDetail";
+import Lecture from './page/lecture/lecture';
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="/sign-up" element={<SignUp />}/>
             <Route path="/view-list-courses" element={<ViewListSearch />}/>
             <Route path="/detail" element={<ProductDetail></ProductDetail>} />
+            <Route path="/view-lecture" element={<Lecture />}/>
             <Route path="/profile">
               <Route path="info" element={<ProfileInfo />} />
               <Route path="photo" element={<ProfilePhoto />} />
