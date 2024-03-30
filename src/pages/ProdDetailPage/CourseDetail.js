@@ -2,9 +2,11 @@ import TitleCard from "../../components/TitleCard/TitleCard";
 import ContentListCard from "../../components/ContentListCard/ContentListCard";
 import SideBarCard from "../../components/SideBarCard/SideBarCard";
 import CourseContent from "../../components/CourseContent/CourseContent";
-import { ProductDetailWrapper } from "./ProductDetailStyle";
+import { ProductDetailWrapper } from "./CourseDetailStyle";
 import StudentAlsoBought from "../../components/StudentsAlsoBought/StudentsAlsoBought";
 import ReviewCard from "../../components/ReviewCard/ReviewCard";
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+
 const whatYoullLearn = [
   "Extensive, informative and interesting video lecture",
   "Lab Exercises",
@@ -78,26 +80,50 @@ const courses = [
     description: "This is a course description",
     instructor: "Instructor 1",
     ratings: 4,
-    price: 100
+    price: 100,
   },
   {
     name: "Course 2",
     description: "This is a course description 2",
     instructor: "Instructor 2",
     ratings: 5,
-    price: 200
-  }
-]
+    price: 200,
+  },
+];
 
-const ProductDetail = () => {
+const ProductDetail = ({ courseId }) => {
+  const courseid = "660666f9b3f1e1cc048f2b57";
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: "courses",
+    queryFn: async () => {
+      const response = await fetch(
+        "http://localhost:8080/product/course/" + courseid
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const jsonData = await response.json();
+      return jsonData;
+    },
+  });
+  if (isPending) {
+    return <span>Loading...</span>;
+  }
+
+  if (isError) {
+    return <span>Error: {error.message}</span>;
+  }
+
+  // We can assume by this point that `isSuccess === true`
+  // return <div>{console.log(data)}</div>;
   return (
     <ProductDetailWrapper>
       <div style={{ position: "relative" }}>
         {/* Title Card */}
-        <TitleCard title="Example course" ratings={4} />
+        <TitleCard course={data.metadata} />
 
         {/* Sticky Sidebar */}
-        <SideBarCard />
+        <SideBarCard thumbnailImage={data.metadata.imageUrl} price={data.metadata.price} />
       </div>
 
       <div className="product-detail-body">

@@ -18,5 +18,11 @@ export const TitleCardWrapper = styled.div`
     box-sizing: border-box;
   }
 
-  
+  .inner-text-container {
+    max-width: 700px;
+  }
+
+  .course-description {
+    font-size: 20px;
+  }
 `;
