@@ -52,7 +52,14 @@ const SignIn = () => {
         if (data.success) {
           // Handle successful login here
           // const role = JSON.stringify(data.metadata.ROLE);
+          console.log(data.metadata.ROLE);
+
+          const { email, fullName, role, _id } = data.metadata.ROLE;
           localStorage.setItem('token', data.metadata.token);
+          localStorage.setItem('email', email);
+          localStorage.setItem('fullname', fullName);
+          localStorage.setItem('role', role);
+          localStorage.setItem('_id', _id);
           setIsAuthenticated(true);
           // localStorage.setItem('role', role);
           navigate("/");
@@ -87,6 +94,7 @@ const SignIn = () => {
   };
 
   useEffect(() => {
+    console.log(isAuthenticated);
     if (isAuthenticated) {
       navigate("/");
     }
