@@ -16,17 +16,17 @@ const Header = () => {
   return (
     <HeaderWrapper>
       <nav className="header-first">
-        <ul>
-          <li className='logo'><Link to="/">Home</Link></li>
+        <ul style={{display: "flex", alignItems: "center"}}>
+          <li className='logo'><Link to="/"><img src='../../../assets/udemy.png' alt='udemy-logo'/></Link></li>
           <li><Link to="/courses">Categories</Link></li>
         </ul>
       </nav>
       <div className="header-search-bar"><SearchBar /></div>
       <nav className='header-third'>
         <ul>
-          <li className='three-words-item'><Link to="/">Teach on Udemy</Link></li>
+          {/* <li className='three-words-item'><Link to="/">Teach on Udemy</Link></li> */}
           <li><Link to="/instructor/courses">Instructor</Link></li>
-          <li><Link to="/about">My learning</Link></li>
+          <li><Link to="/my-courses/learning">My learning</Link></li>
         </ul>
       </nav>
       {!isAuthenticated ? 

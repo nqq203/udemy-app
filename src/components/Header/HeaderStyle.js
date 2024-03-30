@@ -8,6 +8,11 @@ export const HeaderWrapper = styled.header`
   background-color: var(--color-white);
   box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 4px 12px rgba(0, 0, 0, .08);
 
+  img {
+    width: 70px;
+    height: auto;
+  }
+
   .header-search-bar {
     width: 70%;
   }
