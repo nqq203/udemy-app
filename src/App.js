@@ -30,11 +30,13 @@ import MyWishList from './page/myLearning/myWishList';
 import MyArchived from './page/myLearning/myArchived';
 import MyLearningTools from './page/myLearning/myLearningTools';
 import ProductDetail from "./pages/ProdDetailPage/ProductDetail";
+import { AuthProvider } from './context/AuthContext';
 
 const queryClient = new QueryClient();
 
 export default function App() { 
   return (
+    <AuthProvider>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <Header />
@@ -69,5 +71,6 @@ export default function App() {
         <Footer/>
       </QueryClientProvider> 
     </BrowserRouter>
+    </AuthProvider>
   );
 }

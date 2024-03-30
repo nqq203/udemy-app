@@ -26,47 +26,8 @@ export default function InstructorCourseLandingPage() {
     valid: null,
   });
 
-  const onDrop = (files) => {
-    const file = files[0];
-    if (file && /^image\/(jpeg|png|jpg)$/.test(file.type)) {
-      const reader = new FileReader();
-      reader.onload = (e) => setImageURL(e.target.result);
-      reader.readAsDataURL(file);
-    }
-  };
-  const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: 'image/jpeg, image/png' });
+  
 
-  const getCroppedImg = async (image, crop) => {
-    const canvas = document.createElement('canvas');
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    canvas.width = crop.width;
-    canvas.height = crop.height;
-    const ctx = canvas.getContext('2d');
-
-    ctx.drawImage(
-      image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
-      0,
-      0,
-      crop.width,
-      crop.height
-    );
-
-    return new Promise((resolve, reject) => {
-      canvas.toBlob(blob => {
-        if (!blob) {
-          reject(new Error('Canvas is empty'));
-          return;
-        }
-        const croppedUrl = URL.createObjectURL(blob);
-        setCroppedImage(croppedUrl);
-      }, 'image/jpeg');
-    });
-  };
 
   return (
     <InstructorCourseLandingPageWrapper>
@@ -143,13 +104,6 @@ export default function InstructorCourseLandingPage() {
         <CourseContent>
           <h3>Course Image</h3>
           <div className="course-image">
-            {croppedImage && (<ReactCrop
-              src={croppedImage}
-              crop={crop}
-              onChange={(newCrop) => setCrop(newCrop)}
-              onComplete={(crop, pixelCrop) => getCroppedImg(document.querySelector('.ReactCrop__image'), crop)}
-            />)}
-            {imageURL && <img src={imageURL} alt="Cropped" />}
             <div className="course-image-choosing">
               <div >Upload your course image here. It must meet our course image quality standards to be accepted. Important guidelines: 750x422 pixels; .jpg, .jpeg,. gif, or .png. no text on the image.</div>
               <CustomButton
@@ -160,12 +114,12 @@ export default function InstructorCourseLandingPage() {
                 startIcon={<CloudUploadIcon />}
               >
                 Upload file
-                <div {...getRootProps}>
+                {/* <div {...getRootProps}>
                   <input
                     {...getInputProps()}
                     hidden
                   />
-                </div>
+                </div> */}
               </CustomButton>
             </div>
           </div>
@@ -212,6 +166,7 @@ const CourseContent = styled.div`
     padding: 15px 20px;
     font-size: 15px;
     font-family: Roboto;
+    border: 1px solid var(--color-gray-300);
   }
 
   textarea {
@@ -263,39 +218,6 @@ const CourseContent = styled.div`
     }
   }
 
-`
-
-const StyleBtn = styled.button`
-  background-color: var(--color-gray-100);
-  border: none;
-  padding: 10px;
-`
-
-const EditorWrapper = styled.div`
-  width: 100%;
-  min-height: 100px; // Set a minimum height
-  height: auto;
-  padding: 15px 20px;
-  font-size: 15px;
-  border: 1px solid black; // Add border to visualize the Editor's boundaries
-  cursor: text;
-
-  &:focus-within {
-    outline: 0;
-  }
-
-  .EditorWrapper .DraftEditor-root {
-    font-size: 15px; /* Ensure font size is applied to the editor content */
-  }
-
-  .public-DraftEditorPlaceholder-root {
-    border-color: var(--color-gray-400);
-    color: #888; /* Customize this color to your liking */
-  }
-
-  .public-DraftEditorPlaceholder-root {
-    color: #888; 
-}
 `
 
 const CustomButton = styled(Button)`

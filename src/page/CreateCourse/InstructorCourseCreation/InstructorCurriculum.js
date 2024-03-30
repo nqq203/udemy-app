@@ -244,7 +244,7 @@ const ButtonCreateSection = styled(Button)`
   width: 120px;
   background-color: var(--color-white);
   border: 1px solid var(--color-gray-500);
-  color: var(--color-black);
+  color: var(--color-gray-500);
   font-weight: 700;
   padding: 0 20px;
   font-size: 15px;
@@ -261,7 +261,7 @@ const ButtonCreateLecture = styled(Button)`
   width: 200px;
   height: auto;
   background-color: var(--color-white);
-  color: var(--color-black);
+  color: var(--color-gray-500);
   font-weight: 700;
   justify-content: center;
   display: flex;
@@ -273,6 +273,7 @@ const ButtonCreateLecture = styled(Button)`
     margin: 0;
     padding: 0;
     font-family: var(--font-stack-text);
+    color: var(--color-gray-500);
   }
 
   &:hover {

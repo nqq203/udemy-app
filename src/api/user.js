@@ -4,3 +4,8 @@ export const callApiCreateAccount = async (userData) => {
   const { data } = await api.post('/signup', userData);
   return data;
 };
+
+export const callApiLogin = async (userData) => {
+  const { data } = await api.post('/users/signin', userData);
+  return data;
+};

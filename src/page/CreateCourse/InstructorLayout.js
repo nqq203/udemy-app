@@ -56,11 +56,11 @@ const InstructorNav = styled.div`
   left: 0;
   display: flex;
   flex-direction: column;
-  width: 70px;
+  width: 60px;
   background-color: var(--color-gray-500);
   justify-content: space-around;
   height: 300px;
-  top: 30%;
+  top: 20%;
   color: var(--color-white);
   z-index: 1;
   align-items: center;
@@ -73,7 +73,7 @@ const InstructorNav = styled.div`
     padding: 10px;
     color: var(--color-white);
     text-decoration: none;
-    font-size: 40px;
+    font-size: 25px;
     height: 40px;
     backgroud-color: var(--color-gray-300);
     display: flex;

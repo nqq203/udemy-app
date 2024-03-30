@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import moment from 'moment';
 
 const FilterDropdown = ({ items, setFilteredItems }) => {
   const handleFilterChange = (event) => {
@@ -8,22 +9,16 @@ const FilterDropdown = ({ items, setFilteredItems }) => {
 
     switch (value) {
       case 'Newest':
-        sortedItems.sort((a, b) => b.date - a.date);
+        sortedItems.sort((a, b) => moment(b.createdAt).toDate() - moment(a.createdAt).toDate());
         break;
       case 'Oldest':
-        sortedItems.sort((a, b) => a.date - b.date);
+        sortedItems.sort((a, b) => moment(a.createdAt).toDate() - moment(b.createdAt).toDate());
         break;
       case 'A-Z':
-        sortedItems.sort((a, b) => a.title.localeCompare(b.title));
+        sortedItems.sort((a, b) => a.name?.localeCompare(b.title));
         break;
       case 'Z-A':
-        sortedItems.sort((a, b) => b.title.localeCompare(a.title));
-        break;
-      case 'Published':
-        sortedItems.sort((a, b) => b.published - a.published);
-        break;
-      case 'Unpublished':
-        sortedItems.sort((a, b) => a.published - b.published);
+        sortedItems.sort((a, b) => b.name?.localeCompare(a.title));
         break;
       default:
         break;
@@ -40,8 +35,6 @@ const FilterDropdown = ({ items, setFilteredItems }) => {
         <option value="Oldest">Oldest</option>
         <option value="A-Z">A-Z</option>
         <option value="Z-A">Z-A</option>
-        <option value="Published">Published first</option>
-        <option value="Unpublished">Unpublished first</option>
       </select>
     </FilterDropdownWrapper>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Input from "../../components/InputForm/Input";
 import { Button } from "../../components/Button/Button";
@@ -7,6 +7,12 @@ import gImg from "../icons/google.svg";
 import aImg from "../icons/apple-logo.svg";
 import email from "../icons/email.png";
 import lock from "../icons/lock.png";
+import Notification from "../../components/Notification/Notification";
+import { callApiLogin } from "../../api/user";
+import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
 import {
   OuterDiv,
   LoginBox,
@@ -18,6 +24,10 @@ import {
 } from "./SignInStyle";
 
 const SignIn = () => {
+  const { setIsAuthenticated, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [notification, setNotification] = useState({
+  });
   const [state, setState] = useState({
     email: "",
     password: "",
@@ -35,16 +45,56 @@ const SignIn = () => {
     });
   };
 
-  let submitHandler = () => {
-    if (!state.email.includes("@") || state.password.length < 10) {
-      console.log("Error", state);
+  const loginMutation = useMutation(
+    (loginDetails) => callApiLogin(loginDetails), // This function should return a Promise from your API call
+    {
+      onSuccess: (data) => {
+        if (data.success) {
+          // Handle successful login here
+          // const role = JSON.stringify(data.metadata.ROLE);
+          localStorage.setItem('token', data.metadata.token);
+          setIsAuthenticated(true);
+          // localStorage.setItem('role', role);
+          navigate("/");
+        }
+        else {
+          setNotification({
+            content: data.message,
+            visible: true,
+          });
+        }
+      },
+    }
+  );
+
+  const submitHandler = async () => {
+    if (!state.email.includes("@")) {
+      setNotification({
+        content: "Email must include @",
+        visible: true,
+      });
       return;
     }
-    console.log(state, "Form Values");
+    if (state.password.length < 10) {
+      setNotification({
+        content: "Password must be at least 10 characters",
+        visible: true,
+      });
+      return;
+    }
+
+    loginMutation.mutate({email: state.email, password: state.password});
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <OuterDiv>
+      <Notification message={notification.content} visible={notification.visible} onClose={() => setNotification({content: '', visible: false})}/>
       <LoginBox>
         <Title>Log in to your Udemy account</Title>
         <Hr />

@@ -4,8 +4,12 @@ import { Button } from "../../components/Button/Button";
 import Notification from "../../components/Notification/Notification";
 import { useMutation } from "react-query";
 import { callApiCreateAccount } from "../../api/user";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const inputRefFullname = useRef(null);
   const inputRefEmail = useRef(null);
   const inputRefPassword = useRef(null);
@@ -127,6 +131,12 @@ export default function SignUp() {
     }
     mutation.mutate(newUser);
   }
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <SignUpWrapper>
