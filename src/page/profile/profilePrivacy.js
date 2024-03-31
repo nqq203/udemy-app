@@ -1,4 +1,5 @@
 import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 import ProfileNavBar from "./profileNavbar";
 import { Button } from "../../components/Button/Button";
@@ -33,7 +34,16 @@ export default function ProfilePhoto() {
 
     return (
         <ProfileContainer>
-            <h1>Profile & settings</h1>
+            <Typography 
+                variant="h4" 
+                fontWeight={800} 
+                fontFamily={"serif"}
+                color="var(--color-gray-500)"
+                marginLeft={1}
+                marginBottom={2}
+            >
+                Profile & settings
+            </Typography>
 
             <ProfileNavBar />
 

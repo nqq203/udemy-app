@@ -1,17 +1,38 @@
 
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 import MyLearningNavBar from "./myLearningNavbar";
 import CourseCard from "./courseCard";
 import { MyLearningHeadingContainer, MyLearningContainer } from "./myLearningStyle";
 import { courses } from "../data/courses";
+import { useEffect, useState } from 'react';
 
 export default function MyCourses() {
+  const [data, setData] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:3030/order/order-by-user")
+      .then((res) => res.json())
+      .then((data) => setData(data));
+  }, []);
+
+  console.log(data);
+
     return (
       <MyLearningContainer>
         <MyLearningHeadingContainer>
-            <h1>My Learning</h1>
+            <Typography 
+                  variant="h3" 
+                  fontWeight={800} 
+                  fontFamily={"serif"}
+                  color="var(--color-white)"
+                  marginLeft={1}
+                  marginBottom={2}
+            >
+                My Learning
+            </Typography>
             <MyLearningNavBar />
         </MyLearningHeadingContainer>
 

@@ -1,5 +1,6 @@
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 import ProfileNavBar from "./profileNavbar";
 import { Button } from "../../components/Button/Button";
@@ -35,12 +36,26 @@ export default function ProfileInfo() {
             youtube: form.youtube.value,
         };
 
+        if(data.firstName === "" || data.lastName === ""){
+            alert("First Name and Last Name are required.");
+            return;
+        }
+
         console.log(data);
     }
 
     return (
         <ProfileContainer>
-            <h1>Profile & settings</h1>
+            <Typography 
+                variant="h4" 
+                fontWeight={800} 
+                fontFamily={"serif"}
+                color="var(--color-gray-500)"
+                marginLeft={1}
+                marginBottom={2}
+            >
+                Profile & settings
+            </Typography>
 
             <ProfileNavBar />
 

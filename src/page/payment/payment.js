@@ -11,19 +11,30 @@ import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 
-import { PaymentContainer, PaymentSummaryContainer, PaymentInfoContainer } from "./paymentStyles";
+import PaymentIcon from '@mui/icons-material/Payment';
+import WalletIcon from '@mui/icons-material/Wallet';
+
 import { Button } from "../../components/Button/Button";
+import { 
+    PaymentContainer, 
+    PaymentSummaryContainer, 
+    PaymentInfoContainer, 
+    PaymentInfoItem
+} from "./paymentStyles";
+
 import { countries } from "../data/country";
 import { courses } from "../data/courses";
 
 export default function Payment() {
     const [choice, setChoice] = React.useState('');
     const [expanded, setExpanded] = React.useState('');
+    const totalPrice = courses.reduce((acc, course) => acc + course.price, 0);
     
     const handleSelectCountryChange = (event) => {
         setChoice(event.target.value);
@@ -35,19 +46,58 @@ export default function Payment() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        alert('Payment successful');
+        
+        const form = event.target;
+        const data = {
+            country: form.country.value,
+            paymentMethod: form.paymentMethod.value,
+            cardName: form.firstname.value,
+            cardNumber: form.cardnumber.value,  
+            cardMonth: form.month.value,
+            cardYear: form.year.value,
+            cardCVC: form.cvv.value,
+            totalPrice: totalPrice
+        };
+
+        if (data.country === '') {
+            alert('Please select a country');
+            return;
+        }
+
+        if(data.paymentMethod === '') {
+            alert('Please select a payment method');
+            return;
+        }
+        else if(data.paymentMethod === 'card') {
+            if(data.cardName === '' 
+            || data.cardNumber === '' 
+            || data.cardMonth === '' 
+            || data.cardYear === '' 
+            || data.cardCVC === '') {
+                alert('Please fill out all required fields');
+                return;
+            }
+        }
+        else if (data.paymentMethod === 'paypal') {
+            data.cardName = '';
+            data.cardNumber = '';
+            data.cardMonth = '';
+            data.cardYear = '';
+            data.cardCVC = '';
+        }
+
+        console.log(data);
     };
 
-    const total = courses.reduce((acc, course) => acc + course.price, 0);
 
     return (
         <PaymentContainer>
-            <h1>Checkout</h1>
+            <Typography variant="h4" fontWeight={800} fontFamily={"serif"}>Checkout</Typography>
 
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={4}>
                     <Grid item xs={12} md={7} px={10}>
-                        <div>
+                        <PaymentInfoItem>
                             <h2>Billing address</h2>
                             <FormControl>
                                 <InputLabel id="country-choice">Country</InputLabel>
@@ -55,54 +105,83 @@ export default function Payment() {
                                     labelId="country-choice"
                                     value={choice}
                                     label="Country"
+                                    name="country"
                                     onChange={handleSelectCountryChange}
-                                    required
                                 >
                                     {Object.keys(countries).map((country) => (
                                         <MenuItem key={country} value={country}>{countries[country]}</MenuItem>
                                     ))}
                                 </Select>
-                                <span className="payment-note">Udemy is required by law to collect applicable transaction taxes for purchases made in certain tax jurisdictions.</span>
+                                <span className="payment-note">The platform is required by law to collect applicable transaction taxes for purchases made in certain tax jurisdictions.</span>
                             </FormControl>
-                        </div>
+                        </PaymentInfoItem>
 
-                        <div>
+                        <PaymentInfoItem>
                             <h2>Payment method</h2>
                             <FormControl>
                                 <RadioGroup
-                                    defaultValue="cash"
-                                    name="payment-method-choice"
+                                    name="paymentMethod"
                                 >
                                     <Accordion expanded={expanded === 'panel1'} onChange={handlePaymentMethodChange('panel1')}>
                                         <AccordionSummary sx={{margin: 0}}>
-                                            <FormControlLabel value="card" control={<Radio />} label="Credit/Debit Card" />
+                                            <FormControlLabel 
+                                                value="card" 
+                                                control={<Radio />} 
+                                                label={
+                                                    <Stack flexDirection="row" gap={1}>
+                                                        <PaymentIcon></PaymentIcon>
+                                                        <Typography fontWeight={700}>Credit/Debit Card</Typography>
+                                                    </Stack>
+                                                } />
                                         </AccordionSummary>
+
                                         <AccordionDetails>
                                             <PaymentInfoContainer>
                                                 <h4>Name on card</h4>
-                                                <TextField name="firstname" variant="outlined" fullWidth required/>
+                                                <TextField name="firstname" variant="outlined" placeholder="Name on card" fullWidth/>
+
+                                                <h4>Card number</h4>
+                                                <TextField name="cardnumber" variant="outlined" placeholder="1234 5678 9012 3456" fullWidth/>
+
+                                                <h4>Expired date</h4>
+                                                <Stack spacing={2} direction="row">
+                                                    <TextField name="month" variant="outlined" placeholder="MM"/>
+                                                    <TextField name="year" variant="outlined" placeholder="YY"/>
+                                                </Stack>
+
+                                                <h4>CVC/CVV</h4>
+                                                <TextField name="cvv" variant="outlined" placeholder="CVC" fullWidth/>
                                             </PaymentInfoContainer>
                                         </AccordionDetails>
                                     </Accordion>
 
                                     <Accordion expanded={expanded === 'panel2'} onChange={handlePaymentMethodChange('panel2')}>
                                         <AccordionSummary sx={{margin: 0}}>
-                                            <FormControlLabel value="paypal" control={<Radio />} label="PayPal" />
+                                            <FormControlLabel 
+                                            value="paypal" 
+                                            control={<Radio />} 
+                                            label={
+                                                <Stack flexDirection="row" gap={1}>
+                                                    <WalletIcon></WalletIcon>
+                                                    <Typography fontWeight={700}>PayPal</Typography>
+                                                </Stack>
+                                            } />
                                         </AccordionSummary>
+
                                         <AccordionDetails>
                                             <p style={{margin: 0}}>
                                                 In order to complete your transaction, we will transfer you over to PayPal's secure servers.
                                             </p>
                                             <h4>
-                                                The amount you will be charged by Paypal is ${total}.
+                                                The amount you will be charged by Paypal is ${totalPrice}.
                                             </h4>
                                         </AccordionDetails>
                                     </Accordion>
                                 </RadioGroup>
                             </FormControl>
-                        </div>
+                        </PaymentInfoItem>
 
-                        <div>
+                        <PaymentInfoItem>
                             <h2>Order details</h2>
                             {courses.map((course, index) => (
                                 <PaymentSummaryContainer key={index}>
@@ -113,7 +192,7 @@ export default function Payment() {
                                     <p>${course.price}</p>
                                 </PaymentSummaryContainer>
                             ))}
-                        </div>
+                        </PaymentInfoItem>
                     </Grid>
 
                     <Grid item xs={12} md={5} px={10} sx={{backgroundColor: 'var(--color-gray-100)'}}>
@@ -122,7 +201,7 @@ export default function Payment() {
 
                             <Stack flexDirection='row' justifyContent='space-between'>
                                 <span>Original Price:</span>
-                                <span>${total}</span>
+                                <span>${totalPrice}</span>
                             </Stack>
                             <Stack flexDirection='row' justifyContent='space-between'>
                                 <span>Discounts:</span>
@@ -131,7 +210,7 @@ export default function Payment() {
                             <Divider />
                             <Stack flexDirection='row' justifyContent='space-between' pb={2}>
                                 <span><b>Total:</b></span>
-                                <span><b>${total}</b></span>
+                                <span><b>${totalPrice}</b></span>
                             </Stack>
 
                             <Button 
@@ -141,7 +220,7 @@ export default function Payment() {
                                 fontWeight="700"
                                 type="submit"
                             >
-                                Checkout
+                                Complete Checkout
                             </Button>
                         </Stack>
                     </Grid>

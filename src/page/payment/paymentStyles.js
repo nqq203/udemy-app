@@ -24,6 +24,16 @@ export const PaymentInfoContainer = styled.div`
     }
 `
 
+export const PaymentRequiredTag = styled.span`
+    display: none;
+    color: var(--color-red-300);
+    font-size: 12px;
+`
+
+export const PaymentInfoItem = styled.div`
+    margin-bottom: 48px;
+`
+
 export const PaymentSummaryContainer = styled.div`
     display: flex;
     flex-direction: row;

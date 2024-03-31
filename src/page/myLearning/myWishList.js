@@ -1,5 +1,6 @@
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 import MyLearningNavBar from "./myLearningNavbar";
 import CourseCard from "./courseCard";
@@ -10,7 +11,16 @@ export default function MyWishList() {
     return (
       <MyLearningContainer>
         <MyLearningHeadingContainer>
-            <h1>My Learning</h1>
+            <Typography 
+                  variant="h3" 
+                  fontWeight={800} 
+                  fontFamily={"serif"}
+                  color="var(--color-white)"
+                  marginLeft={1}
+                  marginBottom={2}
+              >
+                My Learning
+            </Typography>
             <MyLearningNavBar />
         </MyLearningHeadingContainer>
 
