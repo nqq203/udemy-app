@@ -28,7 +28,6 @@ export const LectureOptionStyle = styled.div`
     margin: 0px 20px;
     margin-bottom: 20px;
     
-
     nav ul{
         list-style: none;
         display: flex;
@@ -37,19 +36,19 @@ export const LectureOptionStyle = styled.div`
     }
 
     nav ul li {
-        width: fit-content;
+        width: auto;
+        font-weight: 700;
+        color: var(--color-gray-250);
+        &:hover{
+            cursor: pointer;
+            color: var(--color-gray-600);
+        }
     }
 
-    nav ul li a {
-        color: var(--color-gray-300);
-        text-decoration: none;
+    .isClick{
+        color: var(--color-gray-600);
         font-weight: 700;
     }
-
-    nav ul li a:hover {
-        color: var(--color-gray-600);
-    }
-
 `;
 
 export const LectureOptionContainerStyle = styled.div`
@@ -59,11 +58,21 @@ export const LectureOptionContainerStyle = styled.div`
         font-style: italic;
         color: var(--color-orange-500);
     }
+
 `;
 
-export const LectureOptionContainer = () => {
+export const LectureOptionContainer = ({content}) => {
     return(
         <LectureOptionContainerStyle>
+            {content}
+            
+        </LectureOptionContainerStyle>
+    )
+}
+
+export const OverviewSection = () => {
+    return(
+        <div>
             <h2>About this course</h2>
             <div>
             Learn Android App Development in both Java &amp; Kotlin Languages. You'll master Android from ZERO to HERO
@@ -77,8 +86,14 @@ export const LectureOptionContainer = () => {
                 <li>Masters Degree in computer science</li>
                 <li>Teaching in many local schools</li>
                 <li>Having a big youtube channel helping many people to learn android app development and flutter.</li>
-                </ul>
-        </LectureOptionContainerStyle>
+            </ul>
+        </div>
+    )
+}
+
+export const ReviewSection = () => {
+    return(
+        <h2>Reviews of the course</h2>
     )
 }
 
