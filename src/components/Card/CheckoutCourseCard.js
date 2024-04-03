@@ -25,6 +25,7 @@ import {
 
 const CheckoutCourseCard = (props) => {
   const { data, extraCss } = props;
+
   const {
     id = 1,
     img = '',

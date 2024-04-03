@@ -52,10 +52,10 @@ const SignIn = () => {
         if (data.success) {
           // Handle successful login here
           // const role = JSON.stringify(data.metadata.ROLE);
-          console.log(data.metadata.ROLE);
+          console.log(data);
 
-          const { email, fullName, role, _id } = data.metadata.ROLE;
-          localStorage.setItem('token', data.metadata.token);
+          const { email, fullName, role, _id } = data.metadata.userInfo;
+          localStorage.setItem('accessToken', data.metadata.accessToken);
           localStorage.setItem('email', email);
           localStorage.setItem('fullname', fullName);
           localStorage.setItem('role', role);

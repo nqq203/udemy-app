@@ -6,8 +6,8 @@ const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
-const isTokenExpired = (token) => {
-  const decodedToken = jwtDecode(token);
+const isTokenExpired = (accessToken) => {
+  const decodedToken = jwtDecode(accessToken);
   const currentDate = new Date();
 
   // JWT exp is in seconds
@@ -16,19 +16,19 @@ const isTokenExpired = (token) => {
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [token, setToken]  = useState(localStorage.getItem('token'));
+  const [accessToken, setToken]  = useState(localStorage.getItem('accessToken'));
 
   useEffect(() => {
-    if (!token || isTokenExpired(token)) {
+    if (!accessToken || isTokenExpired(accessToken)) {
       // Log out the user
-      localStorage.removeItem('token');
-      setToken(localStorage.getItem('token'));
+      localStorage.removeItem('accessToken');
+      setToken(localStorage.getItem('accessToken'));
       setIsAuthenticated(false);
     }
     else {
       setIsAuthenticated(true);
     }
-  }, [token]);
+  }, [accessToken]);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
