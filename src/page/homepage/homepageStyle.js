@@ -1,6 +1,6 @@
 import styled from "styled-components"
 
-import {Card, Box, CardContent,Typography,CardMedia, Rating} from '@mui/material';
+import {Card, Box, CardContent,Typography,CardMedia} from '@mui/material';
 import { Link } from 'react-router-dom';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -150,7 +150,7 @@ export const UserWelcome = ({username}) => {
 
 
 export const CourseItem = (props ) => {
-    const id = props.id
+    // const id = props.id
     const titleCourse = props.title || "None"
     const authorCourse = props.author || "None"
     const ratingCourse = props.rating || "0"

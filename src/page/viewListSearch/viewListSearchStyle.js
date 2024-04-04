@@ -2,13 +2,10 @@ import styled from "styled-components"
 import {Chip} from "../../components/Chip/Chip.js"
 import {CustomRating} from "../../components/Rating/Rating.js"
 import { useState,useEffect } from "react";
-import { Link, MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 
 import {Typography,CardMedia,Grid} from '@mui/material';
-import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
@@ -17,12 +14,9 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import PaginationItem from '@mui/material/PaginationItem';
 
 
 export const StyleH1 = styled.h1`
@@ -68,7 +62,7 @@ export const ContentCourseStyle = styled.div`
 `;
 
 export const CourseRowItem = ({k,title,author, rating,price,image, chipLabel,desc,hours} ) => {
-    const key = k
+    // const key = k
     const titleCourse = title || "None"
     const authorCourse = author || "None"
     const ratingCourse = rating || "0"

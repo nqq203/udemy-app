@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { useState } from "react";
+import {CustomRating} from "../../components/Rating/Rating"
+import { useEffect } from "react";
 
 export const HeaderLectureStyle = styled.div`
   height: 50px;
@@ -65,21 +66,29 @@ export const LectureOptionContainer = ({content}) => {
     return(
         <LectureOptionContainerStyle>
             {content}
-            
         </LectureOptionContainerStyle>
     )
 }
 
-export const OverviewSection = () => {
+export const OverviewSection = (props) => {
+    console.log(props)
+    var course = props.course || undefined
+    var instructor = props.instructor || undefined
+
     return(
         <div>
             <h2>About this course</h2>
             <div>
-            Learn Android App Development in both Java &amp; Kotlin Languages. You'll master Android from ZERO to HERO
+                {course?.description}
+            </div>
+
+            <h2>Ratings</h2>
+            <div>
+                <CustomRating rates={course?.ratings}></CustomRating>
             </div>
 
             <h2>Instructor</h2>
-            <h3 className="authorName">Abbass Masri</h3>
+            <h3 className="authorName">{instructor?.fullName}</h3>
             <ul>
                 <li>Professional Android app developer with more than 10 years experience.</li>
                 <li>Having a successful apps on playstore with over than +1,000,000 downloads  ( Check them on playstore: )</li>

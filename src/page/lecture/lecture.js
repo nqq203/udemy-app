@@ -1,245 +1,81 @@
 import {HeaderLecture,LectureOptionStyle,CourseContentStyle,
   CourseContentContainer,LectureOptionContainer,
   OverviewSection,ReviewSection} from "./lectureStyle"
-import { useState } from "react";
+import { useState,useEffect,useRef } from "react";
 
-import { Grid,Box,ListItemButton,ListItemText,ListItemIcon,Divider } from "@mui/material";
+import { Grid,Box,ListItemButton,ListItemText,Divider } from "@mui/material";
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
-import { Link } from 'react-router-dom';
-import { height, width } from "@mui/system";
-import { auto } from "@popperjs/core";
-import { AspectRatio } from "@mui/icons-material";
-import { element } from "prop-types";
+import { useQuery } from "react-query";
+import { callApiGetCourseById } from "../../api/course";
+import ReactPlayer from 'react-player';
 
-
+import cloudinary from "cloudinary-video-player";
+import 'cloudinary-video-player/cld-video-player.min.css';
 
 export default function Lecture(){
-    const sections = [
-        {
-          name: "Introduction to the course",
-          lectures: [
-            {
-              title: "Introduction to the course",
-              duration: 60,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-            {
-              title: "Introduction to the course",
-              duration: 60,
-              videoID: "https://player.cloudinary.com/embed/?public_id=shoes_video&cloud_name=demo",
-            },
-            {
-              title: "Introduction to the course",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-            {
-              title: "Introduction to the course",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-          ],
-        },
-        {
-          name: "Introduction to the course 2",
-      
-          lectures: [
-            {
-              title: "Introduction to the course 2",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-            {
-              title: "Introduction to the course 2",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-            {
-              title: "Introduction to the course 2",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-          ],
-        },
-        {
-          name: "Introduction to the course 3",
-          lectures: [
-            {
-              title: "Introduction to the course 3",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-            {
-              title: "Introduction to the course 3",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-            {
-              title: "Introduction to the course 3",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-          ],
-        },
-        {
-            name: "Introduction to the course 4",
-            lectures: [
-              {
-                title: "Introduction to the course 4",
-                duration: 10,
-                videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-              },
-              {
-                title: "Introduction to the course 4",
-                duration: 10,
-                videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-              },
-              {
-                title: "Introduction to the course 4",
-                duration: 10,
-                videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-              },
-            ],
-        },
-        {
-            name: "Introduction to the course 5",
-            lectures: [
-              {
-                title: "Introduction to the course 5",
-                duration: 10,
-                videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-              },
-              {
-                title: "Introduction to the course 5",
-                duration: 10,
-                videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-              },
-              {
-                title: "Introduction to the course 5",
-                duration: 10,
-                videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-              },
-            ],
-        },
-
-        {
-          name: "Introduction to the course 6",
-          lectures: [
-            {
-              title: "Introduction to the course 6",
-              duration: 60,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-            {
-              title: "Introduction to the course 6",
-              duration: 60,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-            {
-              title: "Introduction to the course 6",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-            {
-              title: "Introduction to the course 6",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-          ],
-        },
-        {
-          name: "Introduction to the course 7",
-      
-          lectures: [
-            {
-              title: "Introduction to the course 7",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-            {
-              title: "Introduction to the course 7",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-            {
-              title: "Introduction to the course 7",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-          ],
-        },
-        {
-          name: "Introduction to the course 8",
-          lectures: [
-            {
-              title: "Introduction to the course 8",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-            {
-              title: "Introduction to the course 8",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-            {
-              title: "Introduction to the course 8",
-              duration: 10,
-              videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-            },
-          ],
-        },
-        {
-            name: "Introduction to the course 9",
-            lectures: [
-              {
-                title: "Introduction to the course 9",
-                duration: 10,
-                videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-              },
-              {
-                title: "Introduction to the course 9",
-                duration: 10,
-                videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-              },
-              {
-                title: "Introduction to the course 9",
-                duration: 10,
-                videoID: "https://player.cloudinary.com/embed/?public_id=samples%2Fcld-sample-video&cloud_name=dkpxptajd",
-              },
-            ],
-        },
-        {
-            name: "Introduction to the course 10",
-            lectures: [
-              {
-                title: "Introduction to the course 10",
-                duration: 10,
-                videoID: "UgIwjLg4ONk?si=KJt1GPzPDU6NHwFX",
-              },
-              {
-                title: "Introduction to the course 10",
-                duration: 10,
-                videoID: "UgIwjLg4ONk?si=KJt1GPzPDU6NHwFX",
-              },
-              {
-                title: "Introduction to the course 10",
-                duration: 10,
-                videoID: "UgIwjLg4ONk?si=KJt1GPzPDU6NHwFX",
-              },
-            ],
-        },
-    ];
-
-    // Lecture Options
-    const [lectureOptionClick, setLectureOptionClick] = useState("Overview");
-    const [optionContent,setOptionContent] = useState(<OverviewSection></OverviewSection>)
-
+ 
     // Course content
+    const [course,setCourse] = useState(null)
+    const [instructor,setInstructor] = useState(null)
+    const [sections,setSections] = useState([])
+    const [lectures,setLectures] = useState([])
+
+    const {data: courseInfo, isSuccess, isLoading, isError } = useQuery(
+      "courseInfo",
+      () => callApiGetCourseById("660666f9b3f1e1cc048f2b57"),
+      {
+        onSuccess: (data) => {
+          console.log("OnSuc")
+          console.log(data)
+
+          setCourse(data?.metadata.course)
+          setInstructor(data?.metadata.instructor)
+          setSections(data?.metadata.sections)
+          setLectures(data?.metadata.lectures)
+        },
+        onError: (error) => {
+          console.error("Error fetching data", error);
+        },
+
+        staleTime: Infinity,
+      }
+    )    
+
+    useEffect(() => {
+      setCourse(courseInfo?.metadata.course)
+      setInstructor(courseInfo?.metadata.instructor)
+      setSections(courseInfo?.metadata.sections)
+      setLectures(courseInfo?.metadata.lectures)
+      setOptionContent(<OverviewSection course={course} instructor={instructor}></OverviewSection>)
+      // console.log("UseEffect")
+      // console.log(courseInfo)
+      // console.log(courseInfo?.metadata.course)
+      // console.log(course)
+      // console.log(sections)
+      // console.log(lectures)
+      // console.log(instructor)
+
+      if(sections?.length != 0){
+        setSelectedSection(sections[0])
+      }
+      if(lectures?.length != 0){
+        setSelectedVideoId(lectures[0][0].url)
+      }
+      if(!instructor){
+        setOptionContent(<OverviewSection course={course} instructor={instructor}></OverviewSection>)
+      }
+    },[courseInfo]) 
+
+    // Lecture Options UI
+    const [lectureOptionClick, setLectureOptionClick] = useState("Overview");
+    const [optionContent,setOptionContent] = useState(<OverviewSection course={course} instructor={instructor}></OverviewSection>)
+
+    // Course UI
     const [open, setOpen] = useState(true);
-    const [selectedIndex, setSelectedIndex] = useState(-1);
-    const [selectedSection, setSelectedSection] = useState(sections[0].name);
-    const [videoId, setSelectedVideoId] = useState(sections[0].lectures[0].videoID)
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [selectedSection, setSelectedSection] = useState("");
+    const [videoId, setSelectedVideoId] = useState("https://res.cloudinary.com/dkzc50ok0/video/upload/v1712121709/n7y2ojtzeif8bqhdjqns.mkv")
 
     const handleListItemClick = (event, index, sectionName,idVideo) => {
       setSelectedIndex(index);
@@ -249,27 +85,25 @@ export default function Lecture(){
 
     const handleLectureOptionClick = (option) => {
       setLectureOptionClick(option);
-      if(option == "Overview"){
-        setOptionContent(<OverviewSection></OverviewSection>)
-      } else if(option == "Reviews"){
+      if(option === "Overview"){
+        setOptionContent(<OverviewSection course={course} instructor={instructor}></OverviewSection>)
+      } else if(option === "Reviews"){
         setOptionContent(<ReviewSection></ReviewSection>)
       }
     }
 
+
     return (
       <Grid container>
-        <HeaderLecture courseName = "Course Name"></HeaderLecture>
+        <HeaderLecture courseName ={course?.name}></HeaderLecture>
         <Grid item xs={8}>
-          <div>
-            <iframe
-              src={`${videoId}&player[controls]=true&player[showJumpControls]=true&player[fluid]=true&player[colors][accent]=%235624D0`}
-              height="360"
-              title="Cloudinary Sample"
-              allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-              style={{height:500,width:"100%", AspectRatio:"640/360"}}
-              allowfullscreen
-              frameborder="0"
-            ></iframe>
+          <div >           
+            <ReactPlayer
+              url={`${videoId}`}
+              controls
+              width="100%"
+              height="500px"
+            />
           </div>
 
           <LectureOptionStyle>
@@ -290,7 +124,7 @@ export default function Lecture(){
           </CourseContentStyle>
 
           <CourseContentContainer>
-            {sections.map((section, index) => (
+            {sections?.map((section, index) => (
               <Box
                   key={index}
                   sx={{
@@ -316,7 +150,7 @@ export default function Lecture(){
                     lineHeight: '20px',
                     mb: '2px',
                     }}
-                    secondary= {`${section.lectures.length} lectures`}
+                    secondary= {`${lectures[index]?.length} lectures`}
                     secondaryTypographyProps={{
                     noWrap: true,
                     fontSize: 12,
@@ -336,12 +170,12 @@ export default function Lecture(){
                 </ListItemButton>
 
                 {open && selectedSection == section.name &&
-                  section.lectures.map((item,index) => (
+                  lectures[index]?.map((item,index) => (
                     <ListItemButton
                     key={index}
                     sx={{ py: 0.5, minHeight: 32,mb:1,backgroundColor:"white" }}
                     selected={selectedIndex === index && selectedSection == section.name}
-                    onClick={(event) => handleListItemClick(event, index,section.name,item.videoID)}
+                    onClick={(event) => handleListItemClick(event, index,section.name,item.url)}
                     >
                       <div style={{margin:"10px", color:"var(--color-grey-100)"}}>
                           <PlayCircleFilledIcon/>

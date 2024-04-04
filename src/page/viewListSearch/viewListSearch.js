@@ -1,7 +1,5 @@
 import {SearchResultContainer, FilterList,ViewListCourseStyle} from "./viewListSearchStyle.js"
 import {Grid} from '@mui/material';
-import {Chip} from "../../components/Chip/Chip.js"
-import styled from "styled-components"
 
 
 export default function ViewListCourse() {
