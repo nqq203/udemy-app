@@ -20,6 +20,8 @@ import Stack from '@mui/material/Stack';
 import {callApiGetCoursesBySearching} from '../../api/course'
 import { useQuery } from 'react-query';
 import { useNavigate } from "react-router-dom";
+import { PropagateLoader } from 'react-spinners';
+
 
 
 
@@ -139,18 +141,37 @@ export const ListCourseStyle = styled.div`
 export const SearchResultContainer = (props) => {
   // const [totalPage,setTotalPage] = useState(1)
   const navigate = useNavigate();
+  const queryParams = new URLSearchParams(window.location.search);
+  const [loading,setLoading] = useState(false)
 
+
+  const refetch = props?.refetch
   const keyword = props?.keyword
   const [data,setData] = useState(props?.data)
+  const [refetching,setRefetching] = useState(props?.isRefetching);
   const [currentPage, setCurrentPage] = useState(parseInt(data.page));
-  var allCourses = data.results
-  var instructors = data.instructors
-  var durationList = data.durationList
-  var totalPages = data.totalPages
-  var total = data.totalDocs
+  const [currentRating, setCurrentRating] = useState(queryParams.get('rating') || 0)
 
-  const queryParams = new URLSearchParams(window.location.search);
-  const currentRating = queryParams.get('rating') || 0;
+  const [allCourses, setAllCourses] = useState(data.results || []);
+  const [instructors, setInstructors] = useState(data.instructors || []);
+  const [durationList, setDurationList] = useState(data.durationList || []);
+  const [totalPages, setTotalPages] = useState(data.totalPages || 0);
+  const [total, setTotal] = useState(data.totalDocs || 0);
+
+  useEffect(() => {
+    setData(props?.data);
+    setCurrentPage(parseInt(data.page))
+    setAllCourses(data.results || []);
+    setInstructors(data.instructors || []);
+    setDurationList(data.durationList || []);
+    setTotalPages(data.totalPages || 0);
+    setTotal(data.totalDocs || 0);
+    setLoading(false)
+    console.log("data")
+  }, [props]);
+
+
+  // const currentRating = queryParams.get('rating') || 0;
 
   const handlePagination = (event,value) => {
     const queryParams = new URLSearchParams(window.location.search);
@@ -160,6 +181,9 @@ export const SearchResultContainer = (props) => {
     } else{
       navigate(`/view-list-courses?keyword=${keyword}&p=${value}&rating=${rating}`);
     }
+
+    refetch();
+    setCurrentPage(value)
     // window.location.reload();
   }
 
@@ -172,10 +196,17 @@ export const SearchResultContainer = (props) => {
   };
 
   const handleFilterRatings = async (e) => {
+    setLoading(true)
     e.stopPropagation()
     const rating = e.target.value || 3;
-
     navigate(`/view-list-courses?keyword=${keyword}&p=${1}&rating=${rating}`);
+    console.log("IsRefetching filter" )
+    console.log(refetching)
+    refetch()
+    setCurrentRating(rating);
+    console.log("IsRefetching 2")
+    console.log(refetching)
+
     // window.location.reload();
   }
 
@@ -216,6 +247,11 @@ export const SearchResultContainer = (props) => {
       </Grid>
 
       <Grid item xs={9}>
+      {/* {loading ? (
+        <div>
+          <PropagateLoader color="var(--color-blue-300)" />
+        </div>
+      ) : ( */}
         <ListCourseStyle>
           <StyleH4 className="align-right grey-color">
               {total} results
@@ -242,6 +278,7 @@ export const SearchResultContainer = (props) => {
             />
           </Stack>
         </ListCourseStyle>
+      {/* )} */}
       </Grid>
     </Grid>
     

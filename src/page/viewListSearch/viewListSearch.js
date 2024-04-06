@@ -1,34 +1,59 @@
-import {SearchResultContainer, FilterList,ViewListCourseStyle,StyleH4} from "./viewListSearchStyle.js"
+import {SearchResultContainer, FilterList,ViewListCourseStyle,
+  StyleH4,ListCourseStyle,Divider,CourseRowItem} from "./viewListSearchStyle.js"
 import {Grid} from '@mui/material';
-import { useLocation } from "react-router-dom";
 import {callApiGetCoursesBySearching} from '../../api/course'
 import { useQuery } from 'react-query';
 import { useEffect,useState,useRef } from "react";
 import { PropagateLoader } from 'react-spinners';
 
+import { useNavigate } from "react-router-dom";
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import Collapse from '@mui/material/Collapse';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
 
 
 export default function ViewListCourse() {
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(window.location.search);
   const [loading,setLoading] = useState(true)
   const [data,setData] = useState(null)
 
-  const queryParams = new URLSearchParams(window.location.search);
-  const keyword = queryParams.get('keyword');
-  const pageNumber = queryParams.get('p')
-  const rating = queryParams.get('rating') || 0;
+  const [allCourses, setAllCourses] = useState([]);
+  const [instructors, setInstructors] = useState([]);
+  const [durationList, setDurationList] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [total, setTotal] = useState(0);
 
-  const {data: fetchCourses, isSuccess, isLoading, isError, refetch } = useQuery(
-    "searchByKeyword-page 1",
-    () => callApiGetCoursesBySearching(keyword,pageNumber,rating),
+  const [currentRating, setCurrentRating] = useState(parseFloat(queryParams.get('rating')) || 0)
+
+  const keyword = queryParams.get('keyword');
+  const [pageNumber,setPageNumber] = useState(parseInt(queryParams.get('p')) || 1)
+
+  const {data: fetchCourses, isSuccess, isLoading, isError, refetch, isRefetching } = useQuery(
+    "searchByKeyword-page" + pageNumber,
+    () => callApiGetCoursesBySearching(keyword,pageNumber,currentRating),
     {
       onSuccess: (data) => {
+        if(isLoading){
+          setLoading(true)
+        }
+
         console.log(data)
         if(data.code === 200){
           console.log("success fetch")
-          setData(data?.metadata)
+          setData(data?.metadata)          
         }
-        
-        setLoading(false)
+        setLoading(false)        
       }, 
       onError: (error) => {
         console.error("Error fetching data", error);
@@ -39,8 +64,54 @@ export default function ViewListCourse() {
   )
 
   useEffect(() => {
-    console.log(refetch)
-  }, [data])
+    setAllCourses(data?.results || []);
+    setInstructors(data?.instructors || []);
+    setDurationList(data?.durationList || []);
+    setTotalPages(data?.totalPages || 0);
+    setTotal(data?.totalDocs || 0);
+    // console.log("data")
+  }, [data]);
+
+
+  const handlePagination = (event,value) => {
+    if(pageNumber == value){
+      return;
+    }
+    setLoading(true);
+    if(currentRating == 0){
+      navigate(`/view-list-courses?keyword=${keyword}&p=${value}`);
+    } else{
+      navigate(`/view-list-courses?keyword=${keyword}&p=${value}&rating=${currentRating}`);
+    }
+
+    setPageNumber(+value);
+  }
+
+  // Filter Rating section
+  const filterValue = [4.5,4,3.5,3]
+  const [open, setOpen] = useState(true);
+
+  const handleClick = () => {
+    setOpen(!open);
+  };
+
+  const handleFilterRatings = (e) => {
+    const rating = +e.target.value || 3;
+    if(currentRating == rating){
+      return;
+    }
+    setLoading(true)
+    // console.log(rating)
+
+    setCurrentRating(rating);
+    setPageNumber(1);
+    navigate(`/view-list-courses?keyword=${keyword}&p=${1}&rating=${rating}`);
+  }
+
+  useEffect(() =>{
+    refetch()
+  },[currentRating,pageNumber])
+
   return (
     <ViewListCourseStyle>
       {loading ? (
@@ -48,7 +119,7 @@ export default function ViewListCourse() {
           <PropagateLoader color="var(--color-blue-300)" />
         </div>
       ) : (
-        data?.totalDocs === 0 ? (
+        total === 0 ? (
           <div className="container">
             <h2>
               Sorry, we couldn't find any results for "{keyword}"
@@ -62,8 +133,71 @@ export default function ViewListCourse() {
           </div>
         ) : (
           <div>
-            <h1>{data?.totalDocs} results for "{keyword}"</h1>
-              <SearchResultContainer data={data} keyword={keyword} refetch={refetch}/>
+            <h1>{total} results for "{keyword}"</h1>
+            <Grid container spacing={2}>
+  
+              <Grid item xs={3}>
+                <h3>Filter</h3>
+                <List
+                  sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+                >
+                  <ListItemButton onClick={handleClick}>
+                    <ListItemText primary="Rating" />
+                    {open ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+
+                  <Collapse in={open} timeout="auto" unmountOnExit>
+                      <RadioGroup
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        name="radio-buttons-group"
+                        sx={{paddingLeft:"16px"}}
+                      >
+                        {filterValue.map((value,index) => (
+                          <FormControlLabel 
+                            key={value} value={value} 
+                            control= {<Radio onChange={(e) => handleFilterRatings(e)} />} 
+                            label={value + " & up"} 
+                            checked={currentRating == value}
+                          />
+                        ))}
+                        
+                      </RadioGroup>
+                  </Collapse>
+
+                  <Divider margintop="10px"></Divider>
+                </List>
+              </Grid>
+
+              <Grid item xs={9}>
+                <ListCourseStyle>
+                  <StyleH4 className="align-right grey-color">
+                      {total} results
+                  </StyleH4>
+
+                  {allCourses?.map((course, index) => (
+                    <CourseRowItem
+                        key={index}
+                        id = {"Course_" + index}
+                        title={course.name}
+                        author={instructors[index]}
+                        rating={course.ratings}
+                        price={course.price}
+                        image={course.imageUrl}
+                        chipLabel={false}
+                        desc={course.description}
+                        duration={Math.ceil(durationList[index]/3600)}
+                    />
+                  ))}
+
+                  <Stack spacing={2} marginLeft={"20px"}>
+                    <Pagination count={totalPages} variant="outlined" color="primary" size="large"
+                      onChange={handlePagination} page={pageNumber}
+                    />
+                  </Stack>
+                </ListCourseStyle>
+              </Grid>
+            </Grid>
+  
           </div> 
         )
       )}

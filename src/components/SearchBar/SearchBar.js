@@ -11,7 +11,7 @@ export const SearchBar = () =>{
   const navigate = useNavigate();
   const [searchWord,setSearchWord] = useState(null)
 
-  // buggg
+
   const handleSubmit = (e) => {
     e.preventDefault(); 
     setSearchWord(searchInputRef.current.value.trim());
@@ -29,8 +29,6 @@ export const SearchBar = () =>{
         window.location.reload();
       }
 
-      console.log("Navigate")
-      // Navigate to the route with constructed URL
     }
   }
   

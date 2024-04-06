@@ -9,6 +9,8 @@ import { useRef } from "react";
 import {Button} from "../../components/Button/Button.js"
 import {Chip} from "../../components/Chip/Chip.js"
 import {CustomRating} from "../../components/Rating/Rating.js"
+import { useNavigate } from "react-router-dom";
+
 
 export const StyleH1 = styled.h1`
     margin-left: 25px;
@@ -165,11 +167,13 @@ export const CourseItem = (props ) => {
     const priceCourse = props.price || "0"
     const imgCourse = props.image || "/imgs/courses/web.jpg"
     const chipLabel = props.chipLabel || false
+    const navigate = useNavigate()
 
     const formattedPrice = priceCourse.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
     
     const handleCourseClick = () =>{
         console.log("Click course");
+        navigate('/view-lecture');
     }
 
     return(

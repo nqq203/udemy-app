@@ -14,12 +14,12 @@ export default function HomePage(){
   const { isAuthenticated } = useAuth()
   const [username, setUsername] = useState(localStorage.getItem("fullname") || null);
 
-  const {data: fetchCourses, isSuccess, isLoading, isError } = useQuery(
+  const {data: fetchCourses, isSuccess, isLoading, isError,refetch } = useQuery(
     "fetch10Courses",
     () => callApiGetCoursesPagination(1,10),
     {
       onSuccess: (data) => {
-        // console.log(data)
+        console.log(data)
         setCourses(data?.metadata?.results)
         setInstructors(data?.metadata?.instructors)
         setLoading(false)
@@ -32,11 +32,12 @@ export default function HomePage(){
     }
   )
 
-  // localStorage.getItem('fullname')
   useEffect(() => {
+    console.log(isAuthenticated)
     if(!isAuthenticated) {
       setUsername(null)
     }
+    refetch()
   }, [isAuthenticated])  
 
   return(
