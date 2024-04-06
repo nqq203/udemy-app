@@ -160,8 +160,7 @@ export const SearchResultContainer = (props) => {
     } else{
       navigate(`/view-list-courses?keyword=${keyword}&p=${value}&rating=${rating}`);
     }
-    
-    window.location.reload();
+    // window.location.reload();
   }
 
   // Filter Rating section
@@ -177,9 +176,8 @@ export const SearchResultContainer = (props) => {
     const rating = e.target.value || 3;
 
     navigate(`/view-list-courses?keyword=${keyword}&p=${1}&rating=${rating}`);
-    window.location.reload();
+    // window.location.reload();
   }
-
 
   return(
     <Grid container spacing={2}>

@@ -16,6 +16,7 @@ export const Button = styled.button`
 
   &:hover {
     cursor: pointer;
-    background-color: ${({hoverBgColor}) => hoverBgColor ? hoverBgColor: 'var(--color-gray-400)'};
+    background-color: ${({ hoverBgColor }) =>
+      hoverBgColor ? hoverBgColor : 'var(--color-gray-400)'};
   }
-`
+`;

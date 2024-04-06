@@ -17,7 +17,7 @@ export default function ViewListCourse() {
   const pageNumber = queryParams.get('p')
   const rating = queryParams.get('rating') || 0;
 
-  const {data: fetchCourses, isSuccess, isLoading, isError } = useQuery(
+  const {data: fetchCourses, isSuccess, isLoading, isError, refetch } = useQuery(
     "searchByKeyword-page 1",
     () => callApiGetCoursesBySearching(keyword,pageNumber,rating),
     {
@@ -38,6 +38,9 @@ export default function ViewListCourse() {
     }
   )
 
+  useEffect(() => {
+    console.log(refetch)
+  }, [data])
   return (
     <ViewListCourseStyle>
       {loading ? (
@@ -60,7 +63,7 @@ export default function ViewListCourse() {
         ) : (
           <div>
             <h1>{data?.totalDocs} results for "{keyword}"</h1>
-              <SearchResultContainer data={data} keyword={keyword} />
+              <SearchResultContainer data={data} keyword={keyword} refetch={refetch}/>
           </div> 
         )
       )}

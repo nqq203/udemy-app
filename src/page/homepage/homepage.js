@@ -3,6 +3,7 @@ import {callApiGetCoursesPagination} from "../../api/course"
 import { useQuery } from "react-query";
 import { useState,useEffect } from "react";
 import { PropagateLoader } from 'react-spinners';
+import { useAuth } from "../../context/AuthContext";
 
 
 
@@ -10,7 +11,9 @@ export default function HomePage(){
   const [loading,setLoading] = useState(true)
   const [courses,setCourses] = useState([])
   const [instructors,setInstructors] = useState([])
-  
+  const { isAuthenticated } = useAuth()
+  const [username, setUsername] = useState(localStorage.getItem("fullname") || null);
+
   const {data: fetchCourses, isSuccess, isLoading, isError } = useQuery(
     "fetch10Courses",
     () => callApiGetCoursesPagination(1,10),
@@ -30,7 +33,11 @@ export default function HomePage(){
   )
 
   // localStorage.getItem('fullname')
-  var username = null
+  useEffect(() => {
+    if(!isAuthenticated) {
+      setUsername(null)
+    }
+  }, [isAuthenticated])  
 
   return(
     <HomePageWrapper>
@@ -43,7 +50,7 @@ export default function HomePage(){
       {username == null ? (
         <></>
       ) : (
-        <UserWelcome username="Nguyễn Thị Mỹ Diệu"></UserWelcome>
+        <UserWelcome username={username}></UserWelcome>
       )}
       
 

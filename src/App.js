@@ -7,12 +7,17 @@ import {
 import {
   QueryClient,
   QueryClientProvider,
-  useQuery,
 } from 'react-query'
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import HomePage from './page/homepage/homepage';
 import SignUp from './page/SignUp/SignUp';
+import InstructorCourse from './page/CreateCourse/InstructorListCourse/InstructorCourse';
+import InstructorCreateCourse from './page/CreateCourse/InstructorListCourse/InstructorCreateCourse';
+import InstructorLayout from './page/CreateCourse/InstructorLayout';
+import InstructorStatistic from './page/CreateCourse/InstructorListCourse/InstructorStatistic';
+import SignIn from './page/SignIn/SignIn';
+import ShoppingCart from './page/ShoppingCart/ShoppingCart';
 import ViewListSearch from './page/viewListSearch/viewListSearch';
 import Cart from './page/cart/cart';
 import Payment from './page/payment/payment';
@@ -25,12 +30,13 @@ import MyArchived from './page/myLearning/myArchived';
 import MyLearningTools from './page/myLearning/myLearningTools';
 import ProductDetail from "./pages/ProdDetailPage/ProductDetail";
 import Lecture from './page/lecture/lecture';
+import { AuthProvider } from './context/AuthContext';
 
 const queryClient = new QueryClient();
 
-
-export default function App() {
+export default function App() { 
   return (
+    <AuthProvider>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <Header />
@@ -43,6 +49,13 @@ export default function App() {
 
             <Route path="/detail" element={<ProductDetail></ProductDetail>} />
             <Route path="/view-lecture" element={<Lecture />}/>
+            <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/shopping-cart" element={<ShoppingCart />} />
+            <Route path="/instructor" element={<InstructorLayout />} >
+              <Route path="courses" index element={<InstructorCourse />}/>
+              <Route path="create" element={<InstructorCreateCourse />}/>
+              <Route path="statistics" element={<InstructorStatistic />} />
+            </Route>
             <Route path="/profile">
               <Route path="info" element={<ProfileInfo />} />
               <Route path="photo" element={<ProfilePhoto />} />
@@ -61,5 +74,6 @@ export default function App() {
         <Footer/>
       </QueryClientProvider> 
     </BrowserRouter>
+    </AuthProvider>
   );
 }
