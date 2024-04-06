@@ -24,9 +24,14 @@ export const PurchaseSectionWrapper = styled.div`
   margin: 0 auto;
   box-sizing: border-box;
   padding: 0;
-  .course-thumbnail {
+  .course-thumbnail-container {
     width: 100%;
     height: 191px;
+  }
+
+  & .course-thumbnail-img {
+    width: 100%;
+    height: 100%;
   }
 
   .sidebar-container {
@@ -204,6 +209,14 @@ export const CourseComparisonWrapper = styled.div`
     width: 100%;
     height: 100%;
     text-decoration: none;
+  }
+
+  & .course-comparison-image-container {
+    width: 68px;
+  }
+
+  & .course-comparison-image {
+    width: 100%;
   }
 `;
 

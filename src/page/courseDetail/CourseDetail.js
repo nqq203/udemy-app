@@ -8,8 +8,7 @@ import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
 const CourseDetail = ({ courseId }) => {
   // React query for fetching course details
-  const courseid = "660666f9b3f1e1cc048f2b57";
-
+  const courseid = '660666f9b3f1e1cc048f2b57'
   const {
     isSuccess: isCourseSuccess,
     isError: isCourseError,
@@ -19,8 +18,9 @@ const CourseDetail = ({ courseId }) => {
     queryKey: "course",
     queryFn: async () => {
       const response = await fetch(
-        "http://localhost:8080/courses/660666f9b3f1e1cc048f2b57"
+        `http://localhost:8080/courses/${courseid}`
       );
+      //console.log(`http://localhost:8080/courses/${courseid}`)
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -39,7 +39,7 @@ const CourseDetail = ({ courseId }) => {
     queryKey: "sections",
     queryFn: async () => {
       const response = await fetch(
-        "http://localhost:8080/sections/660666f9b3f1e1cc048f2b57"
+        `http://localhost:8080/sections/${courseid}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -50,8 +50,35 @@ const CourseDetail = ({ courseId }) => {
   });
 
   // fetching related course
+  const {
+    isSuccess: isRelatedCoursesSuccess,
+    isError: isRelatedCoursesError,
+    data: relatedCoursesData,
+    error: relatedCoursesError,
+  } = useQuery({
+    queryKey: "relatedCourses",
+    queryFn: async () => {
+      const response = await fetch(
+        `http://localhost:8080/courses/${courseid}/related`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const jsonData = await response.json();
+      return jsonData;
+    },
+  });
 
-  if (isCourseSuccess && isSectionsSuccess) {
+
+  if (isSectionsError) {
+    console.log("Error fetching sections data" + sectionsError)
+  }
+
+  if (isCourseError) {
+    console.log("Error fetching course data" + courseError)
+  }
+
+  if (isCourseSuccess && isSectionsSuccess && isRelatedCoursesSuccess) {
     return (
       <CourseDetailWrapper>
         <div style={{ position: "relative" }}>
@@ -69,7 +96,7 @@ const CourseDetail = ({ courseId }) => {
           <div className="product-detail-main-content">
             {/* Course content */}
             <CourseContent sections={sectionsData.metadata} />
-            {/* <StudentAlsoBought courses={courses}></StudentAlsoBought> */}
+            <StudentAlsoBought courses={relatedCoursesData.metadata}></StudentAlsoBought>
             {/* Reviews */}
           </div>
         </div>

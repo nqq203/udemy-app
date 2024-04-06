@@ -1,5 +1,6 @@
 import { CourseComparisonWrapper } from "./CourseDetailStyle";
 import { FaStar } from "react-icons/fa";
+import { changePriceFormat } from "../../utils/changePriceFormat";
 
 const CourseComparison = ({ course }) => {
   return (
@@ -7,7 +8,8 @@ const CourseComparison = ({ course }) => {
       <div className="course-comparison-container">
         <div className="course-comparison-image-container">
           {/* image here */}
-          <img src="" alt="course image" />
+            <img src={course.imageUrl} alt="" className="course-comparison-image" />
+
         </div>
         <div className="course-comparison-main-content">
           <a href="" className="course-comparison-title">
@@ -27,7 +29,7 @@ const CourseComparison = ({ course }) => {
               }}
             />
           </div>
-          <span className="price">{course.price}$</span>
+          <span className="price">{changePriceFormat(course.price)}đ</span>
         </div>
         <a href="" className="course-comparison-card-link"></a>
       </div>

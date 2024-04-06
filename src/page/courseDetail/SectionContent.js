@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
 import { MdOndemandVideo } from "react-icons/md";
@@ -8,8 +8,10 @@ import {
 
 import { useQuery } from "react-query";
 
-const SectionContent = ({ section }) => {
+const SectionContent = ({ section, setDuration, setTotalLectures, isAllOpened }) => {
   // input is a section
+
+  
   const [isOpened, setIsOpened] = useState(false);
   const { data: lecturesData, isSuccess: isLecturesSuccess } = useQuery({
     queryKey: ["lectures", section],
@@ -24,9 +26,28 @@ const SectionContent = ({ section }) => {
     },
   });
 
+  useEffect(() => {
+    if (isLecturesSuccess) {
+      if (Array.isArray(lecturesData.metadata)) {
+        setDuration(lecturesData.metadata);
+        setTotalLectures(lecturesData.metadata.length);
+      } else {
+        console.error('lecturesData.metadata is not an array:', lecturesData.metadata);
+      }
+    }
+  }, [lecturesData]);
+
+  useEffect(() => {
+    if (isLecturesSuccess) {
+      setIsOpened(prev => !prev);
+    }
+  }, [isAllOpened]);
+
   const handleOpenSection = () => {
     setIsOpened((prevIsOpened) => !prevIsOpened);
   };
+
+  
 
   return (
     <SectionContentWrapper>
@@ -54,7 +75,6 @@ const SectionContent = ({ section }) => {
                 </div>
               </li>
             ))}
-            {console.log(lecturesData.metadata)}
           </ul>
         </div>
       )}

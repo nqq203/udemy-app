@@ -2,22 +2,20 @@ import { PurchaseSectionWrapper } from "./CourseDetailStyle";
 import { Button } from "../../components/Button/Button";
 import useScrollPosition from "../../hook/useScrollPosition";
 import { useState, useEffect } from "react";
+import { changePriceFormat } from "../../utils/changePriceFormat";
 const PurchaseSection = ({ thumbnailImage, price }) => {
   const scrollPosition = useScrollPosition();
   console.log(scrollPosition);
   const [isFixed, setFixed] = useState(false);
-
   function checkScroll() {
-    if (scrollPosition > 100) {
+    if (scrollPosition > 100 && scrollPosition < 365) {
       setFixed(true);
+    } else if (scrollPosition > 365) {
+      setFixed(false);
     } else {
       setFixed(false);
     }
   }
-
-  const changePriceFormat = (price) => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
 
   useEffect(() => {
     checkScroll();
@@ -26,8 +24,8 @@ const PurchaseSection = ({ thumbnailImage, price }) => {
     <>
       <PurchaseSectionWrapper isFixed={isFixed}>
         <div className="sidebar-container">
-          <div className="course-thumbnail">
-            <img src={thumbnailImage} alt="" />
+          <div className="course-thumbnail-container">
+            <img src={thumbnailImage} alt="" className="course-thumbnail-img" />
           </div>
           <div className="purchase-section">
             <div className="course-price">{changePriceFormat(price)}đ</div>
