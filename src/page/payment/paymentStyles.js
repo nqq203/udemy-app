@@ -46,3 +46,20 @@ export const PaymentSummaryContainer = styled.div`
         margin: 16px 0px;
     }
 `
+
+export const PaymentSuccessDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 96px 0px 120px;
+    h3 {
+        margin: 16px 0px;
+    }
+`
+
+export const PaymentThanksDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+`

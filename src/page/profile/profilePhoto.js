@@ -22,6 +22,7 @@ export default function ProfilePhoto() {
 
             <ProfileInfoContainer>
                 <h4>Image preview</h4>
+                <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" />
                 <p className="profile-note">Minimum 200x200 pixels, Maximum 6000x6000 pixels</p>
             </ProfileInfoContainer>
 

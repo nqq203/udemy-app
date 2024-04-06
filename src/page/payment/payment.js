@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
 
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -21,6 +23,7 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import WalletIcon from '@mui/icons-material/Wallet';
 
 import { Button } from "../../components/Button/Button";
+import Notification from "../../components/Notification/Notification";
 import { 
     PaymentContainer, 
     PaymentSummaryContainer, 
@@ -29,13 +32,46 @@ import {
 } from "./paymentStyles";
 
 import { countries } from "../data/country";
-import { courses } from "../data/courses";
+import { callApiCreateOrder } from "../../api/order";
+
+const courses = [
+    {
+        id: "660666f9b3f1e1cc048f2b57",
+        name: "The Complete Android 14 & Kotlin Development Masterclass",
+        price: 1700000
+    },
+    {
+        id: "66066837b3f1e1cc048f2b66",
+        name: "Business Analysis Fundamentals - ECBA, CCBA, CBAP endorsed",
+        price: 1700000
+    }
+];
 
 export default function Payment() {
+    const navigate = useNavigate();
     const [choice, setChoice] = React.useState('');
     const [expanded, setExpanded] = React.useState('');
+    const [notification, setNotification] = React.useState({});
     const totalPrice = courses.reduce((acc, course) => acc + course.price, 0);
-    
+
+    const orderMutation = useMutation(
+        (orderDetails) => callApiCreateOrder(orderDetails), 
+        {
+            onSuccess: (data) => {
+                if(data.success){
+                    console.log(data);
+                    navigate('/payment/success');
+                }
+                else{
+                    setNotification({
+                        content: data.message, 
+                        visible: true
+                    });
+                }
+            }
+        }
+    )
+
     const handleSelectCountryChange = (event) => {
         setChoice(event.target.value);
     };
@@ -48,50 +84,76 @@ export default function Payment() {
         event.preventDefault();
         
         const form = event.target;
-        const data = {
-            country: form.country.value,
-            paymentMethod: form.paymentMethod.value,
-            cardName: form.firstname.value,
-            cardNumber: form.cardnumber.value,  
-            cardMonth: form.month.value,
-            cardYear: form.year.value,
-            cardCVC: form.cvv.value,
-            totalPrice: totalPrice
-        };
+        const country = form.country.value;
+        const paymentMethod = form.paymentMethod.value;
+        var orderData = {};
 
-        if (data.country === '') {
-            alert('Please select a country');
+        if (country === '') {
+            setNotification({
+                content: "Please select a country",
+                visible: true,
+            });
             return;
         }
 
-        if(data.paymentMethod === '') {
-            alert('Please select a payment method');
+        if(paymentMethod === '') {
+            setNotification({
+                content: "Please select a payment method",
+                visible: true,
+            });
             return;
         }
-        else if(data.paymentMethod === 'card') {
-            if(data.cardName === '' 
-            || data.cardNumber === '' 
-            || data.cardMonth === '' 
-            || data.cardYear === '' 
-            || data.cardCVC === '') {
+        else if(paymentMethod === 'card') {
+            orderData = {
+                userId: localStorage.getItem('_id'),
+                items: courses.map(course => {
+                    return {
+                        courseId: course.id,
+                        price: course.price
+                    }
+                
+                }),
+                country: form.country.value,
+                paymentMethod: form.paymentMethod.value,
+                cardName: form.firstname.value,
+                cardNumber: form.cardnumber.value,  
+                cardMonth: form.month.value,
+                cardYear: form.year.value,
+                cardCVC: form.cvv.value,
+                totalPrice: totalPrice
+            };
+
+            if(orderData.cardName === '' 
+            || orderData.cardNumber === '' 
+            || orderData.cardMonth === '' 
+            || orderData.cardYear === '' 
+            || orderData.cardCVC === '') {
                 alert('Please fill out all required fields');
                 return;
             }
         }
-        else if (data.paymentMethod === 'paypal') {
-            data.cardName = '';
-            data.cardNumber = '';
-            data.cardMonth = '';
-            data.cardYear = '';
-            data.cardCVC = '';
+        else if (paymentMethod === 'paypal') {
+            orderData = {
+                userId: localStorage.getItem('_id'),
+                items: courses.map(course => {
+                    return {
+                        itemId: course.id,
+                        price: course.price
+                    }
+                
+                }),
+                country: form.country.value,
+                paymentMethod: form.paymentMethod.value,
+                totalPrice: totalPrice
+            };
         }
 
-        console.log(data);
+        orderMutation.mutate(orderData);
     };
-
 
     return (
         <PaymentContainer>
+            <Notification message={notification.content} visible={notification.visible} onClose={() => setNotification({content: '', visible: false})}/>
             <Typography variant="h4" fontWeight={800} fontFamily={"serif"}>Checkout</Typography>
 
             <form onSubmit={handleSubmit}>
@@ -189,7 +251,7 @@ export default function Payment() {
                                         <img src="/images/reactnative.png" alt="test"></img>
                                         <h4>{course.name}</h4>
                                     </Stack>
-                                    <p>${course.price}</p>
+                                    <p>{course.price}VNĐ</p>
                                 </PaymentSummaryContainer>
                             ))}
                         </PaymentInfoItem>
@@ -201,16 +263,16 @@ export default function Payment() {
 
                             <Stack flexDirection='row' justifyContent='space-between'>
                                 <span>Original Price:</span>
-                                <span>${totalPrice}</span>
+                                <span>{totalPrice}VNĐ</span>
                             </Stack>
                             <Stack flexDirection='row' justifyContent='space-between'>
                                 <span>Discounts:</span>
-                                <span>-$0</span>
+                                <span>-0VNĐ</span>
                             </Stack>
                             <Divider />
                             <Stack flexDirection='row' justifyContent='space-between' pb={2}>
                                 <span><b>Total:</b></span>
-                                <span><b>${totalPrice}</b></span>
+                                <span><b>{totalPrice}VNĐ</b></span>
                             </Stack>
 
                             <Button 
