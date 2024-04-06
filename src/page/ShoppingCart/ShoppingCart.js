@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../../components/Button/Button";
 import Input from "../../components/InputForm/Input";
@@ -31,56 +31,66 @@ import {
 import { useQuery } from "react-query";
 import { callApiGetCart } from "../../api/cart";
 
-const ShoppingCart = async () => {
+const ShoppingCart =   () => {
   const [coupon, setCoupon] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState("");
-
-  let cartData = [
-    {
-      id: "660666f9b3f1e1cc048f2b57",
-      img: "https://via.placeholder.com/300x300.png?text=Course+Image",
-      link: "/course/android",
-      ttl: "The Complete Android 14 & Kotlin Development Masterclass",
-      authors: ["Koushil", "Nani"],
-      ratings: { totalratings: 0, count: 0 },
-      duration: 1700000,
-      lectures: 0,
-      level: "All",
-      price: 1700000,
-      discount: 0,
-      couponApplied: "",
-      bestSeller: false, 
+  const [cartData, setCartData] = useState([]);
+  // const token = localStorage.getItem('accessToken')
+  // console.log(token)
+  const { data, isSuccessFetch, isLoading,isError } = useQuery(
+    "cart", () => callApiGetCart(), {
+      onSuccess: (data) => {
+        console.log(localStorage.getItem('accessToken'));
+        console.log(data);
+      },
+      onError: (error) => {
+        console.error("Error fetching data:", error);
+      },
+      staleTime: Infinity,
     }
-    
-  ];
+  )
 
-  // const data = await useQuery("cart", () => callApiGetCart, {
+  useEffect(() => {
+      setCartData(data.metadata)
+  }, [data, isSuccessFetch, cartData])
+
+  const [filteredItems, setFilteredItems] = useState([]);
+  // let cartData = [
+  //   {
+  //     id: "660666f9b3f1e1cc048f2b57",
+  //     img: "https://via.placeholder.com/300x300.png?text=Course+Image",
+  //     link: "/course/android",
+  //     ttl: "The Complete Android 14 & Kotlin Development Masterclass",
+  //     authors: ["Koushil", "Nani"],
+  //     ratings: { totalratings: 0, count: 0 },
+  //     duration: 1700000,
+  //     lectures: 0,
+  //     level: "All",
+  //     price: 1700000,
+  //     discount: 0,
+  //     couponApplied: "",
+  //     bestSeller: false, 
+  //   }
+    
+  // ];
+
+  // const data = await useQuery();÷
+  
+  // const { data, isLoading, isError } = await useQuery("cart", callApiGetCart, {
   //   onSuccess: (data) => {
   //     console.log(localStorage.getItem('accessToken'));
   //     console.log(data);
-  //     cartData = data.metadata
+  //      // Assign data.metadata to cartData
   //   },
   //   onError: (error) => {
   //     console.error("Error fetching data:", error);
   //   },
   //   staleTime: Infinity,
   // });
-  
-  const { data, isLoading, isError } = await useQuery("cart", callApiGetCart, {
-    onSuccess: (data) => {
-      console.log(localStorage.getItem('accessToken'));
-      console.log(data);
-       // Assign data.metadata to cartData
-    },
-    onError: (error) => {
-      console.error("Error fetching data:", error);
-    },
-    staleTime: Infinity,
-  });
   // console.log(data);
   // cartData = data.metadata;
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error fetching data</div>;
+  // if (isLoading) return <div>Loading...</div>;
+  // if (isError) return <div>Error fetching data</div>;
   const whitelistedCourses = [
     {
       id: 1,
