@@ -17,6 +17,10 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
+import {callApiGetCoursesBySearching} from '../../api/course'
+import { useQuery } from 'react-query';
+import { useNavigate } from "react-router-dom";
+
 
 
 export const StyleH1 = styled.h1`
@@ -61,16 +65,17 @@ export const ContentCourseStyle = styled.div`
     flex-direction: column;
 `;
 
-export const CourseRowItem = ({k,title,author, rating,price,image, chipLabel,desc,hours} ) => {
+export const CourseRowItem = (props ) => {
     // const key = k
-    const titleCourse = title || "None"
-    const authorCourse = author || "None"
-    const ratingCourse = rating || "0"
-    const priceCourse = price || 0
-    const imgCourse = image || "/imgs/courses/web.jpg"
-    const hasChip = chipLabel
-    const description = desc || "None"
-    const totalHour = hours || 0
+    const titleCourse = props.title || "None"
+    const authorCourse = props.author || "None"
+    const ratingCourse = props.rating || "0"
+    const priceCourse = props.price || "0"
+    const imgCourse = props.image || "/imgs/courses/web.jpg"
+
+    const hasChip = props.chipLabel
+    const description = props.desc || "None"
+    const totalHour = props.duration || 0
 
     const formattedPrice = priceCourse.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
 
@@ -78,12 +83,12 @@ export const CourseRowItem = ({k,title,author, rating,price,image, chipLabel,des
       <CourseRowItemStyle>
           <Grid container spacing={2}>
               <Grid item xs={3.5}>
-                  <CardMedia
-                      component="img"
-                      alt="green iguana"
-                      height="140"
-                      image={imgCourse}
-                  />
+                  <img 
+                    src={imgCourse}
+                    width={"100%"}
+                    height={140}
+                    alt="Error happened"
+                  ></img>
               </Grid>
 
               <Grid item xs={7.2}>
@@ -130,54 +135,132 @@ export const ListCourseStyle = styled.div`
     gap: 20px;
 `;
 
-export const SearchResultContainer = ({courses}) => {
-    const allCourse = courses || []
-    const total = allCourse.length
+// bug: Not have instructors
+export const SearchResultContainer = (props) => {
+  // const [totalPage,setTotalPage] = useState(1)
+  const navigate = useNavigate();
 
-    const [listCourses,setListCourses] = useState([])
-    const [totalPage,setTotalPage] = useState(1)
-    const [currentPage, setCurrentPage] = useState(1)
+  const keyword = props?.keyword
+  const [data,setData] = useState(props?.data)
+  const [currentPage, setCurrentPage] = useState(parseInt(data.page));
+  var allCourses = data.results
+  var instructors = data.instructors
+  var durationList = data.durationList
+  var totalPages = data.totalPages
+  var total = data.totalDocs
 
+  const queryParams = new URLSearchParams(window.location.search);
+  const currentRating = queryParams.get('rating') || 0;
 
-    useEffect(() => {
-      // call API to get courses
-      callAPIGetCourse()
-    })
-
-    function callAPIGetCourse() {
-
+  const handlePagination = (event,value) => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const rating = queryParams.get('rating') || 0;
+    if(rating == 0){
+      navigate(`/view-list-courses?keyword=${keyword}&p=${value}`);
+    } else{
+      navigate(`/view-list-courses?keyword=${keyword}&p=${value}&rating=${rating}`);
     }
+    
+    window.location.reload();
+  }
 
-    function handleChange(event,value){
-      console.log(value)
-      setCurrentPage(value)
-    }
+  // Filter Rating section
+  const filterValue = [4.5,4,3.5,3]
+  const [open, setOpen] = useState(true);
 
-    return(
-      <ListCourseStyle>
+  const handleClick = () => {
+    setOpen(!open);
+  };
+
+  const handleFilterRatings = async (e) => {
+    e.stopPropagation()
+    const rating = e.target.value || 3;
+
+    navigate(`/view-list-courses?keyword=${keyword}&p=${1}&rating=${rating}`);
+    window.location.reload();
+  }
+
+
+  return(
+    <Grid container spacing={2}>
+    
+      <Grid item xs={3}>
+        <h3>Filter</h3>
+        <List
+          sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+        >
+          <ListItemButton onClick={handleClick}>
+            <ListItemText primary="Rating" />
+            {open ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+
+          <Collapse in={open} timeout="auto" unmountOnExit>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                name="radio-buttons-group"
+                sx={{paddingLeft:"16px"}}
+                onClick={(e)=> e.preventDefault()}
+              >
+                {filterValue.map((value,index) => (
+                  <FormControlLabel 
+                    key={value} value={value} 
+                    control={<Radio />} label={value + " & up"} 
+                    onClick={(e) => handleFilterRatings(e)} 
+                      checked={currentRating == value}
+                    />
+                ))}
+                
+              </RadioGroup>
+          </Collapse>
+
+          <Divider margintop="10px"></Divider>
+        </List>
+      </Grid>
+
+      <Grid item xs={9}>
+        <ListCourseStyle>
           <StyleH4 className="align-right grey-color">
               {total} results
           </StyleH4>
-          {allCourse.map((course, index) => (
-              <CourseRowItem
-                  key={index}
-                  {...course}
-              />
-              
+
+          {allCourses?.map((course, index) => (
+            <CourseRowItem
+                key={index}
+                id = {"Course_" + index}
+                title={course.name}
+                author={instructors[index]}
+                rating={course.ratings}
+                price={course.price}
+                image={course.imageUrl}
+                chipLabel={false}
+                desc={course.description}
+                duration={Math.ceil(durationList[index]/3600)}
+            />
           ))}
 
           <Stack spacing={2} marginLeft={"20px"}>
-              <Pagination count={10} variant="outlined" color="primary" size="large"
-                   onChange={handleChange} page={currentPage}
-                  />
+            <Pagination count={totalPages} variant="outlined" color="primary" size="large"
+              onChange={handlePagination} page={currentPage}
+            />
           </Stack>
-
-      </ListCourseStyle>
-    )
+        </ListCourseStyle>
+      </Grid>
+    </Grid>
+    
+    
+  )
 }
 
 export const ViewListCourseStyle = styled.div`
   margin: 30px;
+
+  .container{
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center
+  }
 `;
 
 export const FilterList = () => {
@@ -188,6 +271,11 @@ export const FilterList = () => {
   const handleClick = () => {
     setOpen(!open);
   };
+
+  const handleFilterRatings = (e) => {
+    console.log(e.target.value);
+
+  }
 
   return (
     <List
@@ -203,11 +291,12 @@ export const FilterList = () => {
             aria-labelledby="demo-radio-buttons-group-label"
             name="radio-buttons-group"
             sx={{paddingLeft:"16px"}}
-            
           >
-            {filterValue.map(value => (
-              
-              <FormControlLabel value={value} control={<Radio />} label={value}  />
+            {filterValue.map((value,index) => (
+              <FormControlLabel 
+                key={index} value={value} 
+                control={<Radio />} label={value} 
+                onClick={handleFilterRatings} />
             ))}
             
           </RadioGroup>

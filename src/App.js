@@ -38,7 +38,9 @@ export default function App() {
           <Routes>
             <Route path="/" element={<HomePage />}/>
             <Route path="/sign-up" element={<SignUp />}/>
-            <Route path="/view-list-courses" element={<ViewListSearch />}/>
+            <Route path="/view-list-courses" 
+              element={<ViewListSearch />}/>
+
             <Route path="/detail" element={<ProductDetail></ProductDetail>} />
             <Route path="/view-lecture" element={<Lecture />}/>
             <Route path="/profile">

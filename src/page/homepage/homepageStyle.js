@@ -1,6 +1,6 @@
 import styled from "styled-components"
 
-import {Card, Box, CardContent,Typography,CardMedia} from '@mui/material';
+import {Card, Box, CardContent,Typography} from '@mui/material';
 import { Link } from 'react-router-dom';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -35,6 +35,14 @@ export const HomePageWrapper = styled.div`
 
     .margin-left{
         margin-left: 20px;
+    }
+
+    .container{
+        height: 240px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center
     }
 `
 
@@ -156,20 +164,36 @@ export const CourseItem = (props ) => {
     const ratingCourse = props.rating || "0"
     const priceCourse = props.price || "0"
     const imgCourse = props.image || "/imgs/courses/web.jpg"
-    const chipLabel = props.chipLabel
+    const chipLabel = props.chipLabel || false
 
     const formattedPrice = priceCourse.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
+    
+    const handleCourseClick = () =>{
+        console.log("Click course");
+    }
+
     return(
-        <Card sx={{ width: 240 ,height:400, boxShadow:"none",objectFit:"cover"}}>
-            <CardMedia
-                component="img"
-                alt="green iguana"
-                height="140"
-                image={imgCourse}
-            />
-            <CardContent sx={{padding: 0, mt: 2}}>
+        <Card 
+            sx={{ 
+                width: 240 ,height:"auto", 
+                boxShadow:"none",objectFit:"cover", 
+                cursor: "pointer", 
+                "&:hover": {
+                    boxShadow: "2px 4px 30px rgba(0, 0, 0, 0.05)", 
+                },
+            }} 
+            onClick={handleCourseClick}>
+            <img 
+                src={imgCourse}
+                width={"100%"}
+                height={140}
+                alt="Error happened"
+
+            ></img>
+
+
+            <CardContent sx={{pr: 1,pl: 1, mt: 0}}>
                 <StyleH4>
-                    {/* The Complete 2024 Web Development Bootcamp */}
                     {titleCourse}
                 </StyleH4>
 
@@ -244,8 +268,9 @@ export const SliderContainerStyle = styled.div`
 `;
 
 
-export const SliderContainer = ({courses}) => {
-    const allCourse = courses || []
+export const SliderContainer = (props) => {
+    const allCourse = props?.courses || []
+    const instructors = props?.instructors || []
 
     const listCourse = useRef(null)
     const courseScroll = 260
@@ -268,9 +293,10 @@ export const SliderContainer = ({courses}) => {
     }
 
     function handleSlideButtons(){
-        const width = 154
+        const width = 144
         const listCourses = listCourse.current;
-        const maxScrollLeft = (allCourse.length - 1) * width; //1543.5
+        const maxScrollLeft = (allCourse?.length - 1) * width; //1303
+
         const slideButtons = [
             document.getElementById('prev-slide'),
             document.getElementById('next-slide')
@@ -292,16 +318,16 @@ export const SliderContainer = ({courses}) => {
                 </div>
 
                 <ListCourseStyle ref={listCourse} onScroll={handleSlideButtons}>
-                    {allCourse.map((course, index) => (
+                    {allCourse?.map((course, index) => (
                         <CourseItem
                             key={index}
                             id = {"Course_" + index}
-                            title={course.title}
-                            author={course.author}
-                            rating={course.rating}
+                            title={course.name}
+                            author={instructors[index]}
+                            rating={course.ratings}
                             price={course.price}
-                            image={course.image}
-                            chipLabel={course.chipLabel}
+                            image={course.imageUrl}
+                            chipLabel={false}
                         />
                     ))}
                 </ListCourseStyle>

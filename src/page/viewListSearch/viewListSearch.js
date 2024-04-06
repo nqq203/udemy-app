@@ -1,61 +1,70 @@
-import {SearchResultContainer, FilterList,ViewListCourseStyle} from "./viewListSearchStyle.js"
+import {SearchResultContainer, FilterList,ViewListCourseStyle,StyleH4} from "./viewListSearchStyle.js"
 import {Grid} from '@mui/material';
+import { useLocation } from "react-router-dom";
+import {callApiGetCoursesBySearching} from '../../api/course'
+import { useQuery } from 'react-query';
+import { useEffect,useState,useRef } from "react";
+import { PropagateLoader } from 'react-spinners';
+
 
 
 export default function ViewListCourse() {
-  const courses = [
+  const [loading,setLoading] = useState(true)
+  const [data,setData] = useState(null)
+
+  const queryParams = new URLSearchParams(window.location.search);
+  const keyword = queryParams.get('keyword');
+  const pageNumber = queryParams.get('p')
+  const rating = queryParams.get('rating') || 0;
+
+  const {data: fetchCourses, isSuccess, isLoading, isError } = useQuery(
+    "searchByKeyword-page 1",
+    () => callApiGetCoursesBySearching(keyword,pageNumber,rating),
     {
-      title: 'The Complete 2024 Web Development Bootcamp',
-      author: 'Dr. Angela Yue',
-      rating: 3.5,
-      price: 1599000,
-      image: '/imgs/courses/web.jpg',
-      chipLabel: true,
-      desc: 'Master web development with the latest technologies and frameworks. This comprehensive bootcamp covers everything from HTML and CSS to advanced JavaScript and backend development.',
-      hours: 80
-    },
-    {
-      title: 'Data Science and Machine Learning Masterclass',
-      author: 'Prof. Michael Smith',
-      rating: 4.2,
-      price: 1899000,
-      image: '/imgs/courses/react.png',
-      chipLabel: false,
-      desc: 'Become proficient in data science and machine learning. Learn how to analyze data, build predictive models, and deploy machine learning algorithms in real-world scenarios.',
-      hours: 100
-    },
-    {
-      title: 'iOS App Development: From Beginner to Expert',
-      author: 'Emily Chen',
-      rating: 4.6,
-      price: 1799000,
-      image: '/imgs/courses/kotlin.png',
-      chipLabel: true,
-      desc: 'Learn iOS app development from scratch. This course covers Swift programming language, UIKit framework, CoreData, and advanced iOS features.',
-      hours: 90
+      onSuccess: (data) => {
+        console.log(data)
+        if(data.code === 200){
+          console.log("success fetch")
+          setData(data?.metadata)
+        }
+        
+        setLoading(false)
+      }, 
+      onError: (error) => {
+        console.error("Error fetching data", error);
+      },
+
+      staleTime: Infinity
     }
-    // Add more courses here...
-  ];
-  
+  )
 
-    return (
-      <ViewListCourseStyle>
-          <h1>
-            10,000 results for “web”
-          </h1>
-          <Grid container spacing={2}>
-                    
-            <Grid item xs={3}>
-                <h3>Filter</h3>
-                <FilterList></FilterList>
-
-            </Grid>
-            <Grid item xs={9}>
-                <SearchResultContainer courses={courses}></SearchResultContainer>
-            </Grid>
-        </Grid>
-      </ViewListCourseStyle>
-
-    )
+  return (
+    <ViewListCourseStyle>
+      {loading ? (
+        <div className="container">
+          <PropagateLoader color="var(--color-blue-300)" />
+        </div>
+      ) : (
+        data?.totalDocs === 0 ? (
+          <div className="container">
+            <h2>
+              Sorry, we couldn't find any results for "{keyword}"
+            </h2>
+            <h3>Try adjusting your search. Here are some ideas:</h3>
+            <ul>
+              <li>Make sure all words are spelled correctly</li>
+              <li>Try different search terms</li>
+              <li>Try more general search terms</li>
+            </ul>
+          </div>
+        ) : (
+          <div>
+            <h1>{data?.totalDocs} results for "{keyword}"</h1>
+              <SearchResultContainer data={data} keyword={keyword} />
+          </div> 
+        )
+      )}
+    </ViewListCourseStyle>
+  );
 }
 

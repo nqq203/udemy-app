@@ -1,7 +1,7 @@
 import {HeaderLecture,LectureOptionStyle,CourseContentStyle,
   CourseContentContainer,LectureOptionContainer,
   OverviewSection,ReviewSection} from "./lectureStyle"
-import { useState,useEffect,useRef } from "react";
+import { useState,useEffect } from "react";
 
 import { Grid,Box,ListItemButton,ListItemText,Divider } from "@mui/material";
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
@@ -14,7 +14,6 @@ import cloudinary from "cloudinary-video-player";
 import 'cloudinary-video-player/cld-video-player.min.css';
 
 export default function Lecture(){
- 
     // Course content
     const [course,setCourse] = useState(null)
     const [instructor,setInstructor] = useState(null)
@@ -48,13 +47,7 @@ export default function Lecture(){
       setSections(courseInfo?.metadata.sections)
       setLectures(courseInfo?.metadata.lectures)
       setOptionContent(<OverviewSection course={course} instructor={instructor}></OverviewSection>)
-      // console.log("UseEffect")
-      // console.log(courseInfo)
-      // console.log(courseInfo?.metadata.course)
-      // console.log(course)
-      // console.log(sections)
-      // console.log(lectures)
-      // console.log(instructor)
+      console.log(lectures)
 
       if(sections?.length != 0){
         setSelectedSection(sections[0])
@@ -184,7 +177,7 @@ export default function Lecture(){
                       <ListItemText
                         primary={item.title}
                         primaryTypographyProps={{ fontSize: 14, fontWeight: 'medium', }}
-                        secondary= {`${item.duration} min`}
+                        secondary= {`${Math.round(parseInt(item.duration)/60)} min`}
                         secondaryTypographyProps={{
                         noWrap: true,
                         fontSize: 12,

@@ -71,7 +71,6 @@ export const LectureOptionContainer = ({content}) => {
 }
 
 export const OverviewSection = (props) => {
-    console.log(props)
     var course = props.course || undefined
     var instructor = props.instructor || undefined
 
