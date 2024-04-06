@@ -1,4 +1,4 @@
-import CourseComparison from "../CourseComparison/CourseComparison";
+import CourseComparison from "./CourseComparison";
 
 const StudentAlsoBought = ({ courses }) => {
   return (

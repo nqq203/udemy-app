@@ -1,4 +1,4 @@
-import { CourseComparisonWrapper } from "./CourseComparisonStyle";
+import { CourseComparisonWrapper } from "./CourseDetailStyle";
 import { FaStar } from "react-icons/fa";
 
 const CourseComparison = ({ course }) => {
@@ -20,13 +20,12 @@ const CourseComparison = ({ course }) => {
         </div>
         <div className="course-comparison-content">
           <div className="ratings">
-            {course.ratings} <FaStar style={
-                {
-                    color: "RGB(180, 105, 14)",
-                    
-                }
-                
-            }/>
+            {course.ratings}{" "}
+            <FaStar
+              style={{
+                color: "RGB(180, 105, 14)",
+              }}
+            />
           </div>
           <span className="price">{course.price}$</span>
         </div>

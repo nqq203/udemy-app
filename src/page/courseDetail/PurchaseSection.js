@@ -1,8 +1,8 @@
-import { SideBarCardWrapper } from "./SideBarCardStyle";
-import { Button } from "../Button/Button";
+import { PurchaseSectionWrapper } from "./CourseDetailStyle";
+import { Button } from "../../components/Button/Button";
 import useScrollPosition from "../../hook/useScrollPosition";
 import { useState, useEffect } from "react";
-const SideBarCard = ({ thumbnailImage, price }) => {
+const PurchaseSection = ({ thumbnailImage, price }) => {
   const scrollPosition = useScrollPosition();
   console.log(scrollPosition);
   const [isFixed, setFixed] = useState(false);
@@ -15,18 +15,22 @@ const SideBarCard = ({ thumbnailImage, price }) => {
     }
   }
 
+  const changePriceFormat = (price) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   useEffect(() => {
     checkScroll();
   }, [scrollPosition]);
   return (
     <>
-      <SideBarCardWrapper isFixed={isFixed}>
+      <PurchaseSectionWrapper isFixed={isFixed}>
         <div className="sidebar-container">
           <div className="course-thumbnail">
             <img src={thumbnailImage} alt="" />
           </div>
           <div className="purchase-section">
-            <div className="course-price">${price}</div>
+            <div className="course-price">{changePriceFormat(price)}đ</div>
 
             <Button
               bgColor={"var(--color-purple-300)"}
@@ -41,7 +45,7 @@ const SideBarCard = ({ thumbnailImage, price }) => {
             <Button
               bgColor={"var(--color-white)"}
               fontWeight={"700"}
-              color={"var(--color-black)"}
+              color={"black"}
               border={"1px solid var(--color-gray-500)"}
               fontSize={"16px"}
               width={"100%"}
@@ -72,9 +76,9 @@ const SideBarCard = ({ thumbnailImage, price }) => {
             </div>
           </div>
         </div>
-      </SideBarCardWrapper>
+      </PurchaseSectionWrapper>
     </>
   );
 };
 
-export default SideBarCard;
+export default PurchaseSection;
