@@ -10,7 +10,6 @@ import { useQuery } from "react-query";
 import { callApiGetCourseById } from "../../api/course";
 import ReactPlayer from 'react-player';
 
-import cloudinary from "cloudinary-video-player";
 import 'cloudinary-video-player/cld-video-player.min.css';
 import { useAuth } from "../../context/AuthContext";
 
@@ -21,23 +20,42 @@ export default function Lecture(){
   const [instructor,setInstructor] = useState(null)
   const [sections,setSections] = useState([])
   const [lectures,setLectures] = useState([])
+  const [permission,setPermission] = useState(true)
   const { isAuthenticated } = useAuth()
+
+  // Lecture Options UI
+  const [lectureOptionClick, setLectureOptionClick] = useState("Overview");
+  const [optionContent,setOptionContent] = useState(<div></div>)
+
+  // Course UI
+  const [open, setOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedSection, setSelectedSection] = useState("");
+  const [videoId, setSelectedVideoId] = useState("");
+
+  const queryParams = new URLSearchParams(window.location.search);
+  const courseID = queryParams.get('courseId') || "";
+  // console.log(courseID);
 
 
   const {data: courseInfo, isSuccess, isLoading, isError,refetch } = useQuery(
     "courseInfo",
-    () => callApiGetCourseById("660666f9b3f1e1cc048f2b57"),
+    async() => await callApiGetCourseById("660666f9b3f1e1cc048f2b57"),
     {
       onSuccess: (data) => {
         console.log("OnSuc")
         console.log(data)
 
         if(data.code === 200){
-          setCourse(data?.metadata.course)
-          setInstructor(data?.metadata.instructor)
-          setSections(data?.metadata.sections)
-          setLectures(data?.metadata.lectures)
-        } 
+          setCourse(data?.metadata?.course)
+          setInstructor(data?.metadata?.instructor)
+          setSections(data?.metadata?.sections || [])
+          setLectures(data?.metadata?.lectures || [])
+          setOptionContent(<OverviewSection course={data?.metadata?.course} 
+            instructor={data?.metadata?.instructor}>  </OverviewSection>)
+        } else {
+          setPermission(false)
+        }
       },
       onError: (error) => {
         console.error("Error fetching data", error);
@@ -47,42 +65,28 @@ export default function Lecture(){
     }
   )    
 
-  useEffect(() => {
-    if(isAuthenticated){
-      setCourse(courseInfo?.metadata?.course)
-      setInstructor(courseInfo?.metadata?.instructor)
-      setSections(courseInfo?.metadata?.sections)
-      setLectures(courseInfo?.metadata?.lectures)
-      setOptionContent(<OverviewSection course={course} instructor={instructor}></OverviewSection>)
-      console.log(lectures)
+  useEffect(() =>{
+    // console.log("refetch once")
+    refetch();
+  },[])
 
-      if(sections && sections?.length != 0){
-        setSelectedSection(sections[0])
-      }
-      if(lectures && lectures?.length != 0){
-        setSelectedVideoId(lectures[0][0].url)
-      }
-      if(!instructor){
-        setOptionContent(<OverviewSection course={course} instructor={instructor}></OverviewSection>)
-      }
-      refetch();
-    }
-  },[courseInfo,isAuthenticated]) 
+  useEffect(() =>{
+    setCourse(courseInfo?.metadata?.course)
+    setInstructor(courseInfo?.metadata?.instructor)
+    setSections(courseInfo?.metadata?.sections || [])
+    setLectures(courseInfo?.metadata?.lectures || [])
+    setOptionContent(<OverviewSection course={courseInfo?.metadata?.course} 
+      instructor={courseInfo?.metadata?.instructor}>  </OverviewSection>)
 
-  // Lecture Options UI
-  const [lectureOptionClick, setLectureOptionClick] = useState("Overview");
-  const [optionContent,setOptionContent] = useState(<OverviewSection course={course} instructor={instructor}></OverviewSection>)
+    setSelectedSection(courseInfo?.metadata?.sections[0])
+    setSelectedVideoId(courseInfo?.metadata?.lectures[0][0].url)
+  },[courseInfo])
 
-  // Course UI
-  const [open, setOpen] = useState(true);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [selectedSection, setSelectedSection] = useState("");
-  const [videoId, setSelectedVideoId] = useState("https://res.cloudinary.com/dkzc50ok0/video/upload/v1712121709/n7y2ojtzeif8bqhdjqns.mkv")
-
+  
   const handleListItemClick = (event, index, sectionName,idVideo) => {
     setSelectedIndex(index);
-    setSelectedSection(sectionName)
-    setSelectedVideoId(idVideo)
+    setSelectedSection(sectionName);
+    setSelectedVideoId(idVideo);
   };
 
   const handleLectureOptionClick = (option) => {
@@ -94,10 +98,9 @@ export default function Lecture(){
     }
   }
 
-
   return (
     <>
-      {!isAuthenticated ? (
+      {!isAuthenticated || !permission ? (
         <Box
           height={300}
           width="auto"
@@ -108,9 +111,16 @@ export default function Lecture(){
           gap={4}
           p={2}
         >
-          <h2>
-            Please sign in/sign up and register courses to learn
-          </h2>
+          {!isAuthenticated ? (
+            <h2>
+              Please sign in/sign up and register courses to learn
+            </h2>
+          ) : (
+            <h2>
+              You don't have the permission to access this course
+            </h2>
+          )}
+          
         </Box>
       ): (
         <Grid container>
@@ -118,18 +128,22 @@ export default function Lecture(){
           <Grid item xs={8}>
             <div >           
               <ReactPlayer
+                // Disable download button
+                config={{ file: { attributes: { controlsList: 'nodownload' } } }}
+
                 url={`${videoId}`}
                 controls
                 width="100%"
                 height="500px"
+                playing={true}
               />
             </div>
 
             <LectureOptionStyle>
               <nav>
                 <ul>
-                  <li className={lectureOptionClick == "Overview" ? "isClick" : "" } onClick={() => handleLectureOptionClick("Overview")}>Overview</li>
-                  <li className={lectureOptionClick == "Reviews" ? "isClick" : "" } onClick={() => handleLectureOptionClick("Reviews")}>Reviews</li>
+                  <li className={lectureOptionClick === "Overview" ? "isClick" : "" } onClick={() => handleLectureOptionClick("Overview")}>Overview</li>
+                  <li className={lectureOptionClick === "Reviews" ? "isClick" : "" } onClick={() => handleLectureOptionClick("Reviews")}>Reviews</li>
                 </ul>
               </nav>
             </LectureOptionStyle>
@@ -152,12 +166,11 @@ export default function Lecture(){
                 >
                   <ListItemButton
                       alignItems="flex-start"
-                      onClick={() => {setOpen(!open); setSelectedSection(section.name); setSelectedIndex(-1) }}
+                      onClick={() => {setOpen(!open); setSelectedSection(section.name); setSelectedIndex(-1); }}
                       sx={{
                           px: 3,
                           pt: 2,
                           pb: 2,
-                          '&:hover, &:focus': { '& svg': { opacity: open ? 1 : 0 } },
                           backgroundColor: "var(--color-gray-100)",
                       }}
                   >
@@ -188,12 +201,12 @@ export default function Lecture(){
                     />
                   </ListItemButton>
 
-                  {open && selectedSection == section.name &&
+                  {open && selectedSection === section.name &&
                     lectures[index]?.map((item,index) => (
                       <ListItemButton
                       key={index}
                       sx={{ py: 0.5, minHeight: 32,mb:1,backgroundColor:"white" }}
-                      selected={selectedIndex === index && selectedSection == section.name}
+                      selected={selectedIndex === index && selectedSection === section.name}
                       onClick={(event) => handleListItemClick(event, index,section.name,item.url)}
                       >
                         <div style={{margin:"10px", color:"var(--color-grey-100)"}}>

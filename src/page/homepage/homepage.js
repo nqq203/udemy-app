@@ -33,7 +33,6 @@ export default function HomePage(){
   )
 
   useEffect(() => {
-    console.log(isAuthenticated)
     if(!isAuthenticated) {
       setUsername(null)
     }

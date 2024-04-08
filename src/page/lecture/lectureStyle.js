@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import {CustomRating} from "../../components/Rating/Rating"
-import { useEffect } from "react";
+import { useDebugValue, useEffect } from "react";
 
 export const HeaderLectureStyle = styled.div`
   height: 50px;
@@ -75,27 +75,33 @@ export const OverviewSection = (props) => {
     var instructor = props.instructor || undefined
 
     return(
-        <div>
-            <h2>About this course</h2>
+        (course && instructor) ? (
             <div>
-                {course?.description}
-            </div>
+                <h2>About this course</h2>
+                <div>
+                    {course?.description}
+                </div>
 
-            <h2>Ratings</h2>
-            <div>
-                <CustomRating rates={course?.ratings}></CustomRating>
-            </div>
+                <h2>Ratings</h2>
+                <div>
+                    <CustomRating rates={course?.ratings}></CustomRating>
+                </div>
 
-            <h2>Instructor</h2>
-            <h3 className="authorName">{instructor?.fullName}</h3>
-            <ul>
-                <li>Professional Android app developer with more than 10 years experience.</li>
-                <li>Having a successful apps on playstore with over than +1,000,000 downloads  ( Check them on playstore: )</li>
-                <li>Masters Degree in computer science</li>
-                <li>Teaching in many local schools</li>
-                <li>Having a big youtube channel helping many people to learn android app development and flutter.</li>
-            </ul>
-        </div>
+                <h2>Instructor</h2>
+                <h3 className="authorName">{instructor?.fullName}</h3>
+                <ul>
+                    <li>Professional Android app developer with more than 10 years experience.</li>
+                    <li>Having a successful apps on playstore with over than +1,000,000 downloads  ( Check them on playstore: )</li>
+                    <li>Masters Degree in computer science</li>
+                    <li>Teaching in many local schools</li>
+                    <li>Having a big youtube channel helping many people to learn android app development and flutter.</li>
+                </ul>
+            </div>
+        ) : (
+            //Loading
+            <></>
+        )
+        
     )
 }
 

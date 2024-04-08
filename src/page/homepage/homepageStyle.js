@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "styled-components";
 
 import {Card, Box, CardContent,Typography} from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -160,7 +160,7 @@ export const UserWelcome = ({username}) => {
 
 
 export const CourseItem = (props ) => {
-    // const id = props.id
+    const id = props.id
     const titleCourse = props.title || "None"
     const authorCourse = props.author || "None"
     const ratingCourse = props.rating || "0"
@@ -172,8 +172,8 @@ export const CourseItem = (props ) => {
     const formattedPrice = priceCourse.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
     
     const handleCourseClick = () =>{
-        console.log("Click course");
-        navigate('/view-lecture');
+        // console.log("Click course");
+        navigate(`/view-lecture?courseId=${id}`);
     }
 
     return(
@@ -275,7 +275,6 @@ export const SliderContainerStyle = styled.div`
 export const SliderContainer = (props) => {
     const allCourse = props?.courses || []
     const instructors = props?.instructors || []
-
     const listCourse = useRef(null)
     const courseScroll = 260
      
@@ -325,7 +324,7 @@ export const SliderContainer = (props) => {
                     {allCourse?.map((course, index) => (
                         <CourseItem
                             key={index}
-                            id = {"Course_" + index}
+                            id = {course._id}
                             title={course.name}
                             author={instructors[index]}
                             rating={course.ratings}
