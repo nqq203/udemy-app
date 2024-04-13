@@ -1,32 +1,75 @@
 import styled from "styled-components";
 import 'draft-js/dist/Draft.css';
-import { useState } from "react";
-import { FaBold, FaItalic, FaListOl, FaListUl } from "react-icons/fa";
+import { useEffect, useState } from "react";
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Notification from "../../../components/Notification/Notification";
-import ReactCrop from "react-image-crop";
-import { useDropzone } from 'react-dropzone';
-
+import { useSelector, useDispatch } from "react-redux";
+import { setCourseData } from "../../../redux/coursesSlice";
 
 export default function InstructorCourseLandingPage() {
+  const dispatch = useDispatch();
+  const globalCourseData = useSelector(state => state.courses.courseData);
   const [courseTitle, setCourseTitle] = useState(null);
-  const [courseSubtitle, setCourseSubtitle] = useState(null);
   const [courseDescription, setCourseDescription] = useState(null);
   const [basicInfo, setBasicInfo] = useState({
-    language: 'en',
-    level: null,
     category: null,
   });
+  const [imageFile, setImageFile] = useState(null);
   const [imageURL, setImageURL] = useState('/assets/placeholder.jpg');
-  const [crop, setCrop] = useState({ aspect: 750 / 422 });
-  const [croppedImage, setCroppedImage] = useState(null);
   const [fileNotification, setFileNotification] = useState({
     content: '',
     valid: null,
   });
 
-  
+  useEffect(() => {
+    if (globalCourseData) {
+      setCourseTitle(globalCourseData.name);
+      setCourseDescription(globalCourseData.description);
+      setBasicInfo({
+        category: globalCourseData.category,
+      });
+      console.log(globalCourseData.category);
+      setImageFile(globalCourseData.imageFile);
+      setImageURL(globalCourseData.imageURL);
+    }
+  }, [globalCourseData])
+  function handleFileChange(e) {
+    const file = e.target.files[0]; // Get the selected file
+    if (file && file.type.startsWith('image/')) {
+      // Ensure a file is selected and it's an image
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageURL(reader.result);
+        setImageFile(file);
+      };
+      reader.readAsDataURL(file); // Read the file as a Data URL
+    } else {
+      // Handle errors or reset state if needed
+      setImageURL('/assets/placeholder.jpg');
+      setImageFile(null);
+      setFileNotification({
+        content: 'Please select an image file.',
+        valid: false,
+      });
+    }
+  };
+
+  function onSaveCourseLandingPage() {
+    if (!courseTitle || !courseDescription || !basicInfo.category || !imageFile) {
+      return;
+    } 
+    const course = {
+      _id: null,
+      instructorId: localStorage.getItem('_id'),
+      name: courseTitle,
+      description: courseDescription,
+      category: basicInfo.category,
+      imageFile: imageFile,
+      imageUrl: null,
+    };
+    dispatch(setCourseData(course));
+  }
 
 
   return (
@@ -56,19 +99,10 @@ export default function InstructorCourseLandingPage() {
           <p>Your title should be a mix of attention-grabbing, informative, and optimized for search.</p>
         </CourseContent>
         <CourseContent>
-          <h3>Course subtitle</h3>
-          <input
-            type="text"
-            placeholder="Insert your course subtitle."
-            onChange={(e) => setCourseSubtitle(e.target.value)}
-            value={courseSubtitle} />
-          <p>Use 1 or 2 related keywords, and mention 3-4 of the most important areas that you've covered during your course.</p>
-        </CourseContent>
-        <CourseContent>
           <h3>Course description</h3>
           <textarea
             type="text"
-            placeholder="Insert your course subtitle."
+            placeholder="Insert your course description."
             onChange={(e) => setCourseDescription(e.target.value)}
             value={courseDescription} />
           <p>Description should have minimum 200 words.</p>
@@ -76,28 +110,22 @@ export default function InstructorCourseLandingPage() {
         <CourseContent>
           <h3>Basic info</h3>
           <div className="basic-info">
-            <select
-              value={basicInfo.language}
-              setBasicInfo={(e) => setBasicInfo({ ...basicInfo, language: e.target.value })}>
-              <option value="english">English</option>
-              <option value="vietnamese">Tiếng Việt</option>
-            </select>
-            <select
+            {/* <select
               value={basicInfo.level}
-              setBasicInfo={(e) => setBasicInfo({ ...basicInfo, level: e.target.value })}>
+              onChange={(e) => setBasicInfo({ ...basicInfo, language: e.target.value })}>
               <option>-- Select Level --</option>
               <option value="beginner-level">Beginner Level</option>
               <option value="intermediate-level">Intermediate Level</option>
               <option value="expert-level">Expert Level</option>
               <option value="all-levels">All Levels</option>
-            </select>
+            </select> */}
             <select
               value={basicInfo.category}
-              setBasicInfo={(e) => setBasicInfo({ ...basicInfo, category: e.target.value })}>
+              onChange={(e) => setBasicInfo({ ...basicInfo, category: e.target.value })}>
               <option>-- Select Category --</option>
-              <option value="Development">Development</option>
-              <option value="Bussiness">Bussiness</option>
-              <option value="Design">Design</option>
+              <option value="DEVELOPMENT">Development</option>
+              <option value="BUSINESS">Business</option>
+              <option value="DESIGN">Design</option>
             </select>
           </div>
         </CourseContent>
@@ -106,28 +134,33 @@ export default function InstructorCourseLandingPage() {
           <div className="course-image">
             <div className="course-image-choosing">
               <div >Upload your course image here. It must meet our course image quality standards to be accepted. Important guidelines: 750x422 pixels; .jpg, .jpeg,. gif, or .png. no text on the image.</div>
-              <CustomButton
-                component="label"
-                role={undefined}
-                variant="contained"
-                tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
-              >
-                Upload file
-                {/* <div {...getRootProps}>
+              <div style={{display: "flex", flexDirection: "row", marginTop: "50px"}}>
+                <img src={imageURL} alt="thumbnail"/>
+                <CustomButton
+                  component="label"
+                  role={undefined}
+                  variant="contained"
+                  tabIndex={-1}
+                  startIcon={<CloudUploadIcon />}
+                  style={{height: "50px", marginLeft: "50px"}}
+                >
+                  Upload file
                   <input
-                    {...getInputProps()}
-                    hidden
+                    type="file"
+                    style={{display: "none"}}
+                    onChange={handleFileChange} // Attach the event handler here
                   />
-                </div> */}
-              </CustomButton>
+                </CustomButton>
+              </div>
             </div>
           </div>
         </CourseContent>
-        <CustomButton style={{fontFamily: "var(--font-stack-text)", color: "var(--color-white)", width: "10%", fontWeight: "600"}}>Save</CustomButton>
+        <CustomButton 
+          style={{fontFamily: "var(--font-stack-text)", color: "var(--color-white)", width: "10%", fontWeight: "600"}}
+          onClick={onSaveCourseLandingPage}>
+            Save
+        </CustomButton>
       </div>
-      
-
     </InstructorCourseLandingPageWrapper>);
 }
 
@@ -186,8 +219,8 @@ const CourseContent = styled.div`
   .basic-info {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
+    gap: 40px;
     
     select {
       width: 30%;

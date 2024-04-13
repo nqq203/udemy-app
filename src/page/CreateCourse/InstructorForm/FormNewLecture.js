@@ -10,23 +10,33 @@ function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCre
   const [lectureTitle, setLectureTitle] = useState(null);
   const [lectureURL, setLectureURL] = useState(null);
   const [filename, setFilename] = useState(null);
+  const [file, setFile] = useState(null);
 
   function onSubmitLecture() {
-    if (selectedType === 0) {
+    if (selectedType === 0 && file) {
       const id = "lecture" + generateUuid();
+      if (!file) {
+        return;
+      }
       setLectures([
       ...lectures,
         {
           sectionId: sectionId,
-          lectureId: id,
+          _id: id,
           title: lectureTitle,
           url: lectureURL,
+          duration: 0,
+          file: file,
         }
       ]);
     }
+    setLectureTitle('');
+    setLectureURL('');
+    setFile(null);
     setIsOpenFormTitleAndLink(false);
     setIsOpenCreateNewLecture(false);
   }
+
   return (
     <FormTitleAndLinkWrapper>
       <div className="form-title-and-link_title">
@@ -37,7 +47,7 @@ function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCre
         <div style={{width: "100px"}}>Resource: </div>
         <div class="inputfile-box">
           <input type="file" id="file" className="inputfile" onChange={(e) => {
-             setLectureURL(e.target.files[0]);
+             setFile(e.target.files[0]);
              setFilename(e.target.files[0] ? e.target.files[0].name : "");
           }}/>
           <label for="file">

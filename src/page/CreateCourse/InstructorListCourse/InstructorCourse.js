@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Button } from "../../../components/Button/Button";
 import { Link, Outlet } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import FilterDropdown from "../../../components/FilterDropdown/FilterDropdown";
 import moment from "moment";
 import { useQuery } from "react-query";
@@ -10,29 +10,40 @@ import {
   callApiGetListCourses,
   callApiGetCourseByName
 } from "../../../api/course";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
+import FormRequirement from "../../../components/FormRequirement/FormRequirement";
+import { Backdrop } from "../../../components/Backdrop/Backdrop";
+import { useDispatch } from "react-redux";
+import { setClickedCourse } from "../../../redux/coursesSlice";
 
 export default function InstructorCourse() {
-  const { data: fetchedCourses, isSuccessFetch, isLoading, isError } = useQuery(
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const instructorId = localStorage.getItem("_id");
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [isOpenFormRequirement, setIsOpenFormRequirement] = useState(false);
+  const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken"));
+
+  const { data: fetchedCourses, isSuccessFetch, isLoading, isError, refetch } = useQuery(
     "courseList",
-    () => callApiGetListCourses("6603c2c0ec6ca06713093b35"),
+    () => callApiGetListCourses(instructorId),
     {
       onSuccess: (data) => {
-        // Do any processing here if needed
         console.log(data);
       },
       onError: (error) => {
         console.error("Error fetching data:", error);
       },
-      // Set staleTime to Infinity to prevent refetching
       staleTime: Infinity,
     }
   );
-  const [filteredItems, setFilteredItems] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
 
   const handleSearch = async () => {
     try {
-      const searchData = await callApiGetCourseByName({ instructorId:"6603c2c0ec6ca06713093b35", name: searchInput });
+      const searchData = await callApiGetCourseByName({ instructorId: instructorId, name: searchInput });
       if (searchInput === "") {
         setFilteredItems(fetchedCourses?.metadata);
       }
@@ -48,8 +59,36 @@ export default function InstructorCourse() {
     setFilteredItems(fetchedCourses?.metadata);
     // console.log(fetchedCourses?.metadata);
   }, [fetchedCourses]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      setIsOpenFormRequirement(false);
+      setAccessToken(localStorage.getItem("accessToken"));
+    }
+    else {
+      setIsOpenFormRequirement(true);
+    }
+  }, [isAuthenticated, accessToken]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      refetch();
+    }
+  }, [fetchedCourses]);
+
+  function onCloseFormRequirement() {
+    setIsOpenFormRequirement(false);
+    navigate("/");
+  }
   
   return <InstructorCourseWrapper>
+    {isOpenFormRequirement && (
+      <>
+        <Backdrop onClick={onCloseFormRequirement} />
+        <FormRequirement content={"You need to login to access to this functional"} btnContent={"Sign In"} onSubmit={() => navigate("/sign-in")} onClose={onCloseFormRequirement}/>
+      </>
+    )}
+    
     <CourseManagement>
       <div className="course-management-title">Courses</div> 
       <div className="course-management-header">
@@ -60,9 +99,13 @@ export default function InstructorCourse() {
         <FilterDropdown items={filteredItems} setFilteredItems={setFilteredItems} />
         <Link to="/instructor/create"><Button className="course-management-header_newcourse">New Course</Button></Link>
       </div>
+      {isAuthenticated &&
       <div className="course-management-main">
-            {filteredItems?.length !== 0 ? filteredItems?.map(item => (
-                <div className="course-management-main_courseview" key={item.id}>
+            {filteredItems?.length !== 0 ? filteredItems?.map((item, idx) => (
+                <div className="course-management-main_courseview" key={item.id} onClick={() => {
+                  dispatch(setClickedCourse(fetchedCourses?.metadata[idx]?._id));
+                  navigate("/instructor/create");
+                }} style={{cursor: "pointer"}}>
                   <img src="../../../assets/engaging-course.jpg" alt="engaging-course"/>
                   <div className="coures-management-main_courseview_title">
                     <div>{item.name}</div>
@@ -75,7 +118,7 @@ export default function InstructorCourse() {
                 </div>
             )):
             <div style={{display: "flex", justifyContent: "center"}}>Course Not Found</div>}
-      </div>
+      </div>}
     </CourseManagement>
     <CourseCreation>
       <div className="course-creation_text">Jump Into Course Creation</div>
@@ -124,6 +167,7 @@ const InstructorCourseWrapper = styled.div`
   display: flex;
   flex-direction: column;
   font-family: var(--font-stack-text);
+  position: relative;
 
   .course-creation_description {
     display: flex;

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Button } from "../../../components/Button/Button";
+import { Button as ButtonMui } from "@mui/material";
 import { LuPlus } from "react-icons/lu";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Fragment, useEffect, useState } from "react";
@@ -7,20 +8,55 @@ import FormEditSection from "../InstructorForm/FormEditSection";
 import FormNewSection from "../InstructorForm/FormNewSection";
 import FormNewLecture from "../InstructorForm/FormNewLecture";
 import FormEditLecture from "../InstructorForm/FormEditLecture";
+import { useDispatch, useSelector } from "react-redux";
+import { setSectionsData, setSectionsIncludeLectures, setFilesData } from "../../../redux/sectionsSlice";
+import { setLecturesData } from "../../../redux/lecturesSlice";
 
 export default function InstructorCurriculum() {
+  const dispatch = useDispatch();
   const [lectures, setLectures] = useState([]);
   const [sections, setSections] = useState([]);
+  const [sectionsResult, setSectionsResult] = useState([]);
   const [selectedSection, setSelectedSection] = useState(null);
   const [selectedLecture, setSelectedLecture] = useState(null);
+  const [files, setFiles] = useState([]);
   const [isOpenCreateNewSection, setIsOpenCreateNewSection] = useState(false);
   const [isOpenCreateNewLecture, setIsOpenCreateNewLecture] = useState(false);
   const [isOpenFormEditSection, setIsOpenFormEditSection] = useState(false);
   const [isOpenFormEditLecture, setIsOpenFormEditLecture] = useState(false);
-
+  const globalSections = useSelector(state => state.sections.sections);
+  const globalFiles = useSelector(state => state.sections.files);
+  const globalLectures = useSelector(state => state.lectures.lectures);
   // useEffect(() => {
-  //   console.log(lectures);
-  // }, [lectures]);
+  //   console.log(fetchedCourse);
+  // }, [fetchedCourse])
+
+  useEffect(() => {
+    if (globalSections?.length > 0) {
+      setSections(globalSections);
+      setFiles(globalFiles);
+    }
+  }, [globalSections, globalFiles]);
+
+  useEffect(() => {
+    if (globalLectures?.length > 0) {
+      setLectures(globalLectures)
+    } 
+  }, [globalLectures]);
+
+  useEffect(() => {
+    const data = sections.map((section) => {
+      const tempLectures = lectures.filter((lecture) => lecture.sectionId === section._id);
+      const result = {
+        sectionData: section,
+        lectures: tempLectures,
+      }
+      return result;
+    });
+    const uploadedFiles = lectures.map((lecture) => lecture.file); 
+    setFiles(uploadedFiles);
+    setSectionsResult(data);
+  }, [lectures, sections]);
 
   const onDragStart = (event, index) => {
     event.dataTransfer.setData("sectionIndex", index);
@@ -65,6 +101,13 @@ export default function InstructorCurriculum() {
     event.target.classList.remove("dragging");
   };
   
+  function onSaveCurriculum() {
+    dispatch(setSectionsIncludeLectures(sectionsResult));
+    dispatch(setSectionsData(sections));
+    dispatch(setLecturesData(lectures));
+    dispatch(setFilesData(files));
+  };
+
 
   return (
     <InstructorCurriculumWrap>
@@ -81,23 +124,23 @@ export default function InstructorCurriculum() {
               {sections?.map((sectionItem, idx) => {
                 return (
                   <Section 
-                    key={sectionItem.sectionId}
+                    key={sectionItem._id}
                     onDragOver={onDragOver}
                     onDrop={(e) => onDrop(e, idx)}
                     onDragEnd={onDragEnd}>
-                    {(isOpenFormEditSection && selectedSection === sectionItem.sectionId) ?
-                    (<FormEditSection setIsOpenFormEditSection={setIsOpenFormEditSection} sectionTitle={sectionItem.title} setSections={setSections} sections={sections} sectionId={sectionItem.sectionId} idx={idx}/>) :
+                    {(isOpenFormEditSection && selectedSection === sectionItem._id) ?
+                    (<FormEditSection setIsOpenFormEditSection={setIsOpenFormEditSection} sectionTitle={sectionItem.name} setSections={setSections} sections={sections} sectionId={sectionItem._id} idx={idx}/>) :
                     (<div className="section-title" 
                       draggable="true"
                       onDragStart={(e) => onDragStart(e, idx)}
                       >
                         <div>Section {idx + 1}:</div>
-                        <div>{sectionItem.title}</div>
+                        <div>{sectionItem.name}</div>
                         <div className="curriculum-update-delete">
                           <MdEdit  
                             style={{cursor: "pointer"}} 
                             onClick={() => {
-                              setSelectedSection(sectionItem.sectionId);
+                              setSelectedSection(sectionItem._id);
                               setIsOpenFormEditSection(true);
                             }}/>
                           <MdDelete 
@@ -106,9 +149,9 @@ export default function InstructorCurriculum() {
                               let newSections = [...sections];
                               let newLectures = [...lectures];
                               if (lectures.length > 0) {
-                                newLectures = newLectures.filter((lecture) => lecture.sectionId !== sectionItem.sectionId);
+                                newLectures = newLectures.filter((lecture) => lecture.sectionId !== sectionItem._id);
                               }
-                              newSections = newSections.filter((section) => section.sectionId !== sectionItem.sectionId);
+                              newSections = newSections.filter((section) => section._id !== sectionItem._id);
                               setSections(newSections);
                               setLectures(newLectures);
                             }}/>
@@ -116,9 +159,9 @@ export default function InstructorCurriculum() {
                     </div>)}
                     {lectures?.map((item, lectureIdx) => {
                       return <Fragment>
-                        {(item.sectionId === sectionItem.sectionId) && 
+                        {(item.sectionId === sectionItem._id) && 
                           <>
-                          {isOpenFormEditLecture && item.lectureId === selectedLecture? 
+                          {isOpenFormEditLecture && item._id === selectedLecture? 
                           (<FormEditLecture setIsOpenFormEditLecture={setIsOpenFormEditLecture} lectureTitle={item.title} setLectures={setLectures} lectures={lectures} lectureId={item.lectureId} idx={lectureIdx} imageURL={item.url}/>) :
                           (<LectureItem key={item.lectureId}>
                             <div>Lecture {lectureIdx + 1}: </div>
@@ -127,16 +170,16 @@ export default function InstructorCurriculum() {
                               <MdEdit  
                                 style={{cursor: "pointer"}} 
                                 onClick={() => {
-                                  setSelectedLecture(item.lectureId);
+                                  setSelectedLecture(item._id);
                                   setIsOpenFormEditLecture(true);
                                 }}/>
                               <MdDelete 
                                 style={{cursor: "pointer"}}
                                 onClick={() => {
-                                  setSelectedLecture(item.lectureId);
+                                  setSelectedLecture(item._id);
                                   let newLectures = [...lectures];
                                   if (lectures.length > 0) {
-                                    newLectures = newLectures.filter((lecture) => lecture.lectureId !== item.lectureId);
+                                    newLectures = newLectures.filter((lecture) => lecture._id !== item._id);
                                   }
                                   setLectures(newLectures);
                                 }}/>
@@ -145,13 +188,13 @@ export default function InstructorCurriculum() {
                           </>}
                       </Fragment>
                     })}
-                    {(isOpenCreateNewLecture && sectionItem.sectionId === selectedSection) &&
-                      <FormNewLecture lectures={lectures} setLectures={setLectures} setIsOpenCreateNewLecture={setIsOpenCreateNewLecture} sectionId={sections[idx].sectionId}/>
+                    {(isOpenCreateNewLecture && sectionItem._id === selectedSection) &&
+                      <FormNewLecture lectures={lectures} setLectures={setLectures} setIsOpenCreateNewLecture={setIsOpenCreateNewLecture} sectionId={sections[idx]._id}/>
                     }
                     <ButtonCreateLecture
                       onClick={() => {
                         setIsOpenCreateNewLecture(true);
-                        setSelectedSection(sectionItem.sectionId);
+                        setSelectedSection(sectionItem._id);
                       }}>
                       <LuPlus /> <p>Curriculum Item</p>
                     </ButtonCreateLecture>
@@ -168,6 +211,11 @@ export default function InstructorCurriculum() {
           </ButtonCreateSection>
         </InstructorCreateSection>
       </div>
+      <CustomButton 
+          style={{fontFamily: "var(--font-stack-text)", color: "var(--color-white)", width: "10%", fontWeight: "600"}}
+          onClick={onSaveCurriculum}>
+            Save
+        </CustomButton>
     </InstructorCurriculumWrap>);
 }
 
@@ -298,4 +346,15 @@ const LectureItem = styled.div`
       opacity: 1;
     }
   }
+`
+
+const CustomButton = styled(ButtonMui)`
+  && {
+    margin: 20px 5vw;
+    background-color: var(--color-purple-300);
+    &:hover {
+      background-color: var(--color-purple-400); 
+    }
+  }
+
 `

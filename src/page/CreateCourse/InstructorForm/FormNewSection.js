@@ -11,13 +11,16 @@ export default function FormNewSection({ sections, setSections, setIsOpenCreateN
     }
     if (sections !== null) {
       setSections([...sections, {
-        title: sectionTitle,
-        sectionId: "section" + generateUuid(),
+        name: sectionTitle,
+        _id: "section" + generateUuid(),
+        courseId: null,
       }]);
     }
     setSectionTitle(null);
     setIsOpenCreateNewSection(false);
   }
+
+  
 
   return (
     <FormNewSectionWrapper>

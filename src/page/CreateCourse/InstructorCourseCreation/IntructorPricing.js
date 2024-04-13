@@ -2,27 +2,43 @@ import styled from "styled-components";
 // import {Button} from "../../components/Button/Button";
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setCoursePrice } from "../../../redux/coursesSlice";
 
-const listPriceTier = ["USD", "VND", "EUR"];
-const listUSD = ["19.99", "22.99", "24.99", "27.99", "29.99", "34.99", "39.99"];
+// const listPriceTier = ["USD", "VND", "EUR"];
+// const listUSD = ["19.99", "22.99", "24.99", "27.99", "29.99", "34.99", "39.99"];
 const listVND = ["390000", "449000", "499000", "549000", "599000", "649000", "699000"];
-const listEUR = ["19.99", "22.99", "24.99", "29.99", "34.99", "39.99", "44.99"];
+// const listEUR = ["19.99", "22.99", "24.99", "29.99", "34.99", "39.99", "44.99"];
 
 export default function InstructorPricing() {
-  const [currency, setCurrency] = useState(listPriceTier[0]);
-  const [tier, setTier] = useState(listUSD);
+  const globalPrice = useSelector(state => state.courses.courseData.price);
+  const dispatch = useDispatch();
+  // const [currency, setCurrency] = useState(listPriceTier[0]);
+  const [tier, setTier] = useState(listVND);
+  const [price, setPrice] = useState(globalPrice);
   
+  // useEffect(() => {
+  //   // if (currency === "USD") {
+  //   //   setTier(listUSD);
+  //   // }
+  //   if (currency === "VND") {
+  //     setTier(listVND);
+  //   }
+  //   // else {
+  //   //   setTier(listEUR);
+  //   // }
+  // }, [currency])
+
   useEffect(() => {
-    if (currency === "USD") {
-      setTier(listUSD);
-    }
-    else if (currency === "VND") {
-      setTier(listVND);
-    }
-    else {
-      setTier(listEUR);
-    }
-  }, [currency])
+    if (globalPrice)
+      setPrice("đ" + globalPrice);
+  }, [globalPrice]);
+
+  function onSavePrice() {
+    const newPrice = Number(price?.split("đ")[1]);
+    dispatch(setCoursePrice(newPrice));
+  }
+
   return (
     <InstructorPricingWrapper>
       <div className="pricing-page-header">
@@ -36,27 +52,34 @@ export default function InstructorPricing() {
         <CourseContent style={{display: "flex", flexDirection:"row", gap: "100px"}}>
           <CourseContent>
             <h3>Currency</h3>
-            <select onChange={(e) => setCurrency(e.target.value)}>
+            {/* <select onChange={(e) => setCurrency(e.target.value)}>
               {listPriceTier?.map((item) => {
                 return (
                   <option key={item}>{item}</option>
                 );
               })}
+            </select> */}
+            <select>
+              <option key="">VND</option>
             </select>
           </CourseContent>
           <CourseContent>
             <h3>Price Tier</h3>
-            <select>
+            <select 
+              value={price} 
+              onChange={(e) => setPrice(e.target.value)}>
               <option>Free</option>
               {tier?.map((item) => {
                 return (
-                  <option key={item}> {currency === listPriceTier[0] ? '$' : (currency === listPriceTier[1] ? 'đ' : '€')}{item}</option>
+                  // <option key={item}> {currency === listPriceTier[0] ? '$' : (currency === listPriceTier[1] ? 'đ' : '€')}{item}</option>
+                  <option key={item}>đ{item}</option>
                 );
               })}
             </select>
           </CourseContent>
         </CourseContent>
-        <Button style={{marginTop: "20px", backgroundColor: "var(--color-purple-300)", fontFamily: "var(--font-stack-text)", color: "var(--color-white)", width: "10%", fontWeight: "600"}}>Save</Button>
+        <Button style={{marginTop: "20px", backgroundColor: "var(--color-purple-300)", fontFamily: "var(--font-stack-text)", color: "var(--color-white)", width: "10%", fontWeight: "600"}}
+          onClick={onSavePrice}>Save</Button>
       </div>
     </InstructorPricingWrapper>
   );

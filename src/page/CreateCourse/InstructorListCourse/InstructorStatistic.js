@@ -5,7 +5,7 @@ import CourseRatingChart from "../../../components/CourseRatingChart/CourseRatin
 
 export default function InstructorStatistic() {
   return (
-    <InstructorStatisticWrapper>09095722590938040002 
+    <InstructorStatisticWrapper>
       <h3>Statistics</h3>
       <div style={{margin: "20px 0"}}>Get top insights about your performance</div>
       <Statistic>

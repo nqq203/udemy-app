@@ -31,6 +31,7 @@ import MyLearningTools from './page/myLearning/myLearningTools';
 import ProductDetail from "./pages/ProdDetailPage/ProductDetail";
 import { AuthProvider } from './context/AuthContext';
 
+
 const queryClient = new QueryClient();
 
 export default function App() { 
