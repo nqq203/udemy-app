@@ -1,114 +1,70 @@
 import {HomePageWrapper,Herobanner,QuoteCard,SliderContainer, StyleH2,UserWelcome,CatogoriesList} from "./homepageStyle"
+import {callApiGetCoursesPagination} from "../../api/course"
+import { useQuery } from "react-query";
+import { useState,useEffect } from "react";
+import { PropagateLoader } from 'react-spinners';
+import { useAuth } from "../../context/AuthContext";
+
 
 
 export default function HomePage(){
-    const courses = [
-        {
-          title: 'The Complete 2024 Web Development Bootcamp',
-          author: 'Dr. Angela Yue',
-          rating: 3.5,
-          price: 1599000,
-          image: '/imgs/courses/web.jpg',
-          chipLabel: true,
-        },
-        {
-          title: 'The Complete 2024 Mobile Development Bootcamp',
-          author: 'Dr. John Doe',
-          rating: 4.2,
-          price: 1899000,
-          image: '/imgs/courses/react.png',
-          chipLabel: false,
-        },
-        {
-          title: 'The Complete 2024 Data Science Bootcamp',
-          author: 'Dr. Jane Smith',
-          rating: 4.5,
-          price: 2199000,
-          image: '/imgs/courses/kotlin.png',
-          chipLabel: true,
-        },
-        {
-          title: 'The Complete 2024 UI/UX Design Bootcamp',
-          author: 'Dr. Bob Johnson',
-          rating: 4.7,
-          price: 1999000,
-          image: '/imgs/courses/react.png',
-          chipLabel: false,
-        },
-        {
-          title: 'The Complete 2024 UI/UX Design Bootcamp',
-          author: 'Dr. Bob Johnson',
-          rating: 4.7,
-          price: 2999000,
-          image: '/imgs/courses/react.png',
-          chipLabel: false,
-        },
-        {
-          title: 'The Complete 2024 Mobile Development Bootcamp',
-          author: 'Dr. John Doe',
-          rating: 4.2,
-          price: 1899000,
-          image: '/imgs/courses/kotlin.png',
-          chipLabel: false,
-        },
-        {
-          title: 'The Complete 2024 Mobile Development Bootcamp',
-          author: 'Dr. John Doe',
-          rating: 4.2,
-          price: 1899000,
-          image: '/imgs/courses/react.png',
-          chipLabel: false,
-        },
-        {
-          title: 'The Complete 2024 Data Science Bootcamp',
-          author: 'Dr. Jane Smith',
-          rating: 4.5,
-          price: 2199000,
-          image: '/imgs/courses/kotlin.png',
-          chipLabel: true,
-        },
-        {
-          title: 'The Complete 2024 Mobile Development Bootcamp',
-          author: 'Dr. John Doe',
-          rating: 4.2,
-          price: 1899000,
-          image: '/imgs/courses/react.png',
-          chipLabel: false,
-        },
-        {
-          title: 'The Complete 2024 Data Science Bootcamp',
-          author: 'Dr. Jane Smith',
-          rating: 4.5,
-          price: 2199000,
-          image: '/imgs/courses/kotlin.png',
-          chipLabel: true,
-        },
-        {
-          title: 'The Complete 2024 Mobile Development Bootcamp',
-          author: 'Dr. John Doe',
-          rating: 4.2,
-          price: 1899000,
-          image: '/imgs/courses/react.png',
-          chipLabel: false,
-        },
-      ];
+  const [loading,setLoading] = useState(true)
+  const [courses,setCourses] = useState([])
+  const [instructors,setInstructors] = useState([])
+  const { isAuthenticated } = useAuth()
+  const [username, setUsername] = useState(localStorage.getItem("fullname") || null);
+
+  const {data: fetchCourses, isSuccess, isLoading, isError,refetch } = useQuery(
+    "fetch10Courses",
+    () => callApiGetCoursesPagination(1,10),
+    {
+      onSuccess: (data) => {
+        console.log(data)
+        setCourses(data?.metadata?.results)
+        setInstructors(data?.metadata?.instructors)
+        setLoading(false)
+      }, 
+      onError: (error) => {
+        console.error("Error fetching data", error);
+      },
+
+      staleTime: Infinity,
+    }
+  )
+
+  useEffect(() => {
+    if(!isAuthenticated) {
+      setUsername(null)
+    }
+    refetch()
+  }, [isAuthenticated])  
+
+  return(
+    <HomePageWrapper>
+      <CatogoriesList></CatogoriesList>
+      <Herobanner>
+        <QuoteCard title="Did you forget something?">
+        </QuoteCard>
+      </Herobanner>
+
+      {username == null ? (
+        <></>
+      ) : (
+        <UserWelcome username={username}></UserWelcome>
+      )}
       
-    return(
-        <HomePageWrapper>
 
-            <CatogoriesList></CatogoriesList>
-            <Herobanner>
-                <QuoteCard title="Did you forget something?">
-                </QuoteCard>
-            </Herobanner>
+      <StyleH2>Recommended for you</StyleH2>
+      
+      {loading ? (
+        <div className="container">
+          <PropagateLoader color="var(--color-blue-300)" />
+        </div>
+      ) : (
+        <SliderContainer courses={courses} instructors={instructors}>
+        </SliderContainer>
+      )}
 
-            <UserWelcome username="Nguyễn Thị Mỹ Diệu"></UserWelcome>
-
-            <StyleH2>Recommended for you</StyleH2>
-            
-            <SliderContainer courses={courses}>
-            </SliderContainer>
-
-        </HomePageWrapper>
-    );
+    </HomePageWrapper>
+  );
 }

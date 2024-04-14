@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+<<<<<<< HEAD
 import {
   Card,
   Box,
@@ -16,6 +17,19 @@ import { useRef } from "react";
 import { Button } from "../../components/Button/Button.js";
 import { Chip } from "../../components/Chip/Chip.js";
 import { CustomRating } from "../../components/Rating/Rating.js";
+=======
+import {Card, Box, CardContent,Typography} from '@mui/material';
+import { Link } from 'react-router-dom';
+import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { useRef } from "react";
+
+import {Button} from "../../components/Button/Button.js"
+import {Chip} from "../../components/Chip/Chip.js"
+import {CustomRating} from "../../components/Rating/Rating.js"
+import { useNavigate } from "react-router-dom";
+
+>>>>>>> 56b0a984d96f7e5cd3d24bbd5e72a45a731de5d8
 
 export const StyleH1 = styled.h1`
   margin-left: 25px;
@@ -40,10 +54,25 @@ export const HomePageWrapper = styled.div`
   background-color: white;
   margin-bottom: 20px;
 
+<<<<<<< HEAD
   .margin-left {
     margin-left: 20px;
   }
 `;
+=======
+    .margin-left{
+        margin-left: 20px;
+    }
+
+    .container{
+        height: 240px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center
+    }
+`
+>>>>>>> 56b0a984d96f7e5cd3d24bbd5e72a45a731de5d8
 
 export const Herobanner = styled.div`
   height: 400px;
@@ -195,6 +224,7 @@ export const CourseItem = (props) => {
   const imgCourse = props.image || "/imgs/courses/web.jpg";
   const chipLabel = props.chipLabel;
 
+<<<<<<< HEAD
   const formattedPrice = priceCourse.toLocaleString(navigator.language, {
     minimumFractionDigits: 0,
   });
@@ -217,6 +247,49 @@ export const CourseItem = (props) => {
         <Typography variant="body2" color="text.secondary" gutterBottom>
           {authorCourse}
         </Typography>
+=======
+export const CourseItem = (props ) => {
+    const id = props.id
+    const titleCourse = props.title || "None"
+    const authorCourse = props.author || "None"
+    const ratingCourse = props.rating || "0"
+    const priceCourse = props.price || "0"
+    const imgCourse = props.image || "/imgs/courses/web.jpg"
+    const chipLabel = props.chipLabel || false
+    const navigate = useNavigate()
+
+    const formattedPrice = priceCourse.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
+    
+    const handleCourseClick = () =>{
+        // console.log("Click course");
+        navigate(`/view-lecture?courseId=${id}`);
+    }
+
+    return(
+        <Card 
+            sx={{ 
+                width: 240 ,height:"auto", 
+                boxShadow:"none",objectFit:"cover", 
+                cursor: "pointer", 
+                "&:hover": {
+                    boxShadow: "2px 4px 30px rgba(0, 0, 0, 0.05)", 
+                },
+            }} 
+            onClick={handleCourseClick}>
+            <img 
+                src={imgCourse}
+                width={"100%"}
+                height={140}
+                alt="Error happened"
+
+            ></img>
+
+
+            <CardContent sx={{pr: 1,pl: 1, mt: 0}}>
+                <StyleH4>
+                    {titleCourse}
+                </StyleH4>
+>>>>>>> 56b0a984d96f7e5cd3d24bbd5e72a45a731de5d8
 
         <CustomRating rates={ratingCourse} />
 
@@ -288,12 +361,24 @@ export const SliderContainerStyle = styled.div`
 export const SliderContainer = ({ courses }) => {
   const allCourse = courses || [];
 
+<<<<<<< HEAD
   const listCourse = useRef(null);
   const courseScroll = 260;
 
   function slideAction(event) {
     const id = event.target.id;
     let direction = 0;
+=======
+export const SliderContainer = (props) => {
+    const allCourse = props?.courses || []
+    const instructors = props?.instructors || []
+    const listCourse = useRef(null)
+    const courseScroll = 260
+     
+    function slideAction(event){
+        const id = event.target.id
+        let direction = 0;
+>>>>>>> 56b0a984d96f7e5cd3d24bbd5e72a45a731de5d8
 
     if (id === "prev-slide") {
       direction = -1;
@@ -301,9 +386,24 @@ export const SliderContainer = ({ courses }) => {
       direction = 1;
     }
 
+<<<<<<< HEAD
     if (direction !== 0) {
       const scrollAmount = courseScroll * direction;
       listCourse.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+=======
+    function handleSlideButtons(){
+        const width = 144
+        const listCourses = listCourse.current;
+        const maxScrollLeft = (allCourse?.length - 1) * width; //1303
+
+        const slideButtons = [
+            document.getElementById('prev-slide'),
+            document.getElementById('next-slide')
+          ];
+
+        slideButtons[0].style.display = listCourses.scrollLeft <= 0 ? "none" : "flex";
+        slideButtons[1].style.display = listCourses.scrollLeft >= maxScrollLeft ? "none" : "flex";
+>>>>>>> 56b0a984d96f7e5cd3d24bbd5e72a45a731de5d8
     }
     // handleSlideButtons()
   }
@@ -323,6 +423,7 @@ export const SliderContainer = ({ courses }) => {
       listCourses.scrollLeft >= maxScrollLeft ? "none" : "flex";
   }
 
+<<<<<<< HEAD
   return (
     <SliderContainerStyle>
       <SliderWrapperStyle>
@@ -346,6 +447,22 @@ export const SliderContainer = ({ courses }) => {
             onClick={slideAction}
           ></ArrowForwardIosRoundedIcon>
         </div>
+=======
+                <ListCourseStyle ref={listCourse} onScroll={handleSlideButtons}>
+                    {allCourse?.map((course, index) => (
+                        <CourseItem
+                            key={index}
+                            id = {course._id}
+                            title={course.name}
+                            author={instructors[index]}
+                            rating={course.ratings}
+                            price={course.price}
+                            image={course.imageUrl}
+                            chipLabel={false}
+                        />
+                    ))}
+                </ListCourseStyle>
+>>>>>>> 56b0a984d96f7e5cd3d24bbd5e72a45a731de5d8
 
         <ListCourseStyle ref={listCourse} onScroll={handleSlideButtons}>
           {allCourse.map((course, index) => (

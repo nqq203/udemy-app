@@ -29,6 +29,8 @@ import ProfilePrivacy from './page/profile/profilePrivacy';
 import MyWishList from './page/myLearning/myWishList';
 import MyArchived from './page/myLearning/myArchived';
 import MyLearningTools from './page/myLearning/myLearningTools';
+import ProductDetail from "./pages/ProdDetailPage/ProductDetail";
+import Lecture from './page/lecture/lecture';
 import { AuthProvider } from './context/AuthContext';
 import CourseDetail from "./page/courseDetail/CourseDetail";
 
@@ -45,10 +47,11 @@ export default function App() {
         <MainContent>
           <Routes>
             <Route path="/" element={<HomePage />}/>
-            <Route path="/sign-up" element={<SignUp />}/>
             <Route path="/sign-in" element={<SignIn />} />
-            <Route path="/shopping-cart" element={<ShoppingCart />} />
+            <Route path="/sign-up" element={<SignUp />}/>
             <Route path="/view-list-courses" element={<ViewListSearch />}/>
+            <Route path="/view-lecture" element={<Lecture />}/>
+            <Route path="/shopping-cart" element={<ShoppingCart />} />
             <Route path="/detail" element={<CourseDetail/>} />
             <Route path="/instructor" element={<InstructorLayout />} >
               <Route path="courses" index element={<InstructorCourse />}/>
