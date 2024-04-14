@@ -31,4 +31,16 @@ export const MyCourseCardItemDescription = styled.p`
     color: var(--color-gray-300);
 `
 
+export const MyCourseLoading = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 600px;
+`
+export const CourseCardLoading = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+`
 

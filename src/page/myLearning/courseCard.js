@@ -1,15 +1,38 @@
 import * as React from 'react';
+import { useQuery } from 'react-query';
 
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Rating from '@mui/material/Rating';
+import CircularProgress from '@mui/material/CircularProgress';
 
-import { MyCourseCardItemDescription, MyCourseCardItemName, MyCourseRating } from './myLearningStyle';
+import { 
+  MyCourseCardItemDescription, 
+  MyCourseCardItemName, 
+  MyCourseRating,
+  CourseCardLoading
+} from './myLearningStyle';
+import { callApiGetUserById } from '../../api/user';
+
+const getInstructor = async (userId) => {
+  const instructor = await callApiGetUserById(userId);
+  return instructor;
+}
 
 export default function CourseCard({ course }) {
+  const { data, isLoading } = useQuery("instructor", () => getInstructor(course.instructorId));
   const [value, setValue] = React.useState(null);
-
+  
+  const instructor = data;
+  if(isLoading){
+    return (
+        <CourseCardLoading>
+            <CircularProgress color="inherit" />
+        </CourseCardLoading>
+    );
+  }
+  
   return (
     <Card sx={{ maxWidth: 250 }}>
       <CardMedia
@@ -23,7 +46,7 @@ export default function CourseCard({ course }) {
         </MyCourseCardItemName>
 
         <MyCourseCardItemDescription>
-            By {course.instructor}
+            By {instructor ? instructor.metadata.fullName : ""}
         </MyCourseCardItemDescription>
 
         <MyCourseRating>

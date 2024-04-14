@@ -83,20 +83,20 @@ const CourseDetail = ({ courseId }) => {
       <CourseDetailWrapper>
         <div style={{ position: "relative" }}>
           {/* Title Card */}
-          <TitleCard course={courseData.metadata} />
+          <TitleCard course={courseData?.metadata} />
 
           {/* Sticky Sidebar */}
           <PurchaseSection
-            thumbnailImage={courseData.metadata.imageUrl}
-            price={courseData.metadata.price}
+            thumbnailImage={courseData?.metadata?.imageUrl}
+            price={courseData?.metadata?.price}
           />
         </div>
 
         <div className="product-detail-body">
           <div className="product-detail-main-content">
             {/* Course content */}
-            <CourseContent sections={sectionsData.metadata} />
-            <StudentAlsoBought courses={relatedCoursesData.metadata}></StudentAlsoBought>
+            <CourseContent sections={sectionsData?.metadata} />
+            <StudentAlsoBought courses={relatedCoursesData?.metadata}></StudentAlsoBought>
             {/* Reviews */}
           </div>
         </div>

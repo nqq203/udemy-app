@@ -28,11 +28,11 @@ const SectionContent = ({ section, setDuration, setTotalLectures, isAllOpened })
 
   useEffect(() => {
     if (isLecturesSuccess) {
-      if (Array.isArray(lecturesData.metadata)) {
-        setDuration(lecturesData.metadata);
-        setTotalLectures(lecturesData.metadata.length);
+      if (Array.isArray(lecturesData?.metadata)) {
+        setDuration(lecturesData?.metadata);
+        setTotalLectures(lecturesData?.metadata.length);
       } else {
-        console.error('lecturesData.metadata is not an array:', lecturesData.metadata);
+        console.error('lecturesData.metadata is not an array:', lecturesData?.metadata);
       }
     }
   }, [lecturesData]);
@@ -67,7 +67,7 @@ const SectionContent = ({ section, setDuration, setTotalLectures, isAllOpened })
       {isOpened && isLecturesSuccess && (
         <div className="itemContainer">
           <ul>
-            {lecturesData.metadata.map((lecture, index) => (
+            {lecturesData?.metadata?.map((lecture, index) => (
               <li key={index}>
                 <div className="item">
                   <MdOndemandVideo className="videoIcon" />

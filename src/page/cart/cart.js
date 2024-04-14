@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 //MUI Components
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
@@ -17,7 +19,7 @@ export default function Cart() {
         <h1>Shopping Cart</h1>
 
         <div>
-            <p>{courses.length} Courses in Cart</p>
+            <p><b>{courses.length} Courses in Cart</b></p>
         </div>
 
         <Grid container spacing={2}>
@@ -33,7 +35,16 @@ export default function Cart() {
                 <div>
                     <h4>Total:</h4>
                     <h1>${total}</h1>
-                    <Button width='100%' fontWeight="700">Checkout</Button>
+                    <Link to="/payment">
+                        <Button 
+                            width='100%' 
+                            fontWeight="700" 
+                            bgColor="var(--color-purple-300)"
+                            hoverBgColor="var(--color-purple-400)"
+                        >
+                            Checkout
+                        </Button>
+                    </Link>
                 </div>
 
                 <Divider sx={{margin: '16px 0'}}/>

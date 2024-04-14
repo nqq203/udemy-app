@@ -51,8 +51,8 @@ export default function MyLearningNavBar() {
             <Box>
                 <Toolbar disableGutters>
                     <Box sx={{ flexGrow: 1, display: 'flex' }}>
-                        {pages.map((page) => (
-                            <Link to={page.path} style={{textDecoration: 'none'}}>
+                        {pages.map((page, index) => (
+                            <Link to={page.path} style={{textDecoration: 'none'}} key={index}>
                                 <StyledButton
                                     key={page.name}
                                     disableElevation

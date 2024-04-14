@@ -29,11 +29,10 @@ import ProfilePrivacy from './page/profile/profilePrivacy';
 import MyWishList from './page/myLearning/myWishList';
 import MyArchived from './page/myLearning/myArchived';
 import MyLearningTools from './page/myLearning/myLearningTools';
-import ProductDetail from "./pages/ProdDetailPage/ProductDetail";
 import Lecture from './page/lecture/lecture';
 import { AuthProvider } from './context/AuthContext';
 import CourseDetail from "./page/courseDetail/CourseDetail";
-
+import PaymentSuccess from './page/payment/paymentSuccess';
 
 const queryClient = new QueryClient();
 
@@ -64,7 +63,10 @@ export default function App() {
               <Route path="privacy" element={<ProfilePrivacy />} />
             </Route>
             <Route path="cart" element={<Cart />} />
-            <Route path="payment" element={<Payment />} />
+            <Route path="payment">
+              <Route path="checkout" element={<Payment />} />
+              <Route path="success" element={<PaymentSuccess />} />
+            </Route>
             <Route path="my-courses">
               <Route path="learning" element={<MyCourses />} />
               <Route path="wishlist" element={<MyWishList />} />
