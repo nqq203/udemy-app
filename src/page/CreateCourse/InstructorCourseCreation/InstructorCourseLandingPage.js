@@ -6,34 +6,72 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Notification from "../../../components/Notification/Notification";
 import { useSelector, useDispatch } from "react-redux";
 import { setCourseData } from "../../../redux/coursesSlice";
+import { setCourseType } from "../../../redux/courseManagementSlice";
+import { callApiCreateOneCourse, callApiUpdateCourse } from "../../../api/course";
+import { useMutation } from "react-query";
 
 export default function InstructorCourseLandingPage() {
   const dispatch = useDispatch();
   const globalCourseData = useSelector(state => state.courses.courseData);
+  const courseType = useSelector(state => state.courseManagement.type);
   const [courseTitle, setCourseTitle] = useState(null);
   const [courseDescription, setCourseDescription] = useState(null);
   const [basicInfo, setBasicInfo] = useState({
     category: null,
   });
   const [imageFile, setImageFile] = useState(null);
-  const [imageURL, setImageURL] = useState('/assets/placeholder.jpg');
-  const [fileNotification, setFileNotification] = useState({
-    content: '',
-    valid: null,
+  const [imageURL, setImageURL] = useState(null);
+  const [notification, setNotification] = useState({
+    message: '',
+    visible: false,
+    bgColor: 'red'
   });
+  const createCourseMutation = useMutation(
+    (courseData) => callApiCreateOneCourse(courseData),
+    {
+      onSuccess: (data) => {
+        setNotification({
+          message: data.message,
+          visible: true,
+          bgColor: 'green'
+        });
+        dispatch(setCourseData(data?.metadata));
+      }
+    }
+  );
+  const updateCourseMutation = useMutation(
+    (courseData) => callApiUpdateCourse(courseData),
+    {
+      onSuccess: (data) => {
+        setNotification({
+          message: data.message,
+          visible: true,
+          bgColor: 'green'
+        });
+        dispatch(setCourseData(data?.metadata));
+      }
+    }
+  )
 
   useEffect(() => {
+    if (courseType === 'create') {
+      setCourseTitle('');
+      setCourseDescription('');
+      setBasicInfo(null);
+      setImageFile(null);
+      setImageURL(null);
+    }
     if (globalCourseData) {
       setCourseTitle(globalCourseData.name);
       setCourseDescription(globalCourseData.description);
       setBasicInfo({
         category: globalCourseData.category,
       });
-      console.log(globalCourseData.category);
       setImageFile(globalCourseData.imageFile);
-      setImageURL(globalCourseData.imageURL);
+      setImageURL(globalCourseData.imageUrl);
     }
-  }, [globalCourseData])
+  }, [globalCourseData, courseType]);
+
   function handleFileChange(e) {
     const file = e.target.files[0]; // Get the selected file
     if (file && file.type.startsWith('image/')) {
@@ -48,42 +86,79 @@ export default function InstructorCourseLandingPage() {
       // Handle errors or reset state if needed
       setImageURL('/assets/placeholder.jpg');
       setImageFile(null);
-      setFileNotification({
-        content: 'Please select an image file.',
-        valid: false,
+      setNotification({
+        message: 'Please select an image file.',
+        visible: true,
+        bgColor:'red'
       });
     }
   };
 
-  function onSaveCourseLandingPage() {
-    if (!courseTitle || !courseDescription || !basicInfo.category || !imageFile) {
+  async function onSaveCourseLandingPage() {
+    if (!courseTitle) {
+      setNotification({
+        message: 'Please enter a course title.',
+        visible: true,
+        bgColor:'red'
+      });
       return;
     } 
+    if (!courseDescription) {
+      setNotification({
+        message: 'Please enter a course description.',
+        visible: true,
+        bgColor:'red'
+      });
+      return;
+    }
+    if (!basicInfo.category) {
+      setNotification({
+        message: 'Please select a category.',
+        visible: true,
+        bgColor:'red'
+      });
+      return;
+    }
+    // if (!imageFile || !imageURL) {
+    //   setNotification({
+    //     message: 'Please select an image file.',
+    //     visible: true,
+    //     bgColor:'red'
+    //   });
+    //   return;
+    // }
+
     const course = {
-      _id: null,
+      _id: null || globalCourseData?._id,
       instructorId: localStorage.getItem('_id'),
       name: courseTitle,
       description: courseDescription,
       category: basicInfo.category,
       imageFile: imageFile,
-      imageUrl: null,
+      imageUrl: imageURL,
+      publish: false,
     };
-    dispatch(setCourseData(course));
+   
+    dispatch(setCourseType('update'));
+    if (courseType === 'create') {
+      createCourseMutation.mutate(course);
+    }
+    else if (courseType === 'update') {
+      updateCourseMutation.mutate(course);
+    }
   }
-
-
+  
   return (
     <InstructorCourseLandingPageWrapper>
-      {fileNotification?.valid ?
-        <Notification
-          message={fileNotification?.content}
-          visible={fileNotification?.valid}
-          onClose={() => setFileNotification({ content: '', valid: null })} /> :
-        <Notification
-          message={fileNotification?.content}
-          visible={fileNotification?.valid}
-          onClose={() => setFileNotification({ content: '', valid: null })}
-          bgColor={"var(--color-red-300)"} />}
+      <Notification 
+        message={notification.message} 
+        visible={notification.visible} 
+        bgColor={notification.bgColor} 
+        onClose={() => setNotification({
+          message: '',
+          visible: false,
+          bgColor: 'green'
+        })}/>
       <div className="course-landing-page-header">
         <h3 style={{ fontSize: "25px" }}>Course landing page</h3>
       </div>
@@ -110,15 +185,6 @@ export default function InstructorCourseLandingPage() {
         <CourseContent>
           <h3>Basic info</h3>
           <div className="basic-info">
-            {/* <select
-              value={basicInfo.level}
-              onChange={(e) => setBasicInfo({ ...basicInfo, language: e.target.value })}>
-              <option>-- Select Level --</option>
-              <option value="beginner-level">Beginner Level</option>
-              <option value="intermediate-level">Intermediate Level</option>
-              <option value="expert-level">Expert Level</option>
-              <option value="all-levels">All Levels</option>
-            </select> */}
             <select
               value={basicInfo.category}
               onChange={(e) => setBasicInfo({ ...basicInfo, category: e.target.value })}>
@@ -135,7 +201,7 @@ export default function InstructorCourseLandingPage() {
             <div className="course-image-choosing">
               <div >Upload your course image here. It must meet our course image quality standards to be accepted. Important guidelines: 750x422 pixels; .jpg, .jpeg,. gif, or .png. no text on the image.</div>
               <div style={{display: "flex", flexDirection: "row", marginTop: "50px"}}>
-                <img src={imageURL} alt="thumbnail"/>
+                <img src={imageURL || "/assets/placeholder.jpg"} alt="thumbnail"/>
                 <CustomButton
                   component="label"
                   role={undefined}

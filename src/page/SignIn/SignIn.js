@@ -12,6 +12,8 @@ import { callApiLogin } from "../../api/user";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useSelector, useDispatch } from "react-redux";
+import { setMessage, setSignUpState } from "../../redux/authSlice";
 
 import {
   OuterDiv,
@@ -26,6 +28,9 @@ import {
 const SignIn = () => {
   const { setIsAuthenticated, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const isSignUp = useSelector(state => state.auth.signUp);
+  const signUpMessage = useSelector(state => state.auth.message);
+  const dispatch = useDispatch();
   const [notification, setNotification] = useState({
   });
   const [state, setState] = useState({
@@ -49,6 +54,7 @@ const SignIn = () => {
     (loginDetails) => callApiLogin(loginDetails), // This function should return a Promise from your API call
     {
       onSuccess: (data) => {
+        console.log(data);
         if (data.success) {
           // Handle successful login here
           // const role = JSON.stringify(data.metadata.ROLE);
@@ -66,8 +72,9 @@ const SignIn = () => {
         }
         else {
           setNotification({
-            content: data.message,
+            message: data.message,
             visible: true,
+            bgColor: 'red'
           });
         }
       },
@@ -77,15 +84,17 @@ const SignIn = () => {
   const submitHandler = async () => {
     if (!state.email.includes("@")) {
       setNotification({
-        content: "Email must include @",
+        message: "Email must include @",
         visible: true,
+        bgColor: 'red'
       });
       return;
     }
     if (state.password.length < 10) {
       setNotification({
-        content: "Password must be at least 10 characters",
+        message: "Password must be at least 10 characters",
         visible: true,
+        bgcolor: 'red',
       });
       return;
     }
@@ -94,15 +103,27 @@ const SignIn = () => {
   };
 
   useEffect(() => {
-    console.log(isAuthenticated);
     if (isAuthenticated) {
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
 
+  useEffect(() => {
+    console.log(isSignUp);
+    if (isSignUp === true) {
+      setNotification({
+        message: signUpMessage,
+        visible: true,
+        bgColor: 'green'
+      });
+      dispatch(setMessage(''));
+      dispatch(setSignUpState(false));
+    }
+  }, [signUpMessage, isSignUp]);
+
   return (
     <OuterDiv>
-      <Notification message={notification.content} visible={notification.visible} onClose={() => setNotification({content: '', visible: false})}/>
+      <Notification message={notification.message} visible={notification.visible} bgColor={notification.bgColor} onClose={() => setNotification({message: '', visible: false, bgColor: 'green'})}/>
       <LoginBox>
         <Title>Log in to your Udemy account</Title>
         <Hr />

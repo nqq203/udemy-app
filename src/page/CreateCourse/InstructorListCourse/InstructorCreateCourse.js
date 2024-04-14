@@ -5,7 +5,7 @@ import InstructorCourseLandingPage from "../InstructorCourseCreation/InstructorC
 import InstructorCurriculum from "../InstructorCourseCreation/InstructorCurriculum";
 import InstructorPricing from "../InstructorCourseCreation/IntructorPricing";
 import { useSelector, useDispatch } from "react-redux";
-import { callApiCreateCourse, callApiGetInstructorCourseDetail } from "../../../api/course";
+// import { callApiCreateCourse, callApiGetInstructorCourseDetail } from "../../../api/course";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { setLecturesData } from "../../../redux/lecturesSlice";
@@ -15,123 +15,120 @@ import { setSectionsData, setFilesData, setSectionsIncludeLectures } from "../..
 export default function InstructorCreateCourse() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [activeItem, setActiveItem] = useState(1);
+  const [activeItem, setActiveItem] = useState(2);
   const [files, setFiles] = useState([]);
   const [fullCourse, setFullCourse] = useState(null);
   const course = useSelector(state => state.courses.courseData);
   const sections = useSelector(state => state.sections.fullSection);
   const filesLectures = useSelector(state => state.sections.files);
+  const courseType = useSelector(state => state.courseManagement.type);
   
-  // const { data: fetchedCourse } = useQuery(
-  //   ['instructorCourseDetail', courseId],
-  //   () => callApiGetInstructorCourseDetail(courseId),
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log(data);
-  //     },
-  //     onError: (error) => {
-  //       console.error("Error fetching data:", error);
-  //     },
-  //     staleTime: Infinity, // adjust depending on how frequently your data updates
-  //     enabled: !!courseId, // only run query if courseId is available
-  //     refetchOnWindowFocus: false, // set to true if you want fresh data when window is refocused
-  //   }
-  // );
-  
-  async function getCourseData(courseId) {
-    console.log(courseId);
-    const data = await callApiGetInstructorCourseDetail(courseId);
-    setFullCourse(data);
-  }
-
-  // useEffect(() => {
-  //   getCourseData(courseId);
-  // }, [courseId]);
-
   useEffect(() => {
-    console.log(fullCourse);
-  }, [fullCourse]);
-
-  const createCourseMutate = useMutation(
-    (course) => callApiCreateCourse(course), 
-    {
-      onSuccess: (data) => {
-        dispatch(setGlobalCourseData({
-          instructorId: null,
-          name:null,
-          description:null,
-          price:0
-        }));
-        dispatch(setCoursePrice(0));
-        dispatch(setLecturesData([]));
-        dispatch(setSectionsData([]));
-        dispatch(setFilesData([]));
-        dispatch(setSectionsIncludeLectures([]));
-        navigate("/instructor/courses")
-      }
+    if (courseType === 'create') {
+      setContentItems([{
+        id: 1,
+        title: "Curriculum",
+        disabled: true,
+      }]);
+      setPublishItems([{
+        id: 2,
+        title: "Course landing page",
+        disabled: false,
+      }, {
+        id: 3,
+        title: "Pricing",
+        disabled: true,
+      }]);
     }
-  );
+    if (courseType === 'update') {
+      setContentItems([{
+        id: 1,
+        title: "Curriculum",
+        disabled: false,
+      }]);
+      setPublishItems([{
+        id: 2,
+        title: "Course landing page",
+        disabled: false,
+      }, {
+        id: 3,
+        title: "Pricing",
+        disabled: false,
+      }]);
+    }
+  }, [courseType])
+
   const [courseData, setCourseData] = useState(
     {
       courseData: {},
       sections: [],
     }
   );
-  const contentItems = [
+  const [contentItems, setContentItems] = useState([
     {
       id: 1,
       title: "Curriculum",
-
+      disabled: true,
     }
-  ];
-  const publishItems = [
+  ]);
+  const [publishItems, setPublishItems] = useState([
     {
       id: 2,
       title: "Course landing page",
+      disabled: false,
     },
     {
       id: 3,
       title: "Pricing",
+      disabled: true,
     }
-  ];
+  ]);
 
   const getItemClassname = (id) => id === activeItem ? "is-active create-bar-item" : "create-bar-item";
 
   function onClickItem(id) {
-    setActiveItem(id);
-  }
-
-  function renderActiveComponent() {
-    switch (activeItem) {
-      case 1:
-        return <InstructorCurriculum />;
-      case 2:
-        return <InstructorCourseLandingPage />;
-      // case 3:
-      //   return <InstructorLevel />;
-      case 3:
-        return <InstructorPricing />;
-      default:
-        return <InstructorCourseLandingPage />;
+    if (courseType === 'create') {
+      const item = contentItems.concat(publishItems).find(it => it.id === id);
+      if (item && !item.disabled) {
+        setActiveItem(id);
+      }
+    } else {
+      setActiveItem(id);
     }
   }
 
-  useEffect(() => {
-    const listFiles = [course?.imageFile, ...filesLectures];
-    setFiles(listFiles);
-    setCourseData({
-      courseData: {
-        ...course,
-      },
-      sections: [
-        ...sections
-      ]
-    })
-  }, [course, sections, filesLectures]);
+  function renderActiveComponent() {
+    const currentItem = contentItems.concat(publishItems).find(it => it.id === activeItem);
+    const isDisabled = currentItem ? currentItem.disabled : false;
+
+    switch (activeItem) {
+      case 1:
+        return <InstructorCurriculum disabled={isDisabled} />;
+      case 2:
+        return <InstructorCourseLandingPage disabled={isDisabled} />;
+      case 3:
+        return <InstructorPricing disabled={isDisabled} />;
+      default:
+        return <InstructorCourseLandingPage disabled={isDisabled} />;
+    }
+  }
+
+  // useEffect(() => {
+  //   const listFiles = [course?.imageFile, ...filesLectures];
+  //   setFiles(listFiles);
+  //   setCourseData({
+  //     courseData: {
+  //       ...course,
+  //     },
+  //     sections: [
+  //       ...sections
+  //     ]
+  //   })
+  // }, [course, sections, filesLectures]);
 
   async function onClickSubmitCreateCourse() {
     // await callApiCreateCourse({newCourse: courseData, files: files}); 
-    createCourseMutate.mutate({newCourse: courseData, files: files});
+    // createCourseMutate.mutate({newCourse: courseData, files: files});
   }
 
   return (
@@ -140,19 +137,25 @@ export default function InstructorCreateCourse() {
         <CreateContent>
           <h4>Create your content</h4>
           {contentItems.map((item) => {
-            return <div key={item.id} className={getItemClassname(item.id)} onClick={() => onClickItem(item.id)}>
-              <div className="icon"></div>
-              <div>{item.title}</div>
-            </div>
+            const itemClassname = getItemClassname(item.id) + (item.disabled ? ' disabled' : '');
+            return (
+              <div key={item.id} className={itemClassname} onClick={() => onClickItem(item.id)}>
+                <div className="icon"></div>
+                <div>{item.title}</div>
+              </div>
+            );
           })}
         </CreateContent>
         <PublishCourse>
           <h4>Publish your course</h4>
           {publishItems.map((item) => {
-            return <div key={item.id} className={getItemClassname(item.id)} onClick={() => onClickItem(item.id)}>
-              <div className="icon"></div>
-              <div>{item.title}</div>
-            </div>
+            const itemClassname = getItemClassname(item.id) + (item.disabled ? ' disabled' : '');
+            return (
+              <div key={item.id} className={itemClassname} onClick={() => onClickItem(item.id)}>
+                <div className="icon"></div>
+                <div>{item.title}</div>
+              </div>
+            );
           })}
         </PublishCourse>
         <CustomButton width={"100%"} bgColor={"var(--color-purple-300)"} fontWeight={"700"} hoverBgColor={"var(--color-purple-400)"}
@@ -179,11 +182,27 @@ const InstructorCreateCourseWrapper = styled.div`
 
   .create-bar-item {
     display: flex;
-    flex-direction: row;
-    padding: 10px 20px;
-    border-left: 10px solid var(--color-white);
-    margin: 10px 0;
+    align-items: center;
+    padding: 12px 16px;
+    border-left: 3px solid transparent; // subtle border for all items
+    margin: 8px 0;
     cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+
+    &:hover, &.is-active {
+      background-color: var(--color-gray-200); // subtle hover background
+      border-left-color: var(--color-purple-300); // active or hover state
+    }
+
+    .icon {
+      margin-right: 10px; // space between icon and text
+    }
+
+    &.disabled {
+      opacity: 0.6;
+      pointer-events: none; // Disable pointer events for disabled items
+      cursor: not-allowed;
+    }
   }
 
   h4 {
@@ -212,10 +231,12 @@ const CreateCourseMain = styled.div`
 const CreateContent = styled.div`
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 `
 
 const PublishCourse = styled.div`
   margin-top: 30px;
+  cursor: pointer;
 `
 
 const CustomButton = styled(Button)`

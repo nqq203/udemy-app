@@ -1,7 +1,7 @@
 import api from './api';
 
 export const callApiCreateAccount = async (userData) => {
-  const { data } = await api.post('/signup', userData);
+  const { data } = await api.post('/users/signup', userData);
   return data;
 };
 

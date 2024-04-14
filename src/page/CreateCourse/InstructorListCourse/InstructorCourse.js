@@ -5,17 +5,24 @@ import { IoSearch } from "react-icons/io5";
 import { useState, useEffect, Fragment } from "react";
 import FilterDropdown from "../../../components/FilterDropdown/FilterDropdown";
 import moment from "moment";
-import { useQuery } from "react-query";
-import { 
+import { useMutation, useQuery } from "react-query";
+import {
   callApiGetListCourses,
-  callApiGetCourseByName
+  callApiGetCourseByName,
+  callApiGetInstructorCourseDetail,
+  callApiDeleteCourse
 } from "../../../api/course";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import FormRequirement from "../../../components/FormRequirement/FormRequirement";
 import { Backdrop } from "../../../components/Backdrop/Backdrop";
 import { useDispatch } from "react-redux";
-import { setClickedCourse } from "../../../redux/coursesSlice";
+import { setClickedCourse, setCourseData } from "../../../redux/coursesSlice";
+import { IoMdClose } from "react-icons/io";
+import { MdDelete } from "react-icons/md";
+import { BsFillPencilFill } from "react-icons/bs";
+import { setCourseType } from "../../../redux/courseManagementSlice";
+import { setSectionsData } from "../../../redux/sectionsSlice";
 
 export default function InstructorCourse() {
   const { isAuthenticated } = useAuth();
@@ -27,7 +34,17 @@ export default function InstructorCourse() {
   const [isOpenFormRequirement, setIsOpenFormRequirement] = useState(false);
   const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken"));
 
-  const { data: fetchedCourses, isSuccessFetch, isLoading, isError, refetch } = useQuery(
+  const deleteCourseMutate = useMutation(
+    (courseId) => callApiDeleteCourse(courseId),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        refetch();
+      },
+    }
+  )
+
+  const { data: fetchedCourses, refetch } = useQuery(
     "courseList",
     () => callApiGetListCourses(instructorId),
     {
@@ -40,6 +57,19 @@ export default function InstructorCourse() {
       staleTime: Infinity,
     }
   );
+
+  const courseDetailMutation = useMutation(
+    (courseId) => callApiGetInstructorCourseDetail(courseId),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        dispatch(setSectionsData(data?.metadata?.sections));
+        dispatch(setCourseData(data?.metadata?.course));
+        dispatch(setCourseType('update'));
+        navigate("/instructor/create");
+      },
+    }
+  )
 
   const handleSearch = async () => {
     try {
@@ -57,7 +87,6 @@ export default function InstructorCourse() {
 
   useEffect(() => {
     setFilteredItems(fetchedCourses?.metadata);
-    // console.log(fetchedCourses?.metadata);
   }, [fetchedCourses]);
 
   useEffect(() => {
@@ -80,56 +109,85 @@ export default function InstructorCourse() {
     setIsOpenFormRequirement(false);
     navigate("/");
   }
-  
+
+  function onNavigateCreateCourse() {
+    dispatch(setCourseType("create"));
+    dispatch(setCourseData(null));
+  } 
+
+  const onEditCourse = async (courseId) => {
+    console.log(courseId); 
+    dispatch(setClickedCourse(courseId));
+    courseDetailMutation.mutate({courseId: courseId});
+  }
+
   return <InstructorCourseWrapper>
     {isOpenFormRequirement && (
       <>
         <Backdrop onClick={onCloseFormRequirement} />
-        <FormRequirement content={"You need to login to access to this functional"} btnContent={"Sign In"} onSubmit={() => navigate("/sign-in")} onClose={onCloseFormRequirement}/>
+        <FormRequirement content={"You need to login to access to this functional"} btnContent={"Sign In"} onSubmit={() => navigate("/sign-in")} onClose={onCloseFormRequirement} />
       </>
     )}
-    
+
     <CourseManagement>
-      <div className="course-management-title">Courses</div> 
+      <div className="course-management-title">Courses</div>
       <div className="course-management-header">
         <div className="course-management-header_search">
-          <input type="text" placeholder="Search your courses" onChange={(e) => setSearchInput(e.target.value)} value={searchInput}/>
-          <Button style={{display: "flex", alignItems: "center"}} onClick={handleSearch}><IoSearch /></Button>
+          <input type="text" placeholder="Search your courses" onChange={(e) => setSearchInput(e.target.value)} value={searchInput} />
+          <Button 
+            style={{ display: "flex", alignItems: "center" }} 
+            onClick={handleSearch}><IoSearch /></Button>
         </div>
         <FilterDropdown items={filteredItems} setFilteredItems={setFilteredItems} />
-        <Link to="/instructor/create"><Button className="course-management-header_newcourse">New Course</Button></Link>
+        <Link to="/instructor/create">
+          <Button 
+            className="course-management-header_newcourse"
+            onClick={onNavigateCreateCourse}>New Course</Button>
+        </Link>
       </div>
       {isAuthenticated &&
-      <div className="course-management-main">
-            {filteredItems?.length !== 0 ? filteredItems?.map((item, idx) => (
-                <div className="course-management-main_courseview" key={item.id} onClick={() => {
-                  dispatch(setClickedCourse(fetchedCourses?.metadata[idx]?._id));
-                  navigate("/instructor/create");
-                }} style={{cursor: "pointer"}}>
-                  <img src="../../../assets/engaging-course.jpg" alt="engaging-course"/>
-                  <div className="coures-management-main_courseview_title">
-                    <div>{item.name}</div>
-                    <div style={{position: "absolute", bottom: "0"}}>{moment(item.createdAt).format("hh:mm - DD/MM/YY")}</div>
-                  </div>
-                  <div className="course-management-main_courseview_statistic">
-                    <div>{item.price}</div>
-                    <div style={{position: "absolute", bottom: "0"}}>Sold: {item.amountSold}</div>
+        <div className="course-management-main">
+          {filteredItems?.length !== 0 ? filteredItems?.map((item, idx) => (
+            <div className="course-management-main_courseview"
+              key={item.id}>
+              <img src="../../../assets/engaging-course.jpg"
+                alt="engaging-course" />
+              <div className="coures-management-main_courseview_title">
+                <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+                  <div>{item.name}</div>
+                  <div className="course-management-main_courseview_UD">
+                    <CustomUpdate style={{ cursor: "pointer" }}
+                      onClick={() => onEditCourse(item?._id)} />
+                    <CustomClose style={{ cursor: "pointer" }} 
+                      onClick={() => deleteCourseMutate.mutate(item?._id)}/>
                   </div>
                 </div>
-            )):
-            <div style={{display: "flex", justifyContent: "center"}}>Course Not Found</div>}
-      </div>}
+                <div style={{ position: "absolute", bottom: "0", width: "300px" }}>Status: {item?.publish ? 'Public' : 'Private'}</div>
+              </div>
+
+              <div className="course-management-main_courseview_statistic">
+                <div>{item.price}</div>
+                <div style={{ position: "absolute", bottom: "0" }}>Sold: {item.amountSold}</div>
+              </div>
+            </div>
+          )) :
+            <div style={{ display: "flex", justifyContent: "center" }}>Course Not Found</div>}
+        </div>}
     </CourseManagement>
     <CourseCreation>
       <div className="course-creation_text">Jump Into Course Creation</div>
       <Link to="/instructor/create">
-        <Button bgColor={'var(--color-purple-300)'} fontWeight={700} hoverBgColor={'var(--color-purple-400)'}>Create Your Course</Button>
+        <Button 
+          bgColor={'var(--color-purple-300)'} 
+          fontWeight={700} 
+          hoverBgColor={'var(--color-purple-400)'}
+          onClick={onNavigateCreateCourse}>Create Your Course</Button>
       </Link>
     </CourseCreation>
     <div className="course-creation_description">Based on your experience, we think these resources will be helpful.</div>
     <CourseGetStarted>
       <div className="course-one-box">
-        <img src="../../../assets/engaging-course.jpg" alt="engaging-course"/>
+        <img src="../../../assets/engaging-course.jpg" alt="engaging-course" />
         <div className="course-one-box_content">
           <h4>Create an Engaging Course</h4>
           <div>Whether you've been teaching for years or are teaching for the first time, you can make an engaging course. We've compiled resources and best practices to help you get to the next level, no matter where you're starting.</div>
@@ -137,22 +195,22 @@ export default function InstructorCourse() {
       </div>
       <div className="course-two-box">
         <div className="course-create-video">
-          <img src="../../../assets/video-creation.jpg" alt="video-creation"/>
+          <img src="../../../assets/video-creation.jpg" alt="video-creation" />
           <div className="video-creation">
             <h4 className="video-creation-title">Get Started with Video</h4>
             <div className="video-creation-description">Quality video lectures can set your course apart. Use our resources to learn the basics.</div>
           </div>
         </div>
         <div className="course-build-audience">
-          <img src="../../../assets/build-audience.jpg" alt="build-audience"/>
+          <img src="../../../assets/build-audience.jpg" alt="build-audience" />
           <div className="build-audience">
             <h4 className="build-audience-title">Build Your Audience</h4>
             <div className="build-audience-description">Set your course up for success by building your audience.</div>
           </div>
         </div>
       </div>
-      <div className="course-one-box" style={{marginTop: "20px"}}>
-        <img src="../../../assets/engaging-course.jpg" alt="engaging-course"/>
+      <div className="course-one-box" style={{ marginTop: "20px" }}>
+        <img src="../../../assets/engaging-course.jpg" alt="engaging-course" />
         <div className="course-one-box_content">
           <h4>Join the New Instructor Challenge!</h4>
           <div>Get exclusive tips and resources designed to help you launch your first course faster! Eligible instructors who publish their first course on time will receive a special bonus to celebrate. Start today!</div>
@@ -283,7 +341,7 @@ const CourseManagement = styled.div`
 
   .course-management-title {
     font-weight: bold;
-    font-size: 30px;
+    font-size: 25px;
     font-family: var(--font-stack-heading-serif);
     margin-bottom: 20px;
   }
@@ -334,18 +392,22 @@ const CourseManagement = styled.div`
 
     .course-management-main_courseview {
       display: flex;
-      gap: 20px;
+      gap: 10px;
       border: 1px solid var(--color-gray-200);
       box-shadow: 0 2px 4px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.08);
-      padding: 20px 20px 20px 20px;
+      padding: 20px;
       margin-bottom: 20px;
       position: relative;
 
       .coures-management-main_courseview_title {
+        flex: 1 0 200px; // Flex-grow, flex-shrink, flex-basis set to 200px
+        max-width: 400px; // Sets a maximum width
         font-family: var(--font-stack-heading-serif);
-        position: relative;
         font-weight: 700;
-        width: 300px;
+        position: relative;
+        overflow: visible;
+        white-space: normal;
+        text-overflow: ellipsis;
       }
 
       .course-management-main_courseview_statistic {
@@ -357,6 +419,37 @@ const CourseManagement = styled.div`
         font-weight: 700;
         justify-content: flex-end;
       }
+
+      .course-management-main_courseview_UD {
+        flex-shrink: 0;
+        display: none;
+      }
+      
+      &:hover .course-management-main_courseview_UD {
+        display: flex;
+        gap: 10px;
+      }
+
+      @media screen and (max-width: 1055px) {
+        .course-management-main_courseview_title {
+          flex: 2 0 200px; // Adjusts basis to 150px on smaller screens
+          white-space: normal; // Allows text wrapping
+          overflow: visible;
+          text-overflow: clip;
+        }
+      }
     }
   } 
+`
+
+const CustomClose = styled(MdDelete)`
+  &:hover {
+    color: var(--color-purple-300);
+  }
+`
+
+const CustomUpdate = styled(BsFillPencilFill)`
+  &:hover {
+    color: var(--color-purple-300);
+  }
 `

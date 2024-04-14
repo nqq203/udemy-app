@@ -1,19 +1,62 @@
 import styled from "styled-components";
 import { Button } from "../../../components/Button/Button";
 import { useState } from "react";
+import { useMutation } from "react-query";
+import { callApiUpdateSection } from "../../../api/section";
+import { useDispatch, useSelector } from "react-redux";
+import { setSectionsData } from "../../../redux/sectionsSlice";
+import Notification from "../../../components/Notification/Notification";
 
 export default function FormEditSection({setIsOpenFormEditSection, sectionTitle, setSections, sections, sectionId, idx}) {
+  const dispatch = useDispatch();
+  const globalCourse = useSelector(state => state.courses.courseData);
   const [newSectionTitle, setNewSectionTitle] = useState(sectionTitle);
+  const [notification, setNotification] = useState({
+    message: '',
+    visible: false,
+    bgColor: 'green'
+  });
 
+  const updateSectionMutate = useMutation(
+    (sectionData) => callApiUpdateSection(sectionData),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        // Assuming sectionData contains sectionId
+        const sectionIdx = sections.findIndex(s => s._id === sectionId);
+
+        const newSections = [...sections];
+        const updatedSection = {
+          ...newSections[sectionIdx],
+          name: data?.metadata?.name // Safely update name if data.metadata.name exists
+        };
+
+        newSections[sectionIdx] = updatedSection;
+        setSections(newSections);
+        dispatch(setSectionsData(newSections));
+      },
+      onError: (error) => {
+        console.error('Failed to update section:', error);
+      }
+    }
+  );
+  
   const onSaveSection = () => {
     if (newSectionTitle === "" || newSectionTitle === null) {
+      setNotification({
+        message: 'Section title cannot be empty',
+        visible: true,
+        bgColor:'red'
+      });
       return;
     }
     if (sections !== null) {
-      const sectionIdx = sections.findIndex(s => s.sectionId === sectionId);
-      const newSections = [...sections];
-      newSections[sectionIdx].title = newSectionTitle;
-      setSections(newSections);
+      // setSections(newSections);
+      updateSectionMutate.mutate({
+        _id: sectionId,
+        courseId: globalCourse._id,
+        name: newSectionTitle,
+      });
     }
     setNewSectionTitle(null);
     setIsOpenFormEditSection(false);
@@ -21,6 +64,7 @@ export default function FormEditSection({setIsOpenFormEditSection, sectionTitle,
 
   return (
     <FormEditSectionWrapper>
+      <Notification message={notification?.message} visible={notification?.visible} bgColor={notification?.bgColor} onClose={() => setNotification({message: '', visible: false, bgColor: 'green'})}/>
       <div className="edit-section-content">
         <div className="edit-section_title"> Section {idx + 1}: </div>
         <input type="text" value={newSectionTitle} onChange={(e) => setNewSectionTitle(e.target.value)}/>

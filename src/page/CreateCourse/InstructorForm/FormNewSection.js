@@ -2,28 +2,58 @@ import { Button } from "../../../components/Button/Button";
 import { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
 import { generateUuid } from "../../../utils/Utils";
+import Notification from "../../../components/Notification/Notification";
+import { callApiCreateSection } from "../../../api/section";
+import { useMutation } from "react-query";
+import { useSelector, useDispatch } from "react-redux";
+import { setSectionsData } from "../../../redux/sectionsSlice";
 
 export default function FormNewSection({ sections, setSections, setIsOpenCreateNewSection }) {
+  const dispatch = useDispatch();
+  const globalCourse = useSelector(state => state.courses.courseData);
   const [sectionTitle, setSectionTitle] = useState(null);
+  const [notification, setNotification] = useState({
+    message: '',
+    visible: false,
+    bgColor: 'green'
+  });
+
+  const createSectionMutation = useMutation(
+    (courseData) => callApiCreateSection(courseData),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        setSections([...sections, data?.metadata]);
+        dispatch(setSectionsData([...sections, data?.metadata]));
+      }
+    }
+  )
+
   const onSubmitAddSection = () => {
     if (sectionTitle === "" || sectionTitle === null) {
+      setNotification({
+        message: 'Please enter a title',
+        visible: true,
+        bgColor: 'red'
+      })
       return;
     }
     if (sections !== null) {
-      setSections([...sections, {
+      createSectionMutation.mutate({
+        courseId: globalCourse._id,
         name: sectionTitle,
-        _id: "section" + generateUuid(),
-        courseId: null,
-      }]);
+        _id: null
+      });
     }
     setSectionTitle(null);
     setIsOpenCreateNewSection(false);
   }
 
-  
+
 
   return (
     <FormNewSectionWrapper>
+      <Notification message={notification.message} visible={notification.visible} bgColor={notification.bgColor} onClose={() => setNotification({message: '', visible: false, bgColor: 'green'})}/>
       <FormNewSectionContent>
         <div className="new-section">
           New Section:

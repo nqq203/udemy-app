@@ -16,6 +16,7 @@ const coursesSlice = createSlice({
       state.courseData = {...payload };
     },
     setCoursePrice: (state, {payload}) => {
+      console.log(payload);
       state.courseData = {...state.courseData, price: payload};
     },
     setClickedCourse: (state, {payload}) => {

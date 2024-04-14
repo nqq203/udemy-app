@@ -7,7 +7,8 @@ import {
 import {
   QueryClient,
   QueryClientProvider,
-} from 'react-query'
+} from 'react-query';
+import styled from 'styled-components';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import HomePage from './page/homepage/homepage';
@@ -39,8 +40,9 @@ export default function App() {
     <AuthProvider>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
+      <AppWrapper>
         <Header />
-        <main>
+        <MainContent>
           <Routes>
             <Route path="/" element={<HomePage />}/>
             <Route path="/sign-up" element={<SignUp />}/>
@@ -67,10 +69,22 @@ export default function App() {
               <Route path="learning-tools" element={<MyLearningTools />} />
             </Route>
           </Routes>
-        </main>
+        </MainContent>
         <Footer/>
+        </AppWrapper>
       </QueryClientProvider> 
     </BrowserRouter>
     </AuthProvider>
   );
 }
+
+const AppWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+`;
+
+const MainContent = styled.main`
+  flex: 1;
+  // Apply necessary padding or margins as needed for your layout
+`;

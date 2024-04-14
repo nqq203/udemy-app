@@ -4,6 +4,9 @@ import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCoursePrice } from "../../../redux/coursesSlice";
+import Notification from "../../../components/Notification/Notification";
+import { callApiUpdateCourse } from "../../../api/course";
+import { useMutation } from "react-query";
 
 // const listPriceTier = ["USD", "VND", "EUR"];
 // const listUSD = ["19.99", "22.99", "24.99", "27.99", "29.99", "34.99", "39.99"];
@@ -12,35 +15,51 @@ const listVND = ["390000", "449000", "499000", "549000", "599000", "649000", "69
 
 export default function InstructorPricing() {
   const globalPrice = useSelector(state => state.courses.courseData.price);
+  const globalCourseData = useSelector(state => state.courses.courseData);
+  const courseType = useSelector(state => state.courseManagement.type);
   const dispatch = useDispatch();
   // const [currency, setCurrency] = useState(listPriceTier[0]);
   const [tier, setTier] = useState(listVND);
   const [price, setPrice] = useState(globalPrice);
-  
-  // useEffect(() => {
-  //   // if (currency === "USD") {
-  //   //   setTier(listUSD);
-  //   // }
-  //   if (currency === "VND") {
-  //     setTier(listVND);
-  //   }
-  //   // else {
-  //   //   setTier(listEUR);
-  //   // }
-  // }, [currency])
+  const [notification, setNotification] = useState({
+    message: '',
+    visible: false,
+    bgColor: 'green'
+  });
+  const updateCourseMutation = useMutation(
+    (courseData) => callApiUpdateCourse(courseData),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+    }
+  )
 
   useEffect(() => {
+    if (courseType === 'create') 
+      setPrice(null);
     if (globalPrice)
       setPrice("đ" + globalPrice);
-  }, [globalPrice]);
+  }, [globalPrice, courseType]);
 
-  function onSavePrice() {
+  async function onSavePrice() {
     const newPrice = Number(price?.split("đ")[1]);
     dispatch(setCoursePrice(newPrice));
+    const newData = {
+      ...globalCourseData,
+      price: newPrice
+    }
+    updateCourseMutation.mutate(newData);
+    setNotification({
+      message: 'Price updated successfully',
+      visible: true,
+      bgColor: 'green'
+    });
   }
 
   return (
     <InstructorPricingWrapper>
+      <Notification message={notification.message} visible={notification.visible} bgColor={notification.bgColor} onClose={() => setNotification({message: '', visible: false, bgColor: 'green'})}/>
       <div className="pricing-page-header">
         <h3 style={{ fontSize: "25px" }}>Pricing</h3>
       </div>

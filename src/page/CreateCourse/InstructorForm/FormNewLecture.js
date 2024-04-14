@@ -4,6 +4,7 @@ import { IoMdClose } from "react-icons/io";
 import { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
 import { generateUuid } from "../../../utils/Utils";
+import Notification from "../../../components/Notification/Notification";
 
 
 function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCreateNewLecture, setLectures, lectures, sectionId}) {
@@ -11,7 +12,12 @@ function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCre
   const [lectureURL, setLectureURL] = useState(null);
   const [filename, setFilename] = useState(null);
   const [file, setFile] = useState(null);
-
+  const [notification, setNotification] = useState({
+    message: '',
+    visible: false,
+    bgColor: 'red'
+  });
+  
   function onSubmitLecture() {
     if (selectedType === 0 && file) {
       const id = "lecture" + generateUuid();
@@ -39,6 +45,7 @@ function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCre
 
   return (
     <FormTitleAndLinkWrapper>
+      <Notification message={notification.message} visible={notification.visible} bgColor={notification.bgColor} onClose={() => setNotification({message: '', visible: false, bgColor: 'green'})}/>
       <div className="form-title-and-link_title">
         <div style={{width: "120px"}}>New Lecture: </div>
         <input type="text" placeholder="Enter the title" onChange={(e) => setLectureTitle(e.target.value)} value={lectureTitle}/>

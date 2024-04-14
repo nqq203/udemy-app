@@ -6,9 +6,12 @@ import { useMutation } from "react-query";
 import { callApiCreateAccount } from "../../api/user";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setSignUpState, setMessage } from "../../redux/authSlice";
 
 export default function SignUp() {
   const { isAuthenticated } = useAuth();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const inputRefFullname = useRef(null);
   const inputRefEmail = useRef(null);
@@ -27,15 +30,16 @@ export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [notification, setNotification] = useState({
-    content: '',
-    valid: false
+    message: '',
+    visible: false,
+    bgColor: 'green'
   });
 
   function checkPasswordStrong(password) {
-    const veryStrong = /^(?=.*[a-z])(?=.*\d)(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,}$/;
+    const veryStrong = /^(?=.*[a-z])(?=.*\d)(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{10,}$/;
     const strongUppercase = /^(?=.*[a-z])(?=.*\d)(?=.*[A-Z])[A-Za-z\d]{8,}$/;
-    const strongSpecial = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,}$/;
-    const medium =  /^(?=.*[a-z])(?=.*\d)[a-z\d]{8,}$/;
+    const strongSpecial = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{10,}$/;
+    const medium =  /^(?=.*[a-z])(?=.*\d)[a-z\d]{10,}$/;
     const weakNums =  /^\d+$/;
     const weakLetters = /^[A-Za-z]+$/;
     
@@ -97,31 +101,42 @@ export default function SignUp() {
   }, [password])
 
   function onBlurInput() {
-    if (password === '')
+    if (password === '' || !password)
       setFocusInputPassword(false);
-    if (email === '')
+    if (email === '' || !email)
       setFocusInputEmail(false);
-    if (fullname === '')
+    if (fullname === '' || !fullname)
       setFocusInputFullname(false);
     return;
   }
 
   const mutation = useMutation(callApiCreateAccount, {
     onSuccess: (data) => {
-      setNotification({
-        content: 'Sign up successfully!',
-        valid: true
-      });
-    },
-    onError: (error) => {
-      setNotification({
-        content: error.response.data,
-        valid: false
-      });
-    },
+      console.log(data);
+      if (data.success) {
+        dispatch(setSignUpState(true));
+        dispatch(setMessage(data.message));
+        navigate("/sign-in");
+      }
+      else {
+        setNotification({
+          message: data.message,
+          visible: true,
+          bgColor: 'red'
+        });
+      }
+    }
   });
   
   async function handleOnSubmitRegistration() {
+    if (password.length < 10) {
+      setNotification({
+        message: 'Password must be at least 10 characters long',
+        visible: true,
+        bgColor: 'red'
+      });
+      return;
+    }
     const newUser = {
       fullname: fullname,
       email: email,
@@ -140,7 +155,11 @@ export default function SignUp() {
 
   return (
     <SignUpWrapper>
-      <Notification message={notification?.content} visible={notification?.valid} onClose={() => setNotification({content: '', valid: false})}/>
+      <Notification 
+        message={notification?.message} 
+        visible={notification?.visible} 
+        bgColor={notification?.bgColor} 
+        onClose={() => setNotification({message: '', visible: false, bgColor: 'green'})}/>
       <SignUpTitle>Sign up and start learning</SignUpTitle>
       <CustomFormGroup>
         <FormControl onClick={() => inputRefFullname.current.focus()}>

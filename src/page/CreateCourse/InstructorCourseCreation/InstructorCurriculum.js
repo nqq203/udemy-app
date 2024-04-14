@@ -11,52 +11,44 @@ import FormEditLecture from "../InstructorForm/FormEditLecture";
 import { useDispatch, useSelector } from "react-redux";
 import { setSectionsData, setSectionsIncludeLectures, setFilesData } from "../../../redux/sectionsSlice";
 import { setLecturesData } from "../../../redux/lecturesSlice";
+import { useMutation } from "react-query";
+import { callApiDeleteSection } from "../../../api/section";
 
 export default function InstructorCurriculum() {
-  const dispatch = useDispatch();
   const [lectures, setLectures] = useState([]);
   const [sections, setSections] = useState([]);
-  const [sectionsResult, setSectionsResult] = useState([]);
   const [selectedSection, setSelectedSection] = useState(null);
   const [selectedLecture, setSelectedLecture] = useState(null);
-  const [files, setFiles] = useState([]);
   const [isOpenCreateNewSection, setIsOpenCreateNewSection] = useState(false);
   const [isOpenCreateNewLecture, setIsOpenCreateNewLecture] = useState(false);
   const [isOpenFormEditSection, setIsOpenFormEditSection] = useState(false);
   const [isOpenFormEditLecture, setIsOpenFormEditLecture] = useState(false);
   const globalSections = useSelector(state => state.sections.sections);
-  const globalFiles = useSelector(state => state.sections.files);
   const globalLectures = useSelector(state => state.lectures.lectures);
-  // useEffect(() => {
-  //   console.log(fetchedCourse);
-  // }, [fetchedCourse])
+  const dispatch = useDispatch();
 
+  const deleteSectionMutate = useMutation(
+    (sectionId) => callApiDeleteSection(sectionId),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      }
+    }
+  )
+  
   useEffect(() => {
+    console.log(globalSections);
     if (globalSections?.length > 0) {
       setSections(globalSections);
-      setFiles(globalFiles);
     }
-  }, [globalSections, globalFiles]);
+  }, [globalSections]);
 
   useEffect(() => {
+    console.log(globalLectures);
     if (globalLectures?.length > 0) {
-      setLectures(globalLectures)
-    } 
+      setLectures(globalLectures);
+    }
   }, [globalLectures]);
-
-  useEffect(() => {
-    const data = sections.map((section) => {
-      const tempLectures = lectures.filter((lecture) => lecture.sectionId === section._id);
-      const result = {
-        sectionData: section,
-        lectures: tempLectures,
-      }
-      return result;
-    });
-    const uploadedFiles = lectures.map((lecture) => lecture.file); 
-    setFiles(uploadedFiles);
-    setSectionsResult(data);
-  }, [lectures, sections]);
 
   const onDragStart = (event, index) => {
     event.dataTransfer.setData("sectionIndex", index);
@@ -102,10 +94,10 @@ export default function InstructorCurriculum() {
   };
   
   function onSaveCurriculum() {
-    dispatch(setSectionsIncludeLectures(sectionsResult));
-    dispatch(setSectionsData(sections));
-    dispatch(setLecturesData(lectures));
-    dispatch(setFilesData(files));
+    // dispatch(setSectionsIncludeLectures(sectionsResult));
+    // dispatch(setSectionsData(sections));
+    // dispatch(setLecturesData(lectures));
+    // dispatch(setFilesData(files));
   };
 
 
@@ -145,7 +137,7 @@ export default function InstructorCurriculum() {
                             }}/>
                           <MdDelete 
                             style={{cursor: "pointer"}}
-                            onClick={() => {
+                            onClick={async () => {
                               let newSections = [...sections];
                               let newLectures = [...lectures];
                               if (lectures.length > 0) {
@@ -154,6 +146,9 @@ export default function InstructorCurriculum() {
                               newSections = newSections.filter((section) => section._id !== sectionItem._id);
                               setSections(newSections);
                               setLectures(newLectures);
+                              deleteSectionMutate.mutate(sectionItem._id);
+                              dispatch(setSectionsData(newSections));
+                              dispatch(setLecturesData(newLectures));
                             }}/>
                         </div>
                     </div>)}
@@ -211,11 +206,11 @@ export default function InstructorCurriculum() {
           </ButtonCreateSection>
         </InstructorCreateSection>
       </div>
-      <CustomButton 
+      {/* <CustomButton 
           style={{fontFamily: "var(--font-stack-text)", color: "var(--color-white)", width: "10%", fontWeight: "600"}}
           onClick={onSaveCurriculum}>
             Save
-        </CustomButton>
+        </CustomButton> */}
     </InstructorCurriculumWrap>);
 }
 
