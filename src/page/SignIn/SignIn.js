@@ -58,7 +58,7 @@ const SignIn = () => {
         if (data.success) {
           // Handle successful login here
           // const role = JSON.stringify(data.metadata.ROLE);
-          console.log(data);
+          console.log( data.metadata);
 
           const { email, fullName, role, _id } = data.metadata.userInfo;
           localStorage.setItem('accessToken', data.metadata.accessToken);
@@ -67,7 +67,7 @@ const SignIn = () => {
           localStorage.setItem('role', role);
           localStorage.setItem('_id', _id);
           setIsAuthenticated(true);
-          // localStorage.setItem('role', role);
+          localStorage.setItem('role', role);
           navigate("/");
         }
         else {

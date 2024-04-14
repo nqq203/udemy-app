@@ -17,13 +17,16 @@ const isTokenExpired = (accessToken) => {
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [accessToken, setToken]  = useState(localStorage.getItem('accessToken'));
-
+  console.log(!accessToken)
   useEffect(() => {
-    if (!accessToken || isTokenExpired(accessToken)) {
+    if (!accessToken ) {
       // Log out the user
-      localStorage.removeItem('accessToken');
-      setToken(localStorage.getItem('accessToken'));
+      if (isTokenExpired(accessToken))
+      {
+        localStorage.removeItem('accessToken');
+        setToken(localStorage.getItem('accessToken'));
       setIsAuthenticated(false);
+      }
     }
     else {
       setIsAuthenticated(true);

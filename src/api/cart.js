@@ -2,6 +2,7 @@ import api from './api';
 
 export const callApiGetCart = async () => {
     const token = localStorage.getItem('accessToken');
+    console.log(token)
   const { data } = await api.get('/carts', { headers: { Authorization: `Bearer ${token}` } })
   return data;
 }
