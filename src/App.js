@@ -29,8 +29,8 @@ import ProfilePrivacy from './page/profile/profilePrivacy';
 import MyWishList from './page/myLearning/myWishList';
 import MyArchived from './page/myLearning/myArchived';
 import MyLearningTools from './page/myLearning/myLearningTools';
-import ProductDetail from "./pages/ProdDetailPage/ProductDetail";
 import { AuthProvider } from './context/AuthContext';
+import CourseDetail from "./page/courseDetail/CourseDetail";
 
 
 const queryClient = new QueryClient();
@@ -49,7 +49,7 @@ export default function App() {
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/shopping-cart" element={<ShoppingCart />} />
             <Route path="/view-list-courses" element={<ViewListSearch />}/>
-            <Route path="/detail" element={<ProductDetail></ProductDetail>} />
+            <Route path="/detail" element={<CourseDetail/>} />
             <Route path="/instructor" element={<InstructorLayout />} >
               <Route path="courses" index element={<InstructorCourse />}/>
               <Route path="create" element={<InstructorCreateCourse />}/>
@@ -64,8 +64,8 @@ export default function App() {
             <Route path="payment" element={<Payment />} />
             <Route path="my-courses">
               <Route path="learning" element={<MyCourses />} />
-              <Route path="wishlist" element={<MyWishList />}/>
-              <Route path="archived" element={<MyArchived />}/>
+              <Route path="wishlist" element={<MyWishList />} />
+              <Route path="archived" element={<MyArchived />} />
               <Route path="learning-tools" element={<MyLearningTools />} />
             </Route>
           </Routes>

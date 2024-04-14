@@ -1,5 +1,4 @@
-import styled from "styled-components";
-import ReviewCard from "../ReviewCard/ReviewCard";
+import ReviewCard from "./ReviewCard";
 const Reviews = () => {
   return (
     <div className="review-container">
