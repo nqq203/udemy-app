@@ -8,8 +8,11 @@ const CourseComparison = ({ course }) => {
       <div className="course-comparison-container">
         <div className="course-comparison-image-container">
           {/* image here */}
-            <img src={course.imageUrl} alt="" className="course-comparison-image" />
-
+          <img
+            src={course.imageUrl}
+            alt=""
+            className="course-comparison-image"
+          />
         </div>
         <div className="course-comparison-main-content">
           <a href="" className="course-comparison-title">
@@ -22,7 +25,8 @@ const CourseComparison = ({ course }) => {
         </div>
         <div className="course-comparison-content">
           <div className="ratings">
-            {course.ratings}{" "}
+            <span className="rating-score-container">{course.ratings}</span>
+
             <FaStar
               style={{
                 color: "RGB(180, 105, 14)",
