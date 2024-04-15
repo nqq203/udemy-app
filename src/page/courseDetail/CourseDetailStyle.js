@@ -2,6 +2,10 @@ import styled from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
 
 export const CourseDetailWrapper = styled.div`
+  & .course-content-container {
+    margin-bottom: 40px;
+  }
+
   .product-detail-body {
     max-width: 1184px;
     margin: 0 auto;
@@ -180,6 +184,8 @@ export const CourseComparisonWrapper = styled.div`
     width: 100%;
     margin: 0 0 0 8px;
     white-space: nowrap;
+    overflow-wrap: break-word;
+
   }
 
   .course-comparison-content {
@@ -194,6 +200,10 @@ export const CourseComparisonWrapper = styled.div`
     margin: 0 32px 0 24px;
     font-weight: 700;
     font-size: 14px;
+  }
+
+  & .price {
+    max-width: 60px;
   }
 
   .ratings {
@@ -212,11 +222,23 @@ export const CourseComparisonWrapper = styled.div`
   }
 
   & .course-comparison-image-container {
-    width: 68px;
+    width: 10em;
+  }
+
+  & .rating-score-container {
+    margin-right: 2px;
   }
 
   & .course-comparison-image {
     width: 100%;
+  }
+
+  & .course-comparison-title {
+    white-space: normal;
+    overflow-wrap: break-word;
+    text-decoration: none;
+    color: black;
+    font-weight: 700;
   }
 `;
 
