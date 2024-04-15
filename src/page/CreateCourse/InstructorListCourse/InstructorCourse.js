@@ -23,6 +23,7 @@ import { MdDelete } from "react-icons/md";
 import { BsFillPencilFill } from "react-icons/bs";
 import { setCourseType } from "../../../redux/courseManagementSlice";
 import { setSectionsData } from "../../../redux/sectionsSlice";
+import { setLecturesData } from "../../../redux/lecturesSlice";
 
 export default function InstructorCourse() {
   const { isAuthenticated } = useAuth();
@@ -62,10 +63,10 @@ export default function InstructorCourse() {
     (courseId) => callApiGetInstructorCourseDetail(courseId),
     {
       onSuccess: (data) => {
-        console.log(data);
-        dispatch(setSectionsData(data?.metadata?.sections));
+        dispatch(setSectionsData(data?.metadata?.sections || []));
         dispatch(setCourseData(data?.metadata?.course));
-        dispatch(setCourseType('update'));
+        dispatch(setLecturesData(data?.metadata?.lectures || []));
+        dispatch(setCourseType("update"));
         navigate("/instructor/create");
       },
     }
@@ -113,6 +114,8 @@ export default function InstructorCourse() {
   function onNavigateCreateCourse() {
     dispatch(setCourseType("create"));
     dispatch(setCourseData(null));
+    dispatch(setSectionsData([]));
+    dispatch(setLecturesData([]));
   } 
 
   const onEditCourse = async (courseId) => {

@@ -93,6 +93,10 @@ export default function InstructorCurriculum() {
     event.target.classList.remove("dragging");
   };
   
+  useEffect(() => {
+    console.log(sections, lectures);
+  }, [sections, lectures]);
+  
   function onSaveCurriculum() {
     // dispatch(setSectionsIncludeLectures(sectionsResult));
     // dispatch(setSectionsData(sections));
@@ -116,18 +120,18 @@ export default function InstructorCurriculum() {
               {sections?.map((sectionItem, idx) => {
                 return (
                   <Section 
-                    key={sectionItem._id}
+                    key={sectionItem?._id}
                     onDragOver={onDragOver}
                     onDrop={(e) => onDrop(e, idx)}
                     onDragEnd={onDragEnd}>
-                    {(isOpenFormEditSection && selectedSection === sectionItem._id) ?
-                    (<FormEditSection setIsOpenFormEditSection={setIsOpenFormEditSection} sectionTitle={sectionItem.name} setSections={setSections} sections={sections} sectionId={sectionItem._id} idx={idx}/>) :
+                    {(isOpenFormEditSection && selectedSection === sectionItem?._id) ?
+                    (<FormEditSection setIsOpenFormEditSection={setIsOpenFormEditSection} sectionTitle={sectionItem?.name} setSections={setSections} sections={sections} sectionId={sectionItem?._id} idx={idx}/>) :
                     (<div className="section-title" 
                       draggable="true"
                       onDragStart={(e) => onDragStart(e, idx)}
                       >
                         <div>Section {idx + 1}:</div>
-                        <div>{sectionItem.name}</div>
+                        <div>{sectionItem?.name}</div>
                         <div className="curriculum-update-delete">
                           <MdEdit  
                             style={{cursor: "pointer"}} 
@@ -141,12 +145,12 @@ export default function InstructorCurriculum() {
                               let newSections = [...sections];
                               let newLectures = [...lectures];
                               if (lectures.length > 0) {
-                                newLectures = newLectures.filter((lecture) => lecture.sectionId !== sectionItem._id);
+                                newLectures = newLectures.filter((lecture) => lecture.sectionId !== sectionItem?._id);
                               }
-                              newSections = newSections.filter((section) => section._id !== sectionItem._id);
+                              newSections = newSections.filter((section) => section?._id !== sectionItem?._id);
                               setSections(newSections);
                               setLectures(newLectures);
-                              deleteSectionMutate.mutate(sectionItem._id);
+                              deleteSectionMutate.mutate(sectionItem?._id);
                               dispatch(setSectionsData(newSections));
                               dispatch(setLecturesData(newLectures));
                             }}/>
@@ -154,9 +158,9 @@ export default function InstructorCurriculum() {
                     </div>)}
                     {lectures?.map((item, lectureIdx) => {
                       return <Fragment>
-                        {(item.sectionId === sectionItem._id) && 
+                        {(item.sectionId === sectionItem?._id) && 
                           <>
-                          {isOpenFormEditLecture && item._id === selectedLecture? 
+                          {isOpenFormEditLecture && item?._id === selectedLecture? 
                           (<FormEditLecture setIsOpenFormEditLecture={setIsOpenFormEditLecture} lectureTitle={item.title} setLectures={setLectures} lectures={lectures} lectureId={item.lectureId} idx={lectureIdx} imageURL={item.url}/>) :
                           (<LectureItem key={item.lectureId}>
                             <div>Lecture {lectureIdx + 1}: </div>
@@ -165,16 +169,16 @@ export default function InstructorCurriculum() {
                               <MdEdit  
                                 style={{cursor: "pointer"}} 
                                 onClick={() => {
-                                  setSelectedLecture(item._id);
+                                  setSelectedLecture(item?._id);
                                   setIsOpenFormEditLecture(true);
                                 }}/>
                               <MdDelete 
                                 style={{cursor: "pointer"}}
                                 onClick={() => {
-                                  setSelectedLecture(item._id);
+                                  setSelectedLecture(item?._id);
                                   let newLectures = [...lectures];
                                   if (lectures.length > 0) {
-                                    newLectures = newLectures.filter((lecture) => lecture._id !== item._id);
+                                    newLectures = newLectures.filter((lecture) => lecture?._id !== item?._id);
                                   }
                                   setLectures(newLectures);
                                 }}/>
@@ -183,13 +187,13 @@ export default function InstructorCurriculum() {
                           </>}
                       </Fragment>
                     })}
-                    {(isOpenCreateNewLecture && sectionItem._id === selectedSection) &&
-                      <FormNewLecture lectures={lectures} setLectures={setLectures} setIsOpenCreateNewLecture={setIsOpenCreateNewLecture} sectionId={sections[idx]._id}/>
+                    {(isOpenCreateNewLecture && sectionItem?._id === selectedSection) &&
+                      <FormNewLecture lectures={lectures} setLectures={setLectures} setIsOpenCreateNewLecture={setIsOpenCreateNewLecture} sectionId={sections[idx]?._id}/>
                     }
                     <ButtonCreateLecture
                       onClick={() => {
                         setIsOpenCreateNewLecture(true);
-                        setSelectedSection(sectionItem._id);
+                        setSelectedSection(sectionItem?._id);
                       }}>
                       <LuPlus /> <p>Curriculum Item</p>
                     </ButtonCreateLecture>

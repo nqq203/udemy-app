@@ -50,14 +50,14 @@ export default function FormEditSection({setIsOpenFormEditSection, sectionTitle,
       });
       return;
     }
-    if (sections !== null) {
+    // if (sections !== null) {
       // setSections(newSections);
       updateSectionMutate.mutate({
         _id: sectionId,
         courseId: globalCourse._id,
         name: newSectionTitle,
       });
-    }
+    // }
     setNewSectionTitle(null);
     setIsOpenFormEditSection(false);
   }

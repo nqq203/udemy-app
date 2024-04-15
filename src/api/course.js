@@ -66,10 +66,12 @@ export const callApiCreateOneCourse = async (courseData) => {
       'authorization': `Bearer ${accessToken}`,
     },
   });
+  console.log(data);
   return data;
 }
 
 export const callApiGetInstructorCourseDetail = async (courseId) => {
+  console.log(courseId);
   const accessToken = localStorage.getItem('accessToken');
   const { data } = await api.post('/courses/get-course-detail', courseId, {
     headers: {

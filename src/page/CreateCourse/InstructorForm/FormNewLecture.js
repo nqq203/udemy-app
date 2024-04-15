@@ -5,6 +5,10 @@ import { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
 import { generateUuid } from "../../../utils/Utils";
 import Notification from "../../../components/Notification/Notification";
+import { useMutation } from "react-query";
+import { callApiCreateLecture } from "../../../api/lecture";
+import { useDispatch } from "react-redux";
+import { setLecturesData } from "../../../redux/lecturesSlice";
 
 
 function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCreateNewLecture, setLectures, lectures, sectionId}) {
@@ -12,29 +16,81 @@ function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCre
   const [lectureURL, setLectureURL] = useState(null);
   const [filename, setFilename] = useState(null);
   const [file, setFile] = useState(null);
+  const dispatch = useDispatch();
   const [notification, setNotification] = useState({
     message: '',
     visible: false,
     bgColor: 'red'
   });
+
+  useEffect(() => {
+    console.log(sectionId);
+  }, [sectionId]);
+  
+  const createSectionMutation = useMutation(
+    (sectionData) => callApiCreateLecture(sectionData),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        setNotification({
+          message: data.message,
+          visible: true,
+          bgColor: 'green'
+        });
+        setIsOpenFormTitleAndLink(false);
+        setIsOpenCreateNewLecture(false);
+        setLectures([
+         ...lectures,
+          {
+            sectionId: data?.metadata?.sectionId,
+            _id: data?.metadata?._id,
+            title: data?.metadata?.title,
+            url: data?.metadata?.url,
+            duration: data?.metadata?.duration,
+            file: file,
+          }
+        ]);
+        dispatch(setLecturesData([
+          ...lectures,
+           {
+             sectionId: data?.metadata?.sectionId,
+             _id: data?.metadata?._id,
+             title: data?.metadata?.title,
+             url: lectureURL,
+             duration: 0,
+             file: file,
+           }
+         ]));
+      }
+    }
+  )
   
   function onSubmitLecture() {
+    console.log(sectionId);
+    if (lectureTitle === '' || !lectureTitle) {
+      setNotification({
+        message: 'Please enter a title.',
+        visible: true,
+        bgColor:'red'
+      });
+      return;
+    }
+    if (!file) {
+      setNotification({
+        message: 'Please select a video',
+        visible: true,
+        bgColor:'red'
+      });
+      return;
+    }
     if (selectedType === 0 && file) {
-      const id = "lecture" + generateUuid();
-      if (!file) {
-        return;
-      }
-      setLectures([
-      ...lectures,
-        {
-          sectionId: sectionId,
-          _id: id,
-          title: lectureTitle,
-          url: lectureURL,
-          duration: 0,
-          file: file,
-        }
-      ]);
+      createSectionMutation.mutate({
+        sectionId: sectionId,
+        title: lectureTitle,
+        url: lectureURL,
+        duration: 0,
+        videoFile: file,
+      })
     }
     setLectureTitle('');
     setLectureURL('');
