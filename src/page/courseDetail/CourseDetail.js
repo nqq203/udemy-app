@@ -8,39 +8,16 @@ import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
 const CourseDetail = ({ courseId }) => {
   // React query for fetching course details
-  const courseid = '660666f9b3f1e1cc048f2b57'
+  const courseid = "661bff158b6ed83b607773e6";
   const {
     isSuccess: isCourseSuccess,
     isError: isCourseError,
     data: courseData,
     error: courseError,
   } = useQuery({
-    queryKey: "course",
+    queryKey: "courseDetail",
     queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:8080/courses/${courseid}`
-      );
-      //console.log(`http://localhost:8080/courses/${courseid}`)
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const jsonData = await response.json();
-      return jsonData;
-    },
-  });
-
-  // fetching course's sections
-  const {
-    isSuccess: isSectionsSuccess,
-    isError: isSectionsError,
-    data: sectionsData,
-    error: sectionsError,
-  } = useQuery({
-    queryKey: "sections",
-    queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:8080/sections/${courseid}`
-      );
+      const response = await fetch(`http://localhost:8080/courses/${courseid}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -70,33 +47,34 @@ const CourseDetail = ({ courseId }) => {
   });
 
 
-  if (isSectionsError) {
-    console.log("Error fetching sections data" + sectionsError)
-  }
-
   if (isCourseError) {
-    console.log("Error fetching course data" + courseError)
+    console.log("Error fetching course data" + courseError);
   }
 
-  if (isCourseSuccess && isSectionsSuccess && isRelatedCoursesSuccess) {
+  if (isCourseSuccess && isRelatedCoursesSuccess) {
     return (
       <CourseDetailWrapper>
         <div style={{ position: "relative" }}>
           {/* Title Card */}
-          <TitleCard course={courseData.metadata} />
+          <TitleCard course={courseData.metadata.course.name} />
 
           {/* Sticky Sidebar */}
           <PurchaseSection
-            thumbnailImage={courseData.metadata.imageUrl}
-            price={courseData.metadata.price}
+            thumbnailImage={courseData.metadata.course.imageUrl}
+            price={courseData.metadata.course.price}
           />
         </div>
 
         <div className="product-detail-body">
           <div className="product-detail-main-content">
             {/* Course content */}
-            <CourseContent sections={sectionsData.metadata} />
-            <StudentAlsoBought courses={relatedCoursesData.metadata}></StudentAlsoBought>
+            <div className="course-content-container">
+              <CourseContent sections={courseData.metadata.sections} />
+            </div>
+
+            <StudentAlsoBought
+              // courses={relatedCoursesData.metadata}
+            ></StudentAlsoBought>
             {/* Reviews */}
           </div>
         </div>
