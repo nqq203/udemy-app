@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const CartContainer = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 48px 120px;
+    padding: 32px 120px;
 `
 
 export const CartItemName = styled.h3`

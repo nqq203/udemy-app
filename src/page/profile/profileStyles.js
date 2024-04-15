@@ -17,3 +17,10 @@ export const ProfileInfoContainer = styled.div`
         color: var(--color-gray-300);
     }
 `
+
+export const ProfileLoading = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 600px;
+`

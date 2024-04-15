@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 function useScrollPosition() {
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -8,10 +8,10 @@ function useScrollPosition() {
       setScrollPosition(window.scrollY);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 

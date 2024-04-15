@@ -8,6 +8,7 @@ export const SignUpWrapper = styled.div`
   flex-direction: column;
   margin: 0 auto;
   width: 400px;
+  font-family: var(--font-stack-heading);
 
   .signup-note {
     font-size: 12px;

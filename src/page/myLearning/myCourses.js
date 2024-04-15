@@ -1,30 +1,41 @@
+import { useQuery } from 'react-query';
 
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
 
-import MyLearningNavBar from "./myLearningNavbar";
-import CourseCard from "./courseCard";
-import { MyLearningHeadingContainer, MyLearningContainer } from "./myLearningStyle";
-import { courses } from "../data/courses";
+import CourseList from './courseList';
+import { MyCourseLoading } from "./myLearningStyle";
+import { callApiGetOrderByUser } from '../../api/order';
+
+const getOrders = async () => {
+  const userId = localStorage.getItem('_id');
+  const orders = await callApiGetOrderByUser(userId);
+  return orders;
+}
 
 export default function MyCourses() {
-    return (
-      <MyLearningContainer>
-        <MyLearningHeadingContainer>
-            <h1>My Learning</h1>
-            <MyLearningNavBar />
-        </MyLearningHeadingContainer>
+  const orderQuery = useQuery('orders', getOrders);
 
-        <Stack justifyContent='center'>
-          <Grid container my={8} px={24}>
-            {courses.map((course, index) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={index} mb={4} sx={{display: 'flex', justifyContent: 'center'}}>
-                <CourseCard course={course} />
-              </Grid>
-            ))}
-          </Grid>
-        </Stack>
-        
-      </MyLearningContainer>
-    )
+  const orders = orderQuery.data;
+  if(orders === undefined || !orders.success){
+    return;
+  }
+  if(orderQuery.isLoading){
+    return (
+        <MyCourseLoading>
+            <CircularProgress color="inherit" />
+        </MyCourseLoading>
+    );
+  }
+
+  var myCourses = [];
+  const orderData = orders.metadata;
+  for(var i = 0; i < orderData.length; i++){
+    for(var j = 0; j < orderData[i].items.length; j++){
+      myCourses.push(orderData[i].items[j].itemId);
+    }
+  }
+ 
+  return (
+    <CourseList courses={myCourses} />
+  )
 }
