@@ -20,10 +20,10 @@ export const callApiGetUserByEmail = async (userEmail) => {
   return data;
 }
 
-export const callApiGetUserById = async (userId) => {
+export const callApiGetUserById = async (id) => {
   const { data } = await api.get('/users/id', { 
     params:{ 
-      userId
+      id
     }
   });
   return data;

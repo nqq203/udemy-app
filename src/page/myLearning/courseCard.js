@@ -36,18 +36,31 @@ export default function CourseCard({ course }) {
   return (
     <Card sx={{ maxWidth: 250 }}>
       <CardMedia
-        sx={{ height: 140 }}
-        image="/images/courses/reactnative.png"
+        sx={{ width: 250, height: 140 }}
+        image={course.imageUrl}
         title={course.name}
       />
-      <CardContent sx={{paddingTop: 0}}>
-        <MyCourseCardItemName variant="h6" fontWeight={600}>
-            {course.name}
-        </MyCourseCardItemName>
+      <CardContent sx={{
+        height: 160,
+        paddingTop: 0, 
+        paddingBottom: 0,
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'space-between',
+        alignItems: 'space-between',
+        "&:last-child": {
+          paddingBottom: 1
+        }
+      }}>
+        <div>
+          <MyCourseCardItemName variant="h6" fontWeight={600}>
+              {course.name}
+          </MyCourseCardItemName>
 
-        <MyCourseCardItemDescription>
-            By {instructor ? instructor.metadata.fullName : ""}
-        </MyCourseCardItemDescription>
+          <MyCourseCardItemDescription>
+              By {instructor ? instructor.metadata.fullName : ""}
+          </MyCourseCardItemDescription>
+        </div>
 
         <MyCourseRating>
           <Rating name="simple-controlled" value={value} onChange={(event, newValue) => { setValue(newValue);}}/>
