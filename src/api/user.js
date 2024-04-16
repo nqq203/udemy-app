@@ -16,6 +16,7 @@ export const callApiGetUserByEmail = async (userEmail) => {
       email: userEmail
     }
   });
+  console.log(data);
   return data;
 }
 

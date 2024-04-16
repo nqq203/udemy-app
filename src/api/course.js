@@ -112,9 +112,17 @@ export const callApiDeleteCourse = async (courseId) => {
   return data;
 }
 
- 
 export const callApiGetUserCourses = async (courses) => {
   const { data } = await api.get('/courses/get-user-courses', {
+    params:{
+      courses
+    }
+  })
+  return data;
+}
+
+export const callApiGetCartCourses = async (courses) => {
+  const { data } = await api.get('/courses/get-cart-courses', {
     params:{
       courses
     }
