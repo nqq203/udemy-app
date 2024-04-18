@@ -173,7 +173,7 @@ export const CourseItem = (props ) => {
     
     const handleCourseClick = () =>{
         // console.log("Click course");
-        navigate(`/view-lecture?courseId=${id}`);
+        navigate(`/course-detail/${id}`);
     }
 
     return(

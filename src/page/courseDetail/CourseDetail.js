@@ -5,10 +5,12 @@ import { CourseDetailWrapper } from "./CourseDetailStyle";
 import StudentAlsoBought from "./StudentsAlsoBought";
 import ReviewCard from "./ReviewCard";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import { useParams } from 'react-router-dom';
 
-const CourseDetail = ({ courseId }) => {
+const CourseDetail = () => {
   // React query for fetching course details
-  const courseid = "661bff158b6ed83b607773e6";
+  const { courseId } = useParams();
+  console.log(courseId);
   const {
     isSuccess: isCourseSuccess,
     isError: isCourseError,
@@ -17,7 +19,7 @@ const CourseDetail = ({ courseId }) => {
   } = useQuery({
     queryKey: "courseDetail",
     queryFn: async () => {
-      const response = await fetch(`http://localhost:8080/courses/${courseid}`);
+      const response = await fetch(`http://localhost:8080/courses/${courseId}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -27,31 +29,31 @@ const CourseDetail = ({ courseId }) => {
   });
 
   // fetching related course
-  const {
-    isSuccess: isRelatedCoursesSuccess,
-    isError: isRelatedCoursesError,
-    data: relatedCoursesData,
-    error: relatedCoursesError,
-  } = useQuery({
-    queryKey: "relatedCourses",
-    queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:8080/courses/${courseid}/related`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const jsonData = await response.json();
-      return jsonData;
-    },
-  });
+  // const {
+  //   isSuccess: isRelatedCoursesSuccess,
+  //   isError: isRelatedCoursesError,
+  //   data: relatedCoursesData,
+  //   error: relatedCoursesError,
+  // } = useQuery({
+  //   queryKey: "relatedCourses",
+  //   queryFn: async () => {
+  //     const response = await fetch(
+  //       `http://localhost:8080/courses/${courseId}/related`
+  //     );
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+  //     const jsonData = await response.json();
+  //     return jsonData;
+  //   },
+  // });
 
 
   if (isCourseError) {
     console.log("Error fetching course data" + courseError);
   }
 
-  if (isCourseSuccess && isRelatedCoursesSuccess) {
+  if (isCourseSuccess) {
     return (
       <CourseDetailWrapper>
         <div style={{ position: "relative" }}>
@@ -72,9 +74,9 @@ const CourseDetail = ({ courseId }) => {
               <CourseContent sections={courseData.metadata.sections} />
             </div>
 
-            <StudentAlsoBought
+            {/* <StudentAlsoBought
               // courses={relatedCoursesData.metadata}
-            ></StudentAlsoBought>
+            ></StudentAlsoBought> */}
             {/* Reviews */}
           </div>
         </div>
