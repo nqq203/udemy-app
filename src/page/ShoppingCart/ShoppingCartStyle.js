@@ -22,17 +22,18 @@ export const Title = styled.div`
 `;
 
 export const BoxContainer = styled.div`
-  margin: 2rem 0;
+  margin: 10px 0;
   display: flex;
   justify-content: space-between;
 `;
 
 export const Box1 = styled.div`
   width: 73%;
+  margin-right: 2rem;
 `;
 
 export const CourseContainer = styled.div`
-  /* margin: 0.5rem 0; */
+  margin: 5px 0; 
 `;
 
 export const Count = styled.div`
@@ -51,9 +52,8 @@ export const Currency = styled.div`
 `;
 
 export const TotalDiscount = styled.div`
-  color: var(--color-gray-200);
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: 2rem;
+  font-weight: 700;
 `;
 
 export const TotalText = styled.div`

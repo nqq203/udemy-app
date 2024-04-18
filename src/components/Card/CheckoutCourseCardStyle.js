@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 
 export const OuterDiv = styled(Link)`
   width: 100%;
-  padding: 0.5rem;
+  padding: 5px;
+  margin: 10px 0;
   display: flex;
   align-items: flex-start;
   border: 1px solid var(--color-gray-500);
@@ -69,8 +70,7 @@ export const Ratings = styled.div`
 `;
 
 export const RatingStats = styled.div`
-  width: 150px;
-  margin: 0 0.5rem;
+  align-items: center;
   display: flex;
   justify-content: space-between;
   font-size: 0.8rem;
@@ -85,18 +85,24 @@ export const RatingCount = styled.span`
   font-size: 0.8rem;
 `;
 
-export const CourseDetails = styled.div`
+export const CourseDetails = styled.ul`
+  display: flex;
+  flex-direction: row;
+  gap: 25px;
+  padding-left: 0px;
   font-size: 0.8rem;
   color: var(--color-gray-300);
 `;
 
 export const Box23 = styled.div`
   display: flex;
+  margin-left: auto;
+  margin-right: 1rem;
 `;
 
 export const ActionBox = styled.div`
   margin: 0 1rem;
-  width: 100px;√
+  width: 100px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -104,6 +110,7 @@ export const ActionBox = styled.div`
 
 export const PriceDetails = styled.div`
   font-size: 1rem;
+  display: flex-end;
 `;
 
 export const Price = styled.div`

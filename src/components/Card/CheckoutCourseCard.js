@@ -2,6 +2,7 @@ import React from 'react';
 import Tag from '../Tags/Tags';
 import { Button } from '../../components/Button/Button';
 import labelIcon from '../../page/icons/label.png';
+import Rating from '@mui/material/Rating';
 import {
   OuterDiv,
   Box1,
@@ -28,11 +29,11 @@ const CheckoutCourseCard = (props) => {
 
   const {
     id = 1,
-    img = '',
+    imageUrl = '',
     link = '/',
     ttl = 'xxx',
     authors = ['xxx'],
-    ratings = { totalratings: 0, count: 0 },
+    ratings = 0,
     duration = 0,
     lectures = 0,
     level = 'All',
@@ -46,7 +47,7 @@ const CheckoutCourseCard = (props) => {
     <OuterDiv to={link} style={extraCss}>
       <Box1>
         <ImgBox>
-          <Img src={img} alt='course thumbnail' />
+          <Img src={imageUrl} alt='course thumbnail' />
         </ImgBox>
         <Details>
           <Title>{ttl}</Title>
@@ -54,14 +55,14 @@ const CheckoutCourseCard = (props) => {
           <Ratings>
             {bestSeller ? <Tag /> : ''}
             <RatingStats>
-              <RatingNumber>{ratings.totalratings}</RatingNumber>
-              <RatingCount>({ratings.count} ratings)</RatingCount>
+              <Rating name="half-rating-read" value={ratings} precision={0.5} readOnly />
+              <RatingCount>({ratings} ratings)</RatingCount>
             </RatingStats>
           </Ratings>
           <CourseDetails>
-            <span>{duration} total hours</span>
-            <span className='crsDet, css.mid'>{lectures} lectures</span>
-            <span>{level} Levels</span>
+          <li style={{ listStyleType: 'none' }}>{duration} total hours</li>
+            <li className='crsDet, css.mid'>{lectures} lectures    </li>
+            <li>{level} Levels</li>
           </CourseDetails>
         </Details>
       </Box1>
@@ -74,6 +75,7 @@ const CheckoutCourseCard = (props) => {
             color='var(--color-purple-300)'
             margin='0.2rem'
             padding='0'
+
           >
             Remove
           </Button>
@@ -93,16 +95,16 @@ const CheckoutCourseCard = (props) => {
           <Price>
             {new Intl.NumberFormat('en-IN', {
               style: 'currency',
-              currency: 'INR',
+              currency: 'VND',
             }).format(price)}
           </Price>
           {/* <PriceTagIcon src={labelIcon} alt='price tag' /> */}
-          <Discount>
+          {/* <Discount>
             {new Intl.NumberFormat('en-IN', {
               style: 'currency',
-              currency: 'INR',
+              currency: 'VND',
             }).format(discount)}
-          </Discount>
+          </Discount> */}
         </PriceDetails>
       </Box23>
     </OuterDiv>
