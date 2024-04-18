@@ -9,6 +9,7 @@ const coursesSlice = createSlice({
       description:null,
       price:0
     },
+    courseId: null,
   },
   courseId: null,
   reducers: {
