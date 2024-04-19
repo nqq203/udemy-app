@@ -5,6 +5,7 @@ import { MdLanguage, MdOutlineShoppingCart } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
 import { HeaderWrapper } from "./HeaderStyle";
 import { useAuth } from "../../context/AuthContext";
+import { callApiLogOut } from "../../api/user";
 
 const Header = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
@@ -30,9 +31,12 @@ const Header = () => {
     }
   }, [isAuthenticated, setIsAuthenticated]);
 
-  function onLogout() {
+  async function onLogout() {
+    const data = await callApiLogOut(localStorage.getItem("sessionId"));
     setIsAuthenticated(false);
     localStorage.clear();
+    window.location.href = "http://localhost:3030";
+    console.log(data);
   }
 
   return (
