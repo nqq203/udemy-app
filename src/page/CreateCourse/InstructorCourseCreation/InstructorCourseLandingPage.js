@@ -147,14 +147,14 @@ export default function InstructorCourseLandingPage({ isPublished, setIsPublishe
       });
       return;
     }
-    // if (!imageFile || !imageURL) {
-    //   setNotification({
-    //     message: 'Please select an image file.',
-    //     visible: true,
-    //     bgColor:'red'
-    //   });
-    //   return;
-    // }
+    if (!imageFile || !imageURL) {
+      setNotification({
+        message: 'Please select an image file.',
+        visible: true,
+        bgColor:'red'
+      });
+      return;
+    }
 
     const course = {
       _id: null || globalCourseData?._id,

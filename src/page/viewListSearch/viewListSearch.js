@@ -177,7 +177,7 @@ export default function ViewListCourse() {
                   {allCourses?.map((course, index) => (
                     <CourseRowItem
                         key={index}
-                        id = {"Course_" + index}
+                        id = {course._id}
                         title={course.name}
                         author={instructors[index]}
                         rating={course.ratings}

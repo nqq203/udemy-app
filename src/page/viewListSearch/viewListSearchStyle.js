@@ -67,8 +67,9 @@ export const ContentCourseStyle = styled.div`
     flex-direction: column;
 `;
 
-export const CourseRowItem = (props ) => {
+export const CourseRowItem = (props) => {
     // const key = k
+    const navigate = useNavigate();
     const titleCourse = props.title || "None"
     const authorCourse = props.author || "None"
     const ratingCourse = props.rating || "0"
@@ -81,8 +82,12 @@ export const CourseRowItem = (props ) => {
 
     const formattedPrice = priceCourse.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
 
+    const handleCourseClick = () => {
+      navigate(`/course-detail/${props.id}`);
+    }
+
     return(
-      <CourseRowItemStyle>
+      <CourseRowItemStyle onClick={handleCourseClick}>
           <Grid container spacing={2}>
               <Grid item xs={3.5}>
                   <img 
@@ -173,7 +178,7 @@ export const SearchResultContainer = (props) => {
 
   // const currentRating = queryParams.get('rating') || 0;
 
-  const handlePagination = (event,value) => {
+  const handlePagination = (event, value) => {
     const queryParams = new URLSearchParams(window.location.search);
     const rating = queryParams.get('rating') || 0;
     if(rating == 0){
@@ -260,7 +265,7 @@ export const SearchResultContainer = (props) => {
           {allCourses?.map((course, index) => (
             <CourseRowItem
                 key={index}
-                id = {"Course_" + index}
+                id = {course._id}
                 title={course.name}
                 author={instructors[index]}
                 rating={course.ratings}
