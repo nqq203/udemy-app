@@ -27,7 +27,6 @@ import Notification from "../../components/Notification/Notification";
 import { 
     PaymentContainer, 
     PaymentSummaryContainer, 
-    PaymentInfoContainer, 
     PaymentInfoItem,
     PaymentLoading,
     PaymentImage
@@ -38,6 +37,7 @@ import { callApiCreateOrder } from "../../api/order";
 import { changePriceFormat } from "../../utils/changePriceFormat";
 import { callApiGetCartCourses } from "../../api/course";
 import { CircularProgress } from "@mui/material";
+import { PayPalButtons, FUNDING } from "@paypal/react-paypal-js";
 
 const course = ["661de8ca20d64b253d60ece9", "661e4284775e2501b826b249"];
 
@@ -51,14 +51,13 @@ export default function Payment() {
     const [choice, setChoice] = React.useState('');
     const [expanded, setExpanded] = React.useState('');
     const [notification, setNotification] = React.useState({});
-    const { data, isLoading} = useQuery('courseDetails', () => getCourseDetails(course));
+    const { data, isLoading } = useQuery('courseDetails', () => getCourseDetails(course));
 
     const orderMutation = useMutation(
         (orderDetails) => callApiCreateOrder(orderDetails), 
         {
             onSuccess: (data) => {
                 if(data.success){
-                    console.log(data);
                     navigate('/payment/success');
                 }
                 else{
@@ -80,7 +79,85 @@ export default function Payment() {
         );
     }
     const courseData = courses.metadata;
-    const totalPrice = changePriceFormat(courseData.reduce((acc, course) => acc + course.price, 0));
+    const price = courseData.reduce((acc, course) => acc + course.price, 0)
+    const totalPrice = changePriceFormat(price);
+
+    var isPurchased = false;
+
+    const onCreateOrder = (data, actions) => {
+        return actions.order.create({
+            intent: "CAPTURE",
+            purchase_units: [
+                {
+                    amount: {
+                        currency_code: 'USD',
+                        value: price,
+                        breakdown: {
+                            item_total: {
+                                currency_code: 'USD',
+                                value: price
+                            }
+                        }
+                    },
+                    items: courseData.map(course => {
+                        return {
+                            name: course.name,
+                            description: course.name,
+                            unit_amount: {
+                                currency_code: 'USD',
+                                value: course.price
+                            },
+                            quantity: 1
+                        }
+                    }),
+                },
+            ],
+            application_context: {
+                shipping_preference: 'NO_SHIPPING'
+            }
+        });
+    }
+
+    const onApproveOrder = (data, actions) => {
+        return actions.order.capture().then((details) => {
+            const name = details.payer.name.given_name;
+            document.getElementById("order-id-notification").style.visibility = "visible";
+            document.getElementById("order-id").innerText = details.id;
+            setNotification({
+                content: `Transaction completed by ${name}, please Complete Checkout to finish the process.`,
+                visible: true,
+            });
+            // alert(`Transaction completed by ${name}, please Complete Checkout to finish the process.`);
+        });
+    }
+
+    // const onCreateOrder = async (data, actions) => {
+    //     return fetch("http://localhost:8080/orders/create-paypal-order", {
+    //         method: "post", headers: { "Content-Type": "application/json; charset=utf-8" },
+    //         body: JSON.stringify({ "intent": intent })
+    //     })
+    //     .then((response) => response.json())
+    //     .then((order) => { return order.id; });
+    // }
+
+    // const onApproveOrder = async (data, actions) => {
+    //     let order_id = data.orderID;
+    //     return fetch("http://localhost:8080/orders/complete-paypal-order", {
+    //         method: "post", headers: { "Content-Type": "application/json; charset=utf-8" },
+    //         body: JSON.stringify({
+    //             "intent": intent,
+    //             "order_id": order_id
+    //         })
+    //     })
+    //     .then((response) => response.json())
+    //     .then((order_details) => {
+    //         console.log(order_details); 
+    //         alert(`Transaction completed by ${order_details.payer.name.given_name}`);
+    //      })
+    //      .catch((error) => {
+    //         console.log(error);
+    //      });
+    // }
 
     const handleSelectCountryChange = (event) => {
         setChoice(event.target.value);
@@ -113,50 +190,29 @@ export default function Payment() {
             });
             return;
         }
-        else if(paymentMethod === 'card') {
-            orderData = {
-                userId: localStorage.getItem('_id'),
-                items: courseData.map(course => {
-                    return {
-                        courseId: course._id,
-                        price: course.price
-                    }
-                
-                }),
-                country: form.country.value,
-                paymentMethod: form.paymentMethod.value,
-                cardName: form.firstname.value,
-                cardNumber: form.cardnumber.value,  
-                cardMonth: form.month.value,
-                cardYear: form.year.value,
-                cardCVC: form.cvv.value,
-                totalPrice: totalPrice
-            };
 
-            if(orderData.cardName === '' 
-            || orderData.cardNumber === '' 
-            || orderData.cardMonth === '' 
-            || orderData.cardYear === '' 
-            || orderData.cardCVC === '') {
-                alert('Please fill out all required fields');
-                return;
-            }
+        if(document.getElementById("order-id").innerText === '') {
+            setNotification({
+                content: "Please complete the payment process",
+                visible: true,
+            });
+            return;
         }
-        else if (paymentMethod === 'paypal') {
-            orderData = {
-                userId: localStorage.getItem('_id'),
-                items: courseData.map(course => {
-                    return {
-                        itemId: course._id,
-                        price: course.price
-                    }
-                
-                }),
-                country: form.country.value,
-                paymentMethod: form.paymentMethod.value,
-                totalPrice: totalPrice
-            };
-        }
+        
+        orderData = {
+            userId: localStorage.getItem('_id'),
+            items: courseData.map(course => {
+                return {
+                    itemId: course._id,
+                    price: course.price
+                }
+            
+            }),
+            country: form.country.value,
+            paymentMethod: form.paymentMethod.value,
+            paymentId: document.getElementById("order-id").innerText,
+            totalPrice: totalPrice
+        };
 
         orderMutation.mutate(orderData);
     };
@@ -208,22 +264,13 @@ export default function Payment() {
                                         </AccordionSummary>
 
                                         <AccordionDetails>
-                                            <PaymentInfoContainer>
-                                                <h4>Name on card</h4>
-                                                <TextField name="firstname" variant="outlined" placeholder="Name on card" fullWidth/>
-
-                                                <h4>Card number</h4>
-                                                <TextField name="cardnumber" variant="outlined" placeholder="1234 5678 9012 3456" fullWidth/>
-
-                                                <h4>Expired date</h4>
-                                                <Stack spacing={2} direction="row">
-                                                    <TextField name="month" variant="outlined" placeholder="MM"/>
-                                                    <TextField name="year" variant="outlined" placeholder="YY"/>
-                                                </Stack>
-
-                                                <h4>CVC/CVV</h4>
-                                                <TextField name="cvv" variant="outlined" placeholder="CVC" fullWidth/>
-                                            </PaymentInfoContainer>
+                                            <PayPalButtons 
+                                                id="paypal-button"
+                                                style={{ layout: "vertical" }}
+                                                createOrder={(data, actions) => onCreateOrder(data, actions)}
+                                                onApprove={(data, actions) => onApproveOrder(data, actions)}
+                                                fundingSource={FUNDING.CARD}
+                                            />
                                         </AccordionDetails>
                                     </Accordion>
 
@@ -245,8 +292,15 @@ export default function Payment() {
                                                 In order to complete your transaction, we will transfer you over to PayPal's secure servers.
                                             </p>
                                             <h4>
-                                                The amount you will be charged by Paypal is {totalPrice}VNĐ.
+                                                The amount you will be charged by Paypal is {totalPrice}$.
                                             </h4>
+                                            <PayPalButtons 
+                                                id="paypal-button"
+                                                style={{ layout: "vertical", color: "silver" }}
+                                                createOrder={(data, actions) => onCreateOrder(data, actions)}
+                                                onApprove={(data, actions) => onApproveOrder(data, actions)}
+                                                fundingSource={FUNDING.PAYPAL}
+                                            />
                                         </AccordionDetails>
                                     </Accordion>
                                 </RadioGroup>
@@ -266,11 +320,15 @@ export default function Payment() {
                                             </Typography> 
                                         </Stack>
                                         <Typography variant="subtitle1">
-                                            {formatPrice}VNĐ
+                                            {formatPrice}$
                                         </Typography>
                                     </PaymentSummaryContainer>
                                 );
                             })}
+                            <h4 id="order-id-notification" style={{visibility: "hidden"}}>
+                                <span>Order Code: </span>
+                                <span id="order-id"></span>
+                            </h4>
                         </PaymentInfoItem>
                     </Grid>
 
@@ -280,24 +338,31 @@ export default function Payment() {
 
                             <Stack flexDirection='row' justifyContent='space-between'>
                                 <span>Original Price:</span>
-                                <span>{totalPrice}VNĐ</span>
+                                <span>{totalPrice}$</span>
                             </Stack>
                             <Stack flexDirection='row' justifyContent='space-between'>
                                 <span>Discounts:</span>
-                                <span>-0VNĐ</span>
+                                <span>-0$</span>
                             </Stack>
                             <Divider />
                             <Stack flexDirection='row' justifyContent='space-between' pb={2}>
                                 <span><b>Total:</b></span>
-                                <span><b>{totalPrice}VNĐ</b></span>
+                                <span><b>{totalPrice}$</b></span>
                             </Stack>
 
+                            <h4 id="order-id-notification" style={{visibility: "hidden"}}>
+                                <span>Order Code: </span>
+                                <span id="order-id"></span>
+                            </h4>
+
                             <Button 
+                                id="checkout-button"
                                 width='100%' 
                                 bgColor="var(--color-purple-300)" 
                                 hoverBgColor="var(--color-purple-400)" 
                                 fontWeight="700"
                                 type="submit"
+                                style={{}}
                             >
                                 Complete Checkout
                             </Button>

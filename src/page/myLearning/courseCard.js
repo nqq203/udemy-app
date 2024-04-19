@@ -58,7 +58,7 @@ export default function CourseCard({ course }) {
           </MyCourseCardItemName>
 
           <MyCourseCardItemDescription>
-              By {instructor ? instructor.metadata.fullName : ""}
+              By {instructor ? instructor.metadata?.fullName : ""}
           </MyCourseCardItemDescription>
         </div>
 
