@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 
@@ -15,10 +15,10 @@ const FilterDropdown = ({ items, setFilteredItems }) => {
         sortedItems.sort((a, b) => moment(a.createdAt).toDate() - moment(b.createdAt).toDate());
         break;
       case 'A-Z':
-        sortedItems.sort((a, b) => a.name?.localeCompare(b.title));
+        sortedItems.sort((a, b) => a?.name?.localeCompare(b.title));
         break;
       case 'Z-A':
-        sortedItems.sort((a, b) => b.name?.localeCompare(a.title));
+        sortedItems.sort((a, b) => b?.name?.localeCompare(a.title));
         break;
       default:
         break;

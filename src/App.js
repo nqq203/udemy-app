@@ -51,7 +51,7 @@ export default function App() {
             <Route path="/view-list-courses" element={<ViewListSearch />}/>
             <Route path="/view-lecture" element={<Lecture />}/>
             <Route path="/shopping-cart" element={<ShoppingCart />} />
-            <Route path="/detail" element={<CourseDetail/>} />
+            <Route path="/course-detail/:courseId" element={<CourseDetail/>} />
             <Route path="/instructor" element={<InstructorLayout />} >
               <Route path="courses" index element={<InstructorCourse />}/>
               <Route path="create" element={<InstructorCreateCourse />}/>

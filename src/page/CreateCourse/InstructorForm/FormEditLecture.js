@@ -1,59 +1,116 @@
 import styled from "styled-components";
 import { Button } from "../../../components/Button/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Notification from "../../../components/Notification/Notification";
+import { useMutation } from "react-query";
+import { callApiUpdateLecture } from "../../../api/lecture";
+import { useDispatch } from "react-redux";
+import { setLecturesData } from "../../../redux/lecturesSlice";
+import { setSectionsData } from "../../../redux/sectionsSlice";
 
-export default function FormEditLecture({setIsOpenFormEditLecture, lectureTitle, setLectures, lectures, lectureId, idx, imageURL}) {
+export default function FormEditLecture({ setIsOpenFormEditLecture, lectureTitle, setLectures, lectures, lectureId, idx, imageURL, setIsLoading }) {
+  const dispatch = useDispatch();
   const [newLectureTitle, setNewLectureTitle] = useState(lectureTitle);
-  const [newLectureURL, setNewLectureURL] = useState(imageURL);
+  const [newLectureFile, setNewLectureFile] = useState(null); // Chứa file mới nếu có
+  const [notification, setNotification] = useState({
+    message: '',
+    visible: false,
+    bgColor: 'green'
+  });
+
+  const updateLectureMutate = useMutation(
+    (lectureData) => callApiUpdateLecture(lectureData),
+    {
+      onMutate: () => {
+        setIsLoading(true);
+      },
+      onSuccess: (data) => {
+        console.log(data);
+        if (data?.success) {
+          setNotification({
+            message: data?.message,
+            visible: true,
+            bgColor: 'green'
+          });
+          const newLectures = [...lectures];
+          newLectures[idx] = data?.metadata;
+          setLectures(newLectures);
+          dispatch(setLecturesData(newLectures));
+        }
+        else {
+          setNotification({
+            message: data?.message,
+            visible: true,
+            bgColor:'red'
+          });
+        }
+        setIsLoading(false);
+      },
+      onError: () => {
+        setIsLoading(false);
+      }
+    }
+  )
 
   const onSaveLecture = () => {
     if (newLectureTitle === "" || newLectureTitle === null) {
+      setNotification({
+        message: 'Please enter a title',
+        visible: true,
+        bgColor: 'red'
+      });
       return;
     }
     if (lectures !== null) {
-      const lectureIdx = lectures.findIndex(s => s.lectureId === lectureId);
-      const newLectures = [...lectures];
-      newLectures[lectureIdx].title = newLectureTitle;
-      newLectures[lectureIdx].url = newLectureTitle;
-      setLectures(newLectures);
+      let newLectures = [...lectures];
+      let updatedLecture = { ...newLectures[idx] };
+      updatedLecture.title = newLectureTitle;
+      updateLectureMutate.mutate({
+        ...updatedLecture, 
+        file: newLectureFile
+      });
     }
-    setNewLectureTitle(null);
-    setNewLectureURL(null);
-    setIsOpenFormEditLecture(false);
+    setNewLectureTitle(lectureTitle); // Reset lại tiêu đề cũ
+    setNewLectureFile(null); // Clear file đã chọn
+    setIsOpenFormEditLecture(false); // Đóng form
+  }
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setNewLectureFile(file);
+    }
   }
 
   return (
     <FormEditLectureWrapper>
+      <Notification message={notification.message} visible={notification.visible} bgColor={notification.bgColor} onClose={() => setNotification({ message: '', visible: false, bgColor: 'green' })} />
       <div className="edit-lecture-title">
-        <div className="edit-lecture-title_"> Lecture {idx + 1}: </div>
-        <input type="text" value={newLectureTitle} onChange={(e) => setNewLectureTitle(e.target.value)}/>
+        <div className="edit-lecture-title_"> Title: </div>
+        <input type="text" value={newLectureTitle} onChange={(e) => setNewLectureTitle(e.target.value)} />
       </div>
       <div className="edit-lecture-resource">
-        <div className="edit-lecture-resource_"> Resource </div>
-        <div class="inputfile-box">
-          <input type="file" id="file" className="inputfile" onChange={(e) => {
-             setNewLectureURL(e.target.files[0]);
-             setNewLectureTitle(e.target.files[0] ? e.target.files[0].name : "");
-          }}/>
-          <label for="file">
-            <span id="file-name" className="file-box">{newLectureURL}</span>
-            <span class="file-button">
-              <i class="fa fa-upload" aria-hidden="true"></i>
-              Select File
-            </span>
+        <div className="edit-lecture-resource_"> Resource: </div>
+        <div className="inputfile-box">
+          <input type="file" id="file" className="inputfile" onChange={handleFileChange} />
+          <label className="edit-lecture-label" htmlFor="file">
+            <div id="file-name" className="file-box">
+              {newLectureFile ? newLectureFile.name : imageURL}
+            </div>
+            <div className="file-button">Select file</div>
           </label>
         </div>
       </div>
       <div className="edit-lecture_button">
-        <Button 
-            style={{ color: "var(--color-gray-500)", fontWeight: "700"}} 
-            bgColor="var(--color-white)" 
-            hoverBgColor="var(--color-white)"
-            padding="5px"
-            onClick={() => setIsOpenFormEditLecture(false)}>Cancel</Button>
-          <Button 
-            style={{ fontWeight: "700" }}
-            onClick={onSaveLecture}>Save Lecture</Button>
+        <Button
+          style={{ color: "var(--color-gray-500)", fontWeight: "700" }}
+          bgColor="var(--color-gray-100)"
+          hoverBgColor="var(--color-gray-200)"
+          margin="10px"
+          onClick={() => setIsOpenFormEditLecture(false)}>Cancel</Button>
+        <Button
+          style={{ fontWeight: "700" }}
+          onClick={onSaveLecture}>Save Lecture</Button>
       </div>
     </FormEditLectureWrapper>
   );
@@ -62,78 +119,56 @@ export default function FormEditLecture({setIsOpenFormEditLecture, lectureTitle,
 const FormEditLectureWrapper = styled.div`
   margin: 10px;
   border: 1px solid var(--color-gray-400);
-  padding: 10px 20px 0 20px;
+  padding: 10px 10px 0 10px;
   background-color: var(--color-white);
   
-
-  .edit-lecture-title {
-    display: flex;
-    flex-direction: row;
+  .edit-lecture-title, .edit-lecture-resource {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    margin-bottom: 20px;
     align-items: center;
-    gap: 20px;
+  }
 
-    .edit-lecture-title_ {
-      font-weight: bold;
-      width: 120px;
-    }
-    input[type=text] {
-      padding: 10px 15px;
-      font-size: 15px;
-      width: 100%;
-    }
-  
-    input:focus {
-      outline: none;
-    }
+  .edit-lecture-title_, .edit-lecture-resource_ {
+    font-weight: bold;
+  }
+
+  input[type=text] {
+    padding: 10px;
+    font-size: 15px;
+  }
+
+  input:focus {
+    outline: none;
+  }
+
+  input[type=file] {
+    display: none;
   }
 
   .edit-lecture_button {
-    display: flex;
-    justify-content: flex-end;
-    margin: 10px 10px;
-    gap: 30px;
+    margin: 10px;
   }
 
-  .edit-lecture-resource {
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    padding: 10px 0;
+  .edit-lecture-label {
+    display: grid;
+    grid-template-columns: 9fr 1fr;
+  }
 
-    .edit-lecture-resource_ {
-      font-weight: bold;
-      width: 125px;
-    }
+  .file-box {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    border: 1px solid var(--color-gray-400);
+    padding: 10px;
+    cursor: pointer;
+  }
 
-    .inputfile-box {
-      width: 100%;
-    }
-    
-    label {
-      display: flex;
-      flex-direction: row;
-      width: 100%;
-    }
-    
-    .inputfile {
-      display: none;
-    }
-    
-    .file-box {
-      display: inline-block;
-      width: 100%;
-      border: 1px solid;
-      padding: 5px 0px 5px 5px;
-      box-sizing: border-box;
-      height: calc(2rem - 2px);
-    }
-    
-    .file-button {
-      background: var(--color-gray-200);
-      padding: 5px;
-      border: 1px solid;
-      width: 100px;
-    }
+  .file-button {
+    border: 1px solid var(--color-gray-400);
+    background-color: var(--color-gray-200);
+    padding: 10px;
+    width: 70px;
+    justify-content: center;
   }
 `

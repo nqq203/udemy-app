@@ -2,13 +2,13 @@ import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto'; // Đảm bảo tất cả các thành phần được đăng ký tự động
 
-const EnrollmentChart = () => {
+const EnrollmentChart = ({ enrollmentData }) => {
   const data = {
     labels: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
     datasets: [
       {
         label: 'Tổng Enroll',
-        data: [120, 190, 300, 500, 200, 300, 450, 120, 250, 320, 210, 400], // Giả sử đây là số lượng enroll trong mỗi tháng
+        data: enrollmentData, // Giả sử đây là số lượng enroll trong mỗi tháng
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
           'rgba(54, 162, 235, 0.2)',
