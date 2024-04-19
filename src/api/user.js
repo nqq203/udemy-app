@@ -37,3 +37,23 @@ export const callApiChangePassword = async (newPassword) => {
   const { data } = await api.patch('/users/change-password', newPassword);
   return data;
 };
+
+export const callApiLoginWithGoogle = async () => {
+  window.location.href = `http://localhost:8080/users/google`;
+};
+
+export const callApiGetSessionMessage = async () => {
+  const { data } = await api.get('users/getSessionMessage', { withCredentials: true });
+  return data;
+}
+
+export const callApiLogOut = async (userData) => {
+  console.log(userData);
+  const accessToken = localStorage.getItem('accessToken');
+  const { data } = await api.post('users/logout', {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return data;
+}

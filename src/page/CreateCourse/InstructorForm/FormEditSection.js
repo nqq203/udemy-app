@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSectionsData } from "../../../redux/sectionsSlice";
 import Notification from "../../../components/Notification/Notification";
 
-export default function FormEditSection({setIsOpenFormEditSection, sectionTitle, setSections, sections, sectionId, idx}) {
+export default function FormEditSection({setIsOpenFormEditSection, sectionTitle, setSections, sections, sectionId, idx, setIsLoading}) {
   const dispatch = useDispatch();
   const globalCourse = useSelector(state => state.courses.courseData);
   const [newSectionTitle, setNewSectionTitle] = useState(sectionTitle);
@@ -20,6 +20,9 @@ export default function FormEditSection({setIsOpenFormEditSection, sectionTitle,
   const updateSectionMutate = useMutation(
     (sectionData) => callApiUpdateSection(sectionData),
     {
+      onMutate: () => {
+        setIsLoading(true);
+      },
       onSuccess: (data) => {
         console.log(data);
         // Assuming sectionData contains sectionId
@@ -34,8 +37,10 @@ export default function FormEditSection({setIsOpenFormEditSection, sectionTitle,
         newSections[sectionIdx] = updatedSection;
         setSections(newSections);
         dispatch(setSectionsData(newSections));
+        setIsLoading(false);
       },
       onError: (error) => {
+        setIsLoading(false);
         console.error('Failed to update section:', error);
       }
     }

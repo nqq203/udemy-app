@@ -30,14 +30,17 @@ import {
 } from "./ShoppingCartStyle";
 import { useQuery } from "react-query";
 import { callApiGetCart } from "../../api/cart";
-
+import { useAuth } from "../../context/AuthContext";
 const ShoppingCart =   () => {
   const [coupon, setCoupon] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState("");
   const [cartData, setCartData] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const { isAuthenticated } = useAuth()
   // const token = localStorage.getItem('accessToken')
   // console.log(token)
-  const { data, isSuccessFetch, isLoading,isError } = useQuery(
+  // let totalPrice = 0
+  const { data, isSuccessFetch, isLoading,isError, refetch } = useQuery(
     "cart", () => callApiGetCart(), {
       onSuccess: (data) => {
         console.log(localStorage.getItem('accessToken'));
@@ -49,80 +52,25 @@ const ShoppingCart =   () => {
       staleTime: Infinity,
     }
   )
+  useEffect(() => {
+    if(!isAuthenticated) {
+      // setUsername(null)
+    }
+    refetch()
+  }, [isAuthenticated])  
+
 
   useEffect(() => {
-      setCartData(data.metadata)
+    console.log("data", data)
+      setCartData(data?.metadata)
   }, [data, isSuccessFetch, cartData])
 
+  useEffect(() => {
+    setTotalPrice(cartData?.map((item) => item.price).reduce((a, b) => a + b, 0) || 0);
+  }, [cartData, totalPrice]);
   const [filteredItems, setFilteredItems] = useState([]);
   // let cartData = [
-  //   {
-  //     id: "660666f9b3f1e1cc048f2b57",
-  //     img: "https://via.placeholder.com/300x300.png?text=Course+Image",
-  //     link: "/course/android",
-  //     ttl: "The Complete Android 14 & Kotlin Development Masterclass",
-  //     authors: ["Koushil", "Nani"],
-  //     ratings: { totalratings: 0, count: 0 },
-  //     duration: 1700000,
-  //     lectures: 0,
-  //     level: "All",
-  //     price: 1700000,
-  //     discount: 0,
-  //     couponApplied: "",
-  //     bestSeller: false, 
-  //   }
-    
-  // ];
 
-  // const data = await useQuery();÷
-  
-  // const { data, isLoading, isError } = await useQuery("cart", callApiGetCart, {
-  //   onSuccess: (data) => {
-  //     console.log(localStorage.getItem('accessToken'));
-  //     console.log(data);
-  //      // Assign data.metadata to cartData
-  //   },
-  //   onError: (error) => {
-  //     console.error("Error fetching data:", error);
-  //   },
-  //   staleTime: Infinity,
-  // });
-  // console.log(data);
-  // cartData = data.metadata;
-  // if (isLoading) return <div>Loading...</div>;
-  // if (isError) return <div>Error fetching data</div>;
-  const whitelistedCourses = [
-    {
-      id: 1,
-      img: lock,
-      link: "/course/python",
-      ttl: "Learn Python: The complete python programming course",
-      authors: ["Koushil", "Nani"],
-      ratings: { totalratings: 4.3, count: 3445 },
-      duration: 10000,
-      lectures: 146,
-      level: "All",
-      price: 649,
-      discount: 3399,
-      couponApplied: "koushil mankali",
-      bestSeller: true,
-    },
-    {
-      id: 2,
-      img: lock,
-      link: "/course/python",
-      ttl: "Learn Python: The complete python programming course",
-      authors: ["Koushil", "Nani"],
-      ratings: { totalratings: 4.3, count: 3445 },
-      duration: 10000,
-      lectures: 146,
-      level: "All",
-      price: 649,
-      discount: 3399,
-      couponApplied: "koushil mankali",
-      bestSeller: true,
-    },
-  ];
 
   const clearCouponHandler = () => {
     setAppliedCoupon("");
@@ -153,32 +101,13 @@ const ShoppingCart =   () => {
             </Box1>
             <Box2>
               <TotalText>Total:</TotalText>
-              <Currency>
-                {new Intl.NumberFormat("en-IN", {
-                  style: "currency",
-                  currency: "INR",
-                }).format(600)}
-              </Currency>
               <TotalDiscount>
                 {new Intl.NumberFormat("en-IN", {
                   style: "currency",
-                  currency: "INR",
-                }).format(3399)}
+                  currency: "VND",
+                }).format(totalPrice)}
               </TotalDiscount>
-              <div className="ttlDisPer">81% off</div>
-              <Button
-                link="/checkout"
-                txt="Checkout"
-                bck="var(--color-purple-300)"
-                hovBck="var(--color-purple-500)"
-                extraCss={{
-                  width: "100%",
-                  margin: "1rem 0",
-                  padding: "1rem",
-                  border: "none",
-                  color: "var(--white)",
-                }}
-              />
+              
               <TotalText>Coupon code</TotalText>
               {appliedCoupon ? (
                 <CouponBox>
@@ -200,7 +129,18 @@ const ShoppingCart =   () => {
                 onChange={setCouponHandler}
                 btnClick={submitCoupon}
               />
+              <Link to="/payment">
+                        <Button 
+                            width='100%' 
+                            fontWeight="700" 
+                            bgColor="var(--color-purple-300)"
+                            hoverBgColor="var(--color-purple-400)"
+                        >
+                            Checkout
+                        </Button>
+              </Link>
             </Box2>
+
           </BoxContainer>
         ) : (
           <EmptyBody>
@@ -225,7 +165,7 @@ const ShoppingCart =   () => {
                 </Button>
               </Link>
             </CartBox>
-            <WhitelistedCourses>
+            {/* <WhitelistedCourses>
               <WhitelistedTitle>Recently wishlisted</WhitelistedTitle>
               {whitelistedCourses?.map((item) => {
                 return (
@@ -241,7 +181,7 @@ const ShoppingCart =   () => {
                   />
                 );
               })}
-            </WhitelistedCourses>
+            </WhitelistedCourses> */}
           </EmptyBody>
         )}
       </InnerDiv>

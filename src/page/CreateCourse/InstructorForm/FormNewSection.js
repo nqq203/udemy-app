@@ -8,7 +8,7 @@ import { useMutation } from "react-query";
 import { useSelector, useDispatch } from "react-redux";
 import { setSectionsData } from "../../../redux/sectionsSlice";
 
-export default function FormNewSection({ sections, setSections, setIsOpenCreateNewSection }) {
+export default function FormNewSection({ sections, setSections, setIsOpenCreateNewSection, setIsLoading }) {
   const dispatch = useDispatch();
   const globalCourse = useSelector(state => state.courses.courseData);
   const [sectionTitle, setSectionTitle] = useState(null);
@@ -21,10 +21,17 @@ export default function FormNewSection({ sections, setSections, setIsOpenCreateN
   const createSectionMutation = useMutation(
     (courseData) => callApiCreateSection(courseData),
     {
+      onMutate: () => {
+        setIsLoading(true);
+      },
       onSuccess: (data) => {
         console.log(data);
         setSections([...sections, data?.metadata]);
         dispatch(setSectionsData([...sections, data?.metadata]));
+        setIsLoading(false);
+      },
+      onError: () => {
+        setIsLoading(false);
       }
     }
   )
@@ -48,8 +55,6 @@ export default function FormNewSection({ sections, setSections, setIsOpenCreateN
     setSectionTitle(null);
     setIsOpenCreateNewSection(false);
   }
-
-
 
   return (
     <FormNewSectionWrapper>

@@ -9,20 +9,30 @@ import { useSelector, useDispatch } from "react-redux";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { setLecturesData } from "../../../redux/lecturesSlice";
-import { setCourseData as setGlobalCourseData, setCoursePrice } from "../../../redux/coursesSlice";
+import { setCourseData as setGlobalCourseData, setCoursePrice, setCourseData } from "../../../redux/coursesSlice";
 import { setSectionsData, setFilesData, setSectionsIncludeLectures } from "../../../redux/sectionsSlice";
+import { callApiUpdateCourse } from "../../../api/course";
+import Notification from "../../../components/Notification/Notification";
 
 export default function InstructorCreateCourse() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState(2);
-  const [files, setFiles] = useState([]);
-  const [fullCourse, setFullCourse] = useState(null);
-  const course = useSelector(state => state.courses.courseData);
-  const sections = useSelector(state => state.sections.fullSection);
-  const filesLectures = useSelector(state => state.sections.files);
   const courseType = useSelector(state => state.courseManagement.type);
+  const globalCourseData = useSelector(state => state.courses.courseData);
+  const [isPublished, setIsPublished] = useState(false);
   
+  const publishCourseMutate = useMutation(
+    (courseData) => callApiUpdateCourse(courseData), 
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        dispatch(setCourseData(data?.metadata));
+        setIsPublished(true);
+      }
+    }
+  );
+
+
   useEffect(() => {
     if (courseType === 'create') {
       setContentItems([{
@@ -58,12 +68,6 @@ export default function InstructorCreateCourse() {
     }
   }, [courseType])
 
-  const [courseData, setCourseData] = useState(
-    {
-      courseData: {},
-      sections: [],
-    }
-  );
   const [contentItems, setContentItems] = useState([
     {
       id: 1,
@@ -98,37 +102,24 @@ export default function InstructorCreateCourse() {
   }
 
   function renderActiveComponent() {
-    const currentItem = contentItems.concat(publishItems).find(it => it.id === activeItem);
-    const isDisabled = currentItem ? currentItem.disabled : false;
 
     switch (activeItem) {
       case 1:
-        return <InstructorCurriculum disabled={isDisabled} />;
+        return <InstructorCurriculum isPublished={isPublished} setIsPublished={setIsPublished}/>;
       case 2:
-        return <InstructorCourseLandingPage disabled={isDisabled} />;
+        return <InstructorCourseLandingPage isPublished={isPublished} setIsPublished={setIsPublished}/>;
       case 3:
-        return <InstructorPricing disabled={isDisabled} />;
+        return <InstructorPricing isPublished={isPublished} setIsPublished={setIsPublished}/>;
       default:
-        return <InstructorCourseLandingPage disabled={isDisabled} />;
+        return <InstructorCourseLandingPage isPublished={isPublished} setIsPublished={setIsPublished}/>;
     }
   }
 
-  // useEffect(() => {
-  //   const listFiles = [course?.imageFile, ...filesLectures];
-  //   setFiles(listFiles);
-  //   setCourseData({
-  //     courseData: {
-  //       ...course,
-  //     },
-  //     sections: [
-  //       ...sections
-  //     ]
-  //   })
-  // }, [course, sections, filesLectures]);
-
   async function onClickSubmitCreateCourse() {
-    // await callApiCreateCourse({newCourse: courseData, files: files}); 
-    // createCourseMutate.mutate({newCourse: courseData, files: files});
+    publishCourseMutate.mutate({
+      ...globalCourseData,
+      publish: true,
+    });
   }
 
   return (
@@ -159,7 +150,7 @@ export default function InstructorCreateCourse() {
           })}
         </PublishCourse>
         <CustomButton width={"100%"} bgColor={"var(--color-purple-300)"} fontWeight={"700"} hoverBgColor={"var(--color-purple-400)"}
-        onClick={onClickSubmitCreateCourse}> Submit </CustomButton>
+        onClick={onClickSubmitCreateCourse}> Publish </CustomButton>
 
       </CreateCourseOptionBar>
       <CreateCourseMain>

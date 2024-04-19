@@ -7,7 +7,8 @@ const coursesSlice = createSlice({
       instructorId: null,
       name:null,
       description:null,
-      price:0
+      price:0,
+      publish: false
     },
     courseId: null,
   },
@@ -22,6 +23,9 @@ const coursesSlice = createSlice({
     },
     setClickedCourse: (state, {payload}) => {
       state.courseId = payload;
+    },
+    setPublishedCourse: (state, {payload}) => {
+      state.courseData.publish = payload; 
     }
   },
 });

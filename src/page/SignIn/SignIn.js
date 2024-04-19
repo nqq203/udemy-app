@@ -8,12 +8,13 @@ import aImg from "../icons/apple-logo.svg";
 import email from "../icons/email.png";
 import lock from "../icons/lock.png";
 import Notification from "../../components/Notification/Notification";
-import { callApiLogin } from "../../api/user";
-import { useMutation } from "react-query";
+import { callApiGetSessionMessage, callApiLogin, callApiLoginWithGoogle } from "../../api/user";
+import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useSelector, useDispatch } from "react-redux";
 import { setMessage, setSignUpState } from "../../redux/authSlice";
+import Cookies from 'js-cookie';
 
 import {
   OuterDiv,
@@ -58,17 +59,18 @@ const SignIn = () => {
         if (data.success) {
           // Handle successful login here
           // const role = JSON.stringify(data.metadata.ROLE);
-          console.log( data.metadata);
+          console.log(data.metadata);
 
           const { email, fullName, role, _id } = data.metadata.userInfo;
           localStorage.setItem('accessToken', data.metadata.accessToken);
+          localStorage.setItem('token', data.metadata.accessToken);
           localStorage.setItem('email', email);
           localStorage.setItem('fullname', fullName);
           localStorage.setItem('role', role);
           localStorage.setItem('_id', _id);
-          setIsAuthenticated(true);
           localStorage.setItem('role', role);
-          navigate("/");
+          window.location.href = "http://localhost:3030";
+          setIsAuthenticated(true);
         }
         else {
           setNotification({
@@ -99,7 +101,7 @@ const SignIn = () => {
       return;
     }
 
-    loginMutation.mutate({email: state.email, password: state.password});
+    loginMutation.mutate({ email: state.email, password: state.password });
   };
 
   useEffect(() => {
@@ -123,14 +125,14 @@ const SignIn = () => {
 
   return (
     <OuterDiv>
-      <Notification message={notification.message} visible={notification.visible} bgColor={notification.bgColor} onClose={() => setNotification({message: '', visible: false, bgColor: 'green'})}/>
+      <Notification message={notification.message} visible={notification.visible} bgColor={notification.bgColor} onClose={() => setNotification({ message: '', visible: false, bgColor: 'green' })} />
       <LoginBox>
         <Title>Log in to your Udemy account</Title>
         <Hr />
         <BoxBody>
           {oauth?.map((item, id) => {
             return (
-              <OAuth key={id}>
+              <OAuth key={id} onClick={async () => id === 1 && await callApiLoginWithGoogle()}>
                 <img src={item?.img} alt="login img" className="icon" />
                 <span className="txt">{item?.txt}</span>
               </OAuth>

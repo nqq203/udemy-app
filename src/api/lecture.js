@@ -1,33 +1,18 @@
 import api from "./api";
 
-export const callApiCreateLecture = async (sectionData) => {
+export const callApiCreateLecture = async (lectureData) => {
   const formData = new FormData();
-    console.log(sectionData);
+  console.log(lectureData);
 
-    if (sectionData.videoFile && sectionData.videoFile instanceof File) {
-      formData.append('videoFile', sectionData.videoFile);
-    }
+  if (lectureData.videoFile && lectureData.videoFile instanceof File) {
+    formData.append('videoFile', lectureData.videoFile);
+  }
 
-    const { videoFile, ...sectionWithOutFile } = sectionData;
-    formData.append("sectionData", JSON.stringify(sectionWithOutFile));
+  const { videoFile, ...lecturesWithOutFile } = lectureData;
+  formData.append("lectureData", JSON.stringify(lecturesWithOutFile));
 
-    const accessToken = localStorage.getItem("accessToken");
-    const { data } = await api.post("/lectures/create", formData, {
-      headers: {
-        "authorization": `Bearer ${accessToken}`,
-      },
-    });
-  return data;
-}
-
-export const callApiUpdateLecture = async (sectionData) => {
-  const formData = new FormData();
-  
-  const { videoFile, ...sectionWithOutFile } = sectionData;
-  formData.append("videoFile", videoFile);
-  formData.append("sectionData", sectionWithOutFile);
   const accessToken = localStorage.getItem("accessToken");
-  const { data } = await api.put("sections/update-section",  formData, {
+  const { data } = await api.post("/lectures/create", formData, {
     headers: {
       "authorization": `Bearer ${accessToken}`,
     },
@@ -35,9 +20,27 @@ export const callApiUpdateLecture = async (sectionData) => {
   return data;
 }
 
-export const callApiDeleteLecture = async (sectionId) => {
+export const callApiUpdateLecture = async (lectureData) => {
+  const formData = new FormData();
+  console.log(lectureData);
+
+  formData.append('videoFile', lectureData.file);
+  const { file, ...lecturesWithOutFile } = lectureData;
+  formData.append("lectureData", JSON.stringify(lecturesWithOutFile));
+
   const accessToken = localStorage.getItem("accessToken");
-  const { data } = await api.delete("sections/delete-section", {sectionId: sectionId}, {
+  const { data } = await api.put("/lectures/update-lecture", formData, {
+    headers: {
+      "authorization": `Bearer ${accessToken}`,
+    },
+  });
+  return data;
+}
+
+export const callApiDeleteLecture = async (lectureId) => {
+  const accessToken = localStorage.getItem("accessToken");
+  console.log(lectureId);
+  const { data } = await api.delete(`lectures/delete-lecture/${lectureId}`, {
     headers: {
       "authorization": `Bearer ${accessToken}`,
     },
