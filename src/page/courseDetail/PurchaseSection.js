@@ -3,17 +3,30 @@ import { Button } from "../../components/Button/Button";
 import useScrollPosition from "../../hook/useScrollPosition";
 import { useState, useEffect } from "react";
 import { changePriceFormat } from "../../utils/changePriceFormat";
-const PurchaseSection = ({ thumbnailImage, price }) => {
+const PurchaseSection = ({ thumbnailImage, price, footerRef }) => {
   const scrollPosition = useScrollPosition();
-  console.log(scrollPosition);
   const [isFixed, setFixed] = useState(false);
+  const [topPosition, setTopPosition] = useState(false);
+  console.log(scrollPosition);
+
   function checkScroll() {
-    if (scrollPosition > 100 && scrollPosition < 365) {
-      setFixed(true);
-    } else if (scrollPosition > 365) {
-      setFixed(false);
-    } else {
-      setFixed(false);
+    if (footerRef.current) {
+      const footerRect = footerRef.current.getBoundingClientRect();
+      const footerTop = footerRect.top + window.scrollY;
+      // 510 is the approximate height of the purchase section
+      if (scrollPosition > 100 && scrollPosition < footerTop - 538) {
+        setFixed(true);
+        setTopPosition(null);
+      } else {
+        if (
+          window.scrollY + window.innerHeight >= footerTop &&
+          topPosition === null
+        ) {
+          // Set the top position to keep the section in place
+          setTopPosition(true);
+        }
+        setFixed(false);
+      }
     }
   }
 
@@ -22,7 +35,7 @@ const PurchaseSection = ({ thumbnailImage, price }) => {
   }, [scrollPosition]);
   return (
     <>
-      <PurchaseSectionWrapper isFixed={isFixed}>
+      <PurchaseSectionWrapper isFixed={isFixed} topPosition={topPosition}>
         <div className="sidebar-container">
           <div className="course-thumbnail-container">
             <img src={thumbnailImage} alt="" className="course-thumbnail-img" />

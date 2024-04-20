@@ -51,7 +51,7 @@ export const PurchaseSectionWrapper = styled.div`
     width: 23rem;
     margin-left: 796px;
     display: block;
-    top: 32px;
+    ${({ topPosition }) => (topPosition ?  `top: 1500px`: "top: 32px" )};
     padding: 0;
     z-index: 1;
     border-bottom: 1px solid #d1d7dc;

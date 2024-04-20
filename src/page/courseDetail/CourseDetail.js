@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { PropagateLoader } from "react-spinners";
 
-const CourseDetail = () => {
+const CourseDetail = ({ footerRef }) => {
   // React query for fetching course details
   const { courseId } = useParams();
   const [loading, setLoading] = useState(true);
@@ -69,20 +69,22 @@ const CourseDetail = () => {
         <div>
           <div style={{ position: "relative" }}>
             {/* Title Card */}
-            <TitleCard course={courseData.metadata.course.name} />
+            <TitleCard course={courseData.metadata.course} instructor={courseData.metadata.instructor} />
 
             {/* Sticky Sidebar */}
             <PurchaseSection
               thumbnailImage={courseData.metadata.course.imageUrl}
               price={courseData.metadata.course.price}
+              footerRef={footerRef}
             />
           </div>
           <div className="product-detail-body">
             <div className="product-detail-main-content">
               {/* Course content */}
               <div className="course-content-container">
-                <CourseContent sections={courseData.metadata.sections} />
+                <CourseContent sections={courseData.metadata.sections} lectures={courseData.metadata.lectures} />
               </div>
+              
 
               {/* <StudentAlsoBought
             // courses={relatedCoursesData.metadata}

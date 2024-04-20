@@ -2,53 +2,28 @@ import { useState, useEffect } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
 import { MdOndemandVideo } from "react-icons/md";
-import {
-  SectionContentWrapper,
-} from "./CourseDetailStyle";
+import { SectionContentWrapper } from "./CourseDetailStyle";
 
 import { useQuery } from "react-query";
 
-const SectionContent = ({ section, setDuration, setTotalLectures, isAllOpened }) => {
+const SectionContent = ({
+  section,
+  lectures,
+  isAllOpened
+}) => {
   // input is a section
 
-  
   const [isOpened, setIsOpened] = useState(false);
-  const { data: lecturesData, isSuccess: isLecturesSuccess } = useQuery({
-    queryKey: ["lectures", section],
-    queryFn: async () => {
-      const sectionId = section._id.toString();
-      console.log(sectionId);
-      const response = await fetch(
-        `http://localhost:8080/lectures/` + sectionId
-      );
-      const dataReceived = await response.json();
-      return dataReceived;
-    },
-  });
 
   useEffect(() => {
-    if (isLecturesSuccess) {
-      if (Array.isArray(lecturesData?.metadata)) {
-        setDuration(lecturesData?.metadata);
-        setTotalLectures(lecturesData?.metadata.length);
-      } else {
-        console.error('lecturesData.metadata is not an array:', lecturesData?.metadata);
-      }
-    }
-  }, [lecturesData]);
-
-  useEffect(() => {
-    if (isLecturesSuccess) {
-      setIsOpened(prev => !prev);
-    }
+    setIsOpened((prev) => !prev);
   }, [isAllOpened]);
 
   const handleOpenSection = () => {
     setIsOpened((prevIsOpened) => !prevIsOpened);
   };
 
-  
-
+  console.log(lectures)
   return (
     <SectionContentWrapper>
       <div>
@@ -64,10 +39,10 @@ const SectionContent = ({ section, setDuration, setTotalLectures, isAllOpened })
 
         {/* Module's length */}
       </div>
-      {isOpened && isLecturesSuccess && (
+      {isOpened && (
         <div className="itemContainer">
           <ul>
-            {lecturesData?.metadata?.map((lecture, index) => (
+            {lectures.map((lecture, index) => (
               <li key={index}>
                 <div className="item">
                   <MdOndemandVideo className="videoIcon" />

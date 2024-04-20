@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   BrowserRouter,
   Route,
@@ -37,6 +37,8 @@ import PaymentSuccess from './page/payment/paymentSuccess';
 const queryClient = new QueryClient();
 
 export default function App() { 
+  const footerRef = useRef(null);
+
   return (
     <AuthProvider>
     <BrowserRouter>
@@ -51,7 +53,7 @@ export default function App() {
             <Route path="/view-list-courses" element={<ViewListSearch />}/>
             <Route path="/view-lecture" element={<Lecture />}/>
             <Route path="/shopping-cart" element={<ShoppingCart />} />
-            <Route path="/course-detail/:courseId" element={<CourseDetail/>} />
+            <Route path="/course-detail/:courseId" element={<CourseDetail footerRef={footerRef}/>} />
             <Route path="/instructor" element={<InstructorLayout />} >
               <Route path="courses" index element={<InstructorCourse />}/>
               <Route path="create" element={<InstructorCreateCourse />}/>
@@ -75,7 +77,7 @@ export default function App() {
             </Route>
           </Routes>
         </MainContent>
-        <Footer/>
+        <Footer ref={footerRef}/>
         </AppWrapper>
       </QueryClientProvider> 
     </BrowserRouter>
