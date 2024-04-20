@@ -1,18 +1,27 @@
 import styled from 'styled-components';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import { LuMonitorPlay } from 'react-icons/lu';
 import { FaChartBar } from 'react-icons/fa';
 import { SiUdemy } from 'react-icons/si';
 import { IoIosAddCircleOutline } from 'react-icons/io';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setInstructorPage } from '../../redux/instructorPageSlice';
 import { setCourseType } from '../../redux/courseManagementSlice';
 import { setCourseData } from '../../redux/coursesSlice';
 
 export default function InstructorLayout() {
+  const location = useLocation();
   const [isActivePage, setIsActivePage] = useState(1);
   const dispatch = useDispatch();
+  const instructorPage = useSelector(state => state.instructorPage.page);
+
+  useEffect(() => {
+    console.log(instructorPage);
+    if (instructorPage === 2) {
+      setIsActivePage(instructorPage);
+    }
+  }, [instructorPage]);
 
   const instructorPages = [
     { id: 0, icon: <SiUdemy />, link: '/' },
@@ -32,11 +41,22 @@ export default function InstructorLayout() {
   return (
     <InstructorLayoutWrapper>
       <InstructorNav>
-        {instructorPages.map((page) => (
-          <Link className={`nav-item ${getItemActive(page.id)}`} to={page.link} onClick={() => handleNavigate(page.id)}>
-            {page.icon}
-          </Link>
-        ))}
+      {instructorPages.map((page) => (
+        <Link
+          className={`nav-item ${getItemActive(page.id, page.link)}`}
+          to={page.link}
+          onClick={() => handleNavigate(page.id)}
+          // Disable link if it's the current page
+          tabIndex={location.pathname === page.link ? -1 : undefined}
+          aria-disabled={location.pathname === page.link}
+          style={{
+            pointerEvents: location.pathname === page.link ? 'none' : undefined,
+            opacity: location.pathname === page.link ? 0.5 : undefined,
+          }}
+        >
+          {page.icon}
+        </Link>
+      ))}
       </InstructorNav>
       <Outlet />
     </InstructorLayoutWrapper>
@@ -64,6 +84,7 @@ const InstructorNav = styled.div`
 
   .nav-item {
     padding: 12px;
+    margin: 5px;
     color: var(--color-white);
     font-size: 24px;
     transition: background-color 0.3s, transform 0.3s;

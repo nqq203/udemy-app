@@ -38,13 +38,9 @@ export const PaymentSummaryContainer = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
-    h4 {
-        margin: 16px 0px;
-    }
-    p {
-        margin: 16px 0px;
-    }
+    margin-bottom: 20px;
 `
 
 export const PaymentSuccessDiv = styled.div`
@@ -62,4 +58,18 @@ export const PaymentThanksDiv = styled.div`
     flex-direction: column;
     align-items: center;
     margin-bottom: 24px;
+`
+
+export const PaymentLoading = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 600px;
+`
+
+export const PaymentImage = styled.img`
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    width: 40px;
+    height: 40px;
 `

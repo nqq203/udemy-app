@@ -69,9 +69,11 @@ export const QuoteCard = () => {
                         Get what you left in your cart for less during this limited-time “don’t leave learning behind” sale.
                     </Typography>
 
-                    <Button background-color="var(--color-black)" color="var(--color-white)" width="fit-content">
-                        Go to Cart
-                    </Button>
+                    <Link to={`/shopping-cart`}>
+                        <Button background-color="var(--color-black)" color="var(--color-white)" width="fit-content">
+                            Go to Cart
+                        </Button>
+                    </Link>
                 </CardContent>
             </Card>
         </Box>
@@ -181,7 +183,7 @@ export const CourseItem = (props ) => {
     
     const handleCourseClick = () =>{
         // console.log("Click course");
-        navigate(`/view-lecture?courseId=${id}`);
+        navigate(`/course-detail/${id}`);
     }
 
     return(

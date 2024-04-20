@@ -44,10 +44,10 @@ export default function ViewListCourse() {
     "search-page" + pageNumber,
     () => { 
       if(category !== ""){
-        console.log("Category search")
+        // console.log("Category search")
         return callApiGetCoursesByCategory(category,pageNumber,currentRating);
       } else{
-        console.log("Keyword search")
+        // console.log("Keyword search")
         return callApiGetCoursesBySearching(keyword,pageNumber,currentRating);
       }
     },
@@ -57,9 +57,8 @@ export default function ViewListCourse() {
           setLoading(true)
         }
 
-        console.log(data)
+        // console.log(data)
         if(data.code === 200){
-          console.log("success fetch")
           setData(data?.metadata)          
         }
         setLoading(false)        
@@ -211,7 +210,7 @@ export default function ViewListCourse() {
                   {allCourses?.map((course, index) => (
                     <CourseRowItem
                         key={index}
-                        id = {"Course_" + index}
+                        id = {course._id}
                         title={course.name}
                         author={instructors[index]}
                         rating={course.ratings}

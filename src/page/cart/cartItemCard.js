@@ -20,7 +20,7 @@ export default function CardItemCard({ course }) {
             <CardMedia
                 component="img"
                 sx={{ width: 200 }}
-                image="/images/courses/reactnative.png"
+                image={course.img}
                 alt="React Native"
             />
 

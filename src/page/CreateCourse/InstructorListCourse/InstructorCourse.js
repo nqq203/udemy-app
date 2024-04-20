@@ -23,6 +23,9 @@ import { MdDelete } from "react-icons/md";
 import { BsFillPencilFill } from "react-icons/bs";
 import { setCourseType } from "../../../redux/courseManagementSlice";
 import { setSectionsData } from "../../../redux/sectionsSlice";
+import { setLecturesData } from "../../../redux/lecturesSlice";
+import { ClipLoader } from "react-spinners"
+import { setInstructorPage } from "../../../redux/instructorPageSlice";
 
 export default function InstructorCourse() {
   const { isAuthenticated } = useAuth();
@@ -33,18 +36,26 @@ export default function InstructorCourse() {
   const [searchInput, setSearchInput] = useState("");
   const [isOpenFormRequirement, setIsOpenFormRequirement] = useState(false);
   const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken"));
+  const [isLoading, setIsLoading] = useState(false);
 
   const deleteCourseMutate = useMutation(
     (courseId) => callApiDeleteCourse(courseId),
     {
+      onMutate: () => {
+        setIsLoading(true);
+      },
       onSuccess: (data) => {
         console.log(data);
         refetch();
+        setIsLoading(false);
+      },
+      onError: (error) => {
+        setIsLoading(false);
       },
     }
   )
 
-  const { data: fetchedCourses, refetch } = useQuery(
+  const { data: fetchedCourses, refetch, isLoading: isLoadingGetListCourses } = useQuery(
     "courseList",
     () => callApiGetListCourses(instructorId),
     {
@@ -57,23 +68,47 @@ export default function InstructorCourse() {
       staleTime: Infinity,
     }
   );
+  
+  useEffect(() => {
+    var timer;
+    if (isLoadingGetListCourses) {
+      timer = setTimeout(() => {
+        setIsLoading(true);
+      }, 2000); // Delay 2 giây
+    }
+    else {
+      setIsLoading(false);
+    }
+
+    return () => clearTimeout(timer); 
+  }, [isLoadingGetListCourses]);
 
   const courseDetailMutation = useMutation(
     (courseId) => callApiGetInstructorCourseDetail(courseId),
     {
+      onMutate: () => {
+        setIsLoading(true);
+      },
       onSuccess: (data) => {
-        console.log(data);
-        dispatch(setSectionsData(data?.metadata?.sections));
+        dispatch(setInstructorPage(2));
+        dispatch(setSectionsData(data?.metadata?.sections || []));
         dispatch(setCourseData(data?.metadata?.course));
-        dispatch(setCourseType('update'));
+        dispatch(setLecturesData(data?.metadata?.lectures || []));
+        dispatch(setCourseType("update"));
         navigate("/instructor/create");
+      },
+      onError: (error) => {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
       },
     }
   )
 
   const handleSearch = async () => {
     try {
+      setIsLoading(true);
       const searchData = await callApiGetCourseByName({ instructorId: instructorId, name: searchInput });
+      setIsLoading(false);
       if (searchInput === "") {
         setFilteredItems(fetchedCourses?.metadata);
       }
@@ -81,6 +116,7 @@ export default function InstructorCourse() {
         setFilteredItems(searchData?.metadata || []);
       }
     } catch (error) {
+      setIsLoading(false);
       console.error("Error fetching data:", error);
     }
   };
@@ -113,6 +149,8 @@ export default function InstructorCourse() {
   function onNavigateCreateCourse() {
     dispatch(setCourseType("create"));
     dispatch(setCourseData(null));
+    dispatch(setSectionsData([]));
+    dispatch(setLecturesData([]));
   } 
 
   const onEditCourse = async (courseId) => {
@@ -136,16 +174,24 @@ export default function InstructorCourse() {
           <input type="text" placeholder="Search your courses" onChange={(e) => setSearchInput(e.target.value)} value={searchInput} />
           <Button 
             style={{ display: "flex", alignItems: "center" }} 
-            onClick={handleSearch}><IoSearch /></Button>
+            onClick={handleSearch}
+            disabled={isLoading}>
+              <IoSearch />
+            </Button>
         </div>
-        <FilterDropdown items={filteredItems} setFilteredItems={setFilteredItems} />
+        <FilterDropdown items={filteredItems} setFilteredItems={setFilteredItems}/>
         <Link to="/instructor/create">
           <Button 
             className="course-management-header_newcourse"
             onClick={onNavigateCreateCourse}>New Course</Button>
         </Link>
       </div>
-      {isAuthenticated &&
+      {isLoading ? 
+      <div style={{margin: "30% auto", justifyContent: "center"}}>
+        <ClipLoader size={30} color="var(--color-purple-300)"/>
+      </div> :
+      <Fragment>
+        {isAuthenticated &&
         <div className="course-management-main">
           {filteredItems?.length !== 0 ? filteredItems?.map((item, idx) => (
             <div className="course-management-main_courseview"
@@ -153,8 +199,8 @@ export default function InstructorCourse() {
               <img src="../../../assets/engaging-course.jpg"
                 alt="engaging-course" />
               <div className="coures-management-main_courseview_title">
-                <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
-                  <div>{item.name}</div>
+                <div style={{ display: "flex", flexDirection: "row", gap: "10px", width: "auto" }}>
+                  <div style={{ maxWidth: "500px"}}>{item.name}</div>
                   <div className="course-management-main_courseview_UD">
                     <CustomUpdate style={{ cursor: "pointer" }}
                       onClick={() => onEditCourse(item?._id)} />
@@ -173,6 +219,7 @@ export default function InstructorCourse() {
           )) :
             <div style={{ display: "flex", justifyContent: "center" }}>Course Not Found</div>}
         </div>}
+      </Fragment>}
     </CourseManagement>
     <CourseCreation>
       <div className="course-creation_text">Jump Into Course Creation</div>
@@ -401,7 +448,6 @@ const CourseManagement = styled.div`
 
       .coures-management-main_courseview_title {
         flex: 1 0 200px; // Flex-grow, flex-shrink, flex-basis set to 200px
-        max-width: 400px; // Sets a maximum width
         font-family: var(--font-stack-heading-serif);
         font-weight: 700;
         position: relative;
@@ -422,12 +468,13 @@ const CourseManagement = styled.div`
 
       .course-management-main_courseview_UD {
         flex-shrink: 0;
-        display: none;
+        opacity: 0;
       }
       
       &:hover .course-management-main_courseview_UD {
         display: flex;
         gap: 10px;
+        opacity: 1;
       }
 
       @media screen and (max-width: 1055px) {
@@ -436,6 +483,7 @@ const CourseManagement = styled.div`
           white-space: normal; // Allows text wrapping
           overflow: visible;
           text-overflow: clip;
+          width: 400px;
         }
       }
     }

@@ -10,10 +10,10 @@ import { useMutation } from "react-query";
 
 // const listPriceTier = ["USD", "VND", "EUR"];
 // const listUSD = ["19.99", "22.99", "24.99", "27.99", "29.99", "34.99", "39.99"];
-const listVND = ["390000", "449000", "499000", "549000", "599000", "649000", "699000"];
+const listVND = ["390000", "449000", "499000", "549000", "599000", "649000", "699000", "799000", "899000", "1000000", "1299000", "1399000", "1499000", "1599000", "1699000", "1799000", "1899000", "2000000"];
 // const listEUR = ["19.99", "22.99", "24.99", "29.99", "34.99", "39.99", "44.99"];
 
-export default function InstructorPricing() {
+export default function InstructorPricing({ isPublished, setIsPublished}) {
   const globalPrice = useSelector(state => state.courses.courseData.price);
   const globalCourseData = useSelector(state => state.courses.courseData);
   const courseType = useSelector(state => state.courseManagement.type);
@@ -26,6 +26,18 @@ export default function InstructorPricing() {
     visible: false,
     bgColor: 'green'
   });
+
+  useEffect(() => {
+    if (isPublished === true) {
+      setNotification({
+        message: 'Published course successfully',
+        visible: true,
+        bgColor: 'green'
+      });
+      setIsPublished(false);
+    }
+  }, [isPublished]);
+
   const updateCourseMutation = useMutation(
     (courseData) => callApiUpdateCourse(courseData),
     {
