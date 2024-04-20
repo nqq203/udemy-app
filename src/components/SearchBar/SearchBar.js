@@ -15,7 +15,6 @@ export const SearchBar = () =>{
   const handleSubmit = (e) => {
     e.preventDefault(); 
     setSearchWord(searchInputRef.current.value.trim());
-
     if(searchWord != null && searchWord != ""){
       // console.log(searchWord)
       const formData = new FormData() 
@@ -29,7 +28,7 @@ export const SearchBar = () =>{
         window.location.reload();
       }
 
-    }
+    }    
   }
   
   return(

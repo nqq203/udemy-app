@@ -19,6 +19,15 @@ export const callApiGetCoursesBySearching = async (keyword,pageNumber=1,rating=0
     return data
 } 
 
+export const callApiGetCoursesByCategory = async (category,pageNumber=1,rating=0) => {
+  if(rating === 0){
+    const {data} = await api.get(`/courses/search-courses-ratings?category=${category}&p=${pageNumber}`);
+    return data;
+  }
+  const {data} = await api.get(`/courses/search-courses-ratings?category=${category}&p=${pageNumber}&rating=${rating}`);
+  return data
+}
+
 export const callApiGetListCourses = async (courseData) => {
   const request = {
     instructorId: courseData

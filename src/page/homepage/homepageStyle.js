@@ -117,16 +117,24 @@ export const CatogoryStyle = styled.div`
 `;
 
 export const CatogoriesList = () => {
+
+    // Navigate to page search
+    // /view-list-courses?keyword=${keyword}&p=${1}&rating=${rating}
+    // /view-list-courses?category=${Development}&p=${1}&rating=${rating}
     return(
         <CatogoryStyle>
             <ul>
-                <li><Link to="/">IT & Software</Link></li>
-                <li><Link to="/">Bussiness</Link></li>
-                <li><Link to="/">Finance</Link></li>
-                <li><Link to="/">Design</Link></li>
-                <li className='long-item'><Link to="/">Personal Development</Link></li>
-                <li><Link to="/">Marketing</Link></li>
-                <li className='long-item'><Link to="/">Office Productivity</Link></li>
+                <li><Link to="/view-list-courses?category=Development&p=1">Development</Link></li>
+                <li><Link to="/view-list-courses?category=Business&p=1">Business</Link></li>
+                <li><Link to="/view-list-courses?category=Design&p=1">Design</Link></li>
+                <li><Link to="/view-list-courses?category=Finance&p=1">Finance</Link></li>
+                <li className='long-item'>
+                    <Link to="/view-list-courses?category=Personal+Development&p=1">Personal Development</Link>
+                </li>
+                <li><Link to="/view-list-courses?category=Marketing&p=1">Marketing</Link></li>
+                <li className='long-item'>
+                    <Link to="/view-list-courses?category=Office+Productivity&p=1">Office Productivity</Link>
+                </li>
             </ul>
         </CatogoryStyle>
     )
