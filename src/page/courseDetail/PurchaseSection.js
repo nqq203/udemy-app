@@ -1,13 +1,25 @@
-import { PurchaseSectionWrapper } from "./CourseDetailStyle";
-import { Button } from "../../components/Button/Button";
-import useScrollPosition from "../../hook/useScrollPosition";
-import { useState, useEffect } from "react";
-import { changePriceFormat } from "../../utils/changePriceFormat";
-const PurchaseSection = ({ thumbnailImage, price, footerRef }) => {
+import { PurchaseSectionWrapper } from './CourseDetailStyle';
+import { Button } from '../../components/Button/Button';
+import useScrollPosition from '../../hook/useScrollPosition';
+import { useState, useEffect } from 'react';
+import { useMutation } from 'react-query';
+import { callApiCreateItemCart } from '../../api/cart';
+import { changePriceFormat } from '../../utils/changePriceFormat';
+import { useDispatch } from 'react-redux';
+import Notification from '../../components/Notification/Notification';
+
+const PurchaseSection = ({id, thumbnailImage, price, footerRef }) => {
   const scrollPosition = useScrollPosition();
   const [isFixed, setFixed] = useState(false);
+  const dispatch = useDispatch();
   const [topPosition, setTopPosition] = useState(false);
-  console.log(scrollPosition);
+  // console.log(scrollPosition);
+
+  const [notification, setNotification] = useState({
+    message: '',
+    visible: false,
+    bgColor: 'green',
+  });
 
   function checkScroll() {
     if (footerRef.current) {
@@ -29,57 +41,88 @@ const PurchaseSection = ({ thumbnailImage, price, footerRef }) => {
       }
     }
   }
+  const mutation = useMutation(callApiCreateItemCart, {
+    onSuccess: (data) => {
+      console.log(data);
+      if (data.success) {
+        setNotification({
+          message: data.message,
+          visible: true,
+          bgColor: 'green',
+        });
+      } else {
+        setNotification({
+          message: data.message,
+          visible: true,
+          bgColor: 'red',
+        });
+      }
+    },
+  });
 
+  async function handleAddToCart() {
+    mutation.mutate(id);
+
+  }
   useEffect(() => {
     checkScroll();
   }, [scrollPosition]);
   return (
     <>
+      <Notification
+        message={notification?.message}
+        visible={notification?.visible}
+        bgColor={notification?.bgColor}
+        onClose={() =>
+          setNotification({ message: '', visible: false, bgColor: 'green' })
+        }
+      />
       <PurchaseSectionWrapper isFixed={isFixed} topPosition={topPosition}>
-        <div className="sidebar-container">
-          <div className="course-thumbnail-container">
-            <img src={thumbnailImage} alt="" className="course-thumbnail-img" />
+        <div className='sidebar-container'>
+          <div className='course-thumbnail-container'>
+            <img src={thumbnailImage} alt='' className='course-thumbnail-img' />
           </div>
-          <div className="purchase-section">
-            <div className="course-price">{changePriceFormat(price)}đ</div>
+          <div className='purchase-section'>
+            <div className='course-price'>{changePriceFormat(price)}đ</div>
 
             <Button
-              bgColor={"var(--color-purple-300)"}
-              fontWeight={"700"}
-              fontSize={"16px"}
-              width={"100%"}
-              className="add-to-cart-btn"
-              fontFamily={"var(--font-stack-heading)"}
+              bgColor={'var(--color-purple-300)'}
+              fontWeight={'700'}
+              fontSize={'16px'}
+              width={'100%'}
+              className='add-to-cart-btn'
+              fontFamily={'var(--font-stack-heading)'}
+              onClick={handleAddToCart}
             >
               Add to cart
             </Button>
             <Button
-              bgColor={"var(--color-white)"}
-              fontWeight={"700"}
-              color={"black"}
-              border={"1px solid var(--color-gray-500)"}
-              fontSize={"16px"}
-              width={"100%"}
-              className="buy-now-btn"
-              fontFamily={"var(--font-stack-heading)"}
+              bgColor={'var(--color-white)'}
+              fontWeight={'700'}
+              color={'black'}
+              border={'1px solid var(--color-gray-500)'}
+              fontSize={'16px'}
+              width={'100%'}
+              className='buy-now-btn'
+              fontFamily={'var(--font-stack-heading)'}
             >
               Buy now
             </Button>
-            <div className="coupon-section">
+            <div className='coupon-section'>
               <input
-                type="text"
-                className="coupon-input"
-                placeholder="Enter coupon here"
+                type='text'
+                className='coupon-input'
+                placeholder='Enter coupon here'
               />
-              <form action="" className="coupon-form">
+              <form action='' className='coupon-form'>
                 <Button
-                  className="apply-coupon-btn"
-                  bgColor={"var(--color-gray-600)"}
-                  fontWeight={"700"}
-                  fontSize={"13px"}
-                  width={"100px"}
-                  color={"white"}
-                  fontFamily={"var(--font-stack-heading)"}
+                  className='apply-coupon-btn'
+                  bgColor={'var(--color-gray-600)'}
+                  fontWeight={'700'}
+                  fontSize={'13px'}
+                  width={'100px'}
+                  color={'white'}
+                  fontFamily={'var(--font-stack-heading)'}
                 >
                   Apply
                 </Button>

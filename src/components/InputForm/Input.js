@@ -133,7 +133,6 @@ const Input = (props) => {
           color={'var(--white)'}
           fontWeight={700}
           padding={'1.3rem'}
-          width={'30%'}
           height={'100%'}
           onClick={btnClick}
           disabled={disabledBtn}

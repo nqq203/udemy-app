@@ -73,6 +73,7 @@ const CourseDetail = ({ footerRef }) => {
 
             {/* Sticky Sidebar */}
             <PurchaseSection
+              id = {courseId}
               thumbnailImage={courseData.metadata.course.imageUrl}
               price={courseData.metadata.course.price}
               footerRef={footerRef}
