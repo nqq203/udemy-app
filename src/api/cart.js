@@ -9,4 +9,9 @@ export const callApiGetCart = async () => {
 export const callApiCreateItemCart = async (courseId) => {
     const { data } = await api.post('/carts', { courseId })
     return data;
-  }
+}
+
+export const callApiDeleteItemCart = async (cartId) => {
+    const { data } = await api.delete(`/carts/${cartId}`)
+    return data;
+}

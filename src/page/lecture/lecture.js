@@ -1,6 +1,6 @@
 import {HeaderLecture,LectureOptionStyle,CourseContentStyle,
   CourseContentContainer,LectureOptionContainer,
-  OverviewSection,ReviewSection} from "./lectureStyle"
+  OverviewSection,ReviewSection,ReviewOverlay} from "./lectureStyle"
 import { useState,useEffect } from "react";
 
 import { Grid,Box,ListItemButton,ListItemText,Divider } from "@mui/material";
@@ -8,19 +8,27 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import { useQuery } from "react-query";
 import { callApiGetCourseById } from "../../api/course";
+import { callApiGetReviews,callApiGetReviewByUserAndCourseId } from "../../api/review";
+
 import ReactPlayer from 'react-player';
 
 import 'cloudinary-video-player/cld-video-player.min.css';
 import { useAuth } from "../../context/AuthContext";
 
+import { PropagateLoader } from 'react-spinners';
 
 export default function Lecture(){
+  const [dataCourse,setDataCourse] = useState(null)
+  const [dataReviews,setDataReviews] = useState(null)
+  const [loading,setLoading] = useState(true)
+
   // Course content
+  const [errNoti,setErrNoti] = useState("")
   const [course,setCourse] = useState(null)
   const [instructor,setInstructor] = useState(null)
   const [sections,setSections] = useState([])
   const [lectures,setLectures] = useState([])
-  const [permission,setPermission] = useState(true)
+  const [permission,setPermission] = useState(false)
   const { isAuthenticated } = useAuth()
 
   // Lecture Options UI
@@ -33,29 +41,47 @@ export default function Lecture(){
   const [selectedSection, setSelectedSection] = useState("");
   const [videoId, setSelectedVideoId] = useState("");
 
+  // Reviews
+  const [reviewOverlay,setReviewOverlay] = useState(false)
+  const [userReview,setUserReview] = useState(null)
+
   const queryParams = new URLSearchParams(window.location.search);
   const courseID = queryParams.get('courseId') || "";
-  // console.log(courseID);
+  const userId = localStorage.getItem("_id") || "";
 
+  // console.log(courseID);
+  
 
   const {data: courseInfo, isSuccess, isLoading, isError,refetch } = useQuery(
     "courseInfo",
-    async() => await callApiGetCourseById("660666f9b3f1e1cc048f2b57"),
+    async() => {
+      const dataCourse = await callApiGetCourseById(courseID);
+      const dataReviews = await callApiGetReviews(courseID);
+      const userReview = await callApiGetReviewByUserAndCourseId(courseID,userId)
+      return {dataCourse,dataReviews,userReview}
+    },
     {
       onSuccess: (data) => {
         console.log("OnSuc")
         console.log(data)
-
-        if(data.code === 200){
-          setCourse(data?.metadata?.course)
-          setInstructor(data?.metadata?.instructor)
-          setSections(data?.metadata?.sections || [])
-          setLectures(data?.metadata?.lectures || [])
-          setOptionContent(<OverviewSection course={data?.metadata?.course} 
-            instructor={data?.metadata?.instructor}>  </OverviewSection>)
+        if(data.dataCourse?.code === 200){
+          setDataCourse(data.dataCourse)
+          if(data.dataReviews?.code === 200){
+            setDataReviews(data.dataReviews)
+          }
+          if(data.userReview?.code === 200){
+            setUserReview(data.userReview)
+          }
+          setPermission(true);
         } else {
           setPermission(false)
+          setErrNoti("You don't have the permission to access this course")
+          if(data.dataCourse?.code === 404){
+            setErrNoti("Course not found")
+          }
         }
+
+        setLoading(false)
       },
       onError: (error) => {
         console.error("Error fetching data", error);
@@ -65,22 +91,30 @@ export default function Lecture(){
     }
   )    
 
+  useEffect(() => {
+    console.log("reload")
+    if(permission){
+      setCourse(dataCourse?.metadata?.course)
+      setInstructor(dataCourse?.metadata?.instructor)
+      setSections(dataCourse?.metadata?.sections || [])
+      setLectures(dataCourse?.metadata?.lectures || [])
+      setOptionContent(<OverviewSection course={dataCourse?.metadata?.course} 
+        instructor={dataCourse?.metadata?.instructor}>  </OverviewSection>)
+
+      setSelectedSection(dataCourse?.metadata?.sections[0])
+      setSelectedVideoId(dataCourse?.metadata?.lectures[0][0]?.url)
+      
+      // Reviews
+      setDataReviews(dataReviews?.metadata)
+      setUserReview(userReview?.metadata?.review)
+      // console.log("hi\n" + userReview)
+    }
+  },[dataCourse])
+
   useEffect(() =>{
-    // console.log("refetch once")
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     refetch();
   },[])
-
-  useEffect(() =>{
-    setCourse(courseInfo?.metadata?.course)
-    setInstructor(courseInfo?.metadata?.instructor)
-    setSections(courseInfo?.metadata?.sections || [])
-    setLectures(courseInfo?.metadata?.lectures || [])
-    setOptionContent(<OverviewSection course={courseInfo?.metadata?.course} 
-      instructor={courseInfo?.metadata?.instructor}>  </OverviewSection>)
-
-    setSelectedSection(courseInfo?.metadata?.sections[0])
-    setSelectedVideoId(courseInfo?.metadata?.lectures[0][0].url)
-  },[courseInfo])
 
   
   const handleListItemClick = (event, index, sectionName,idVideo) => {
@@ -94,12 +128,17 @@ export default function Lecture(){
     if(option === "Overview"){
       setOptionContent(<OverviewSection course={course} instructor={instructor}></OverviewSection>)
     } else if(option === "Reviews"){
-      setOptionContent(<ReviewSection></ReviewSection>)
+      setOptionContent(<ReviewSection dataReviews={dataReviews} courseRate={course?.ratings}></ReviewSection>)
     }
   }
 
   return (
     <>
+      {loading? (
+          <PropagateLoader color="var(--color-blue-300)"
+            style={{ position:"relative",left:"50%",top:"200px",transform:"translateX(-50%)"}}
+           />
+      ) : null}
       {!isAuthenticated || !permission ? (
         <Box
           height={300}
@@ -117,14 +156,24 @@ export default function Lecture(){
             </h2>
           ) : (
             <h2>
-              You don't have the permission to access this course
+              {errNoti}
             </h2>
           )}
           
         </Box>
       ): (
         <Grid container>
-          <HeaderLecture courseName ={course?.name}></HeaderLecture>
+          {reviewOverlay ? (
+            <ReviewOverlay courseId={courseID} openOverlay={setReviewOverlay}
+              userReview={userReview} setUserReview={setUserReview}>
+              
+            </ReviewOverlay>
+          ) : null
+          }
+          <HeaderLecture courseName ={course?.name} openOverlay={setReviewOverlay}>
+
+          </HeaderLecture>
+
           <Grid item xs={8}>
             <div >           
               <ReactPlayer
@@ -134,7 +183,7 @@ export default function Lecture(){
                 url={`${videoId}`}
                 controls
                 width="100%"
-                height="500px"
+                height="100%"
                 playing={true}
               />
             </div>

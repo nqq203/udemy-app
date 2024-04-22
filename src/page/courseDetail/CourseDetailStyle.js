@@ -6,7 +6,7 @@ export const CourseDetailWrapper = styled.div`
     margin-bottom: 40px;
   }
 
-  .product-detail-body {
+  & .product-detail-body {
     max-width: 1184px;
     margin: 0 auto;
     padding-top: 32px;
@@ -20,6 +20,14 @@ export const CourseDetailWrapper = styled.div`
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+  }
+
+  & .container {
+    height: 240px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 `;
 
@@ -43,7 +51,7 @@ export const PurchaseSectionWrapper = styled.div`
     width: 23rem;
     margin-left: 796px;
     display: block;
-    top: 32px;
+    ${({ topPosition }) => (topPosition ?  `top: 1500px`: "top: 32px" )};
     padding: 0;
     z-index: 1;
     border-bottom: 1px solid #d1d7dc;
@@ -185,7 +193,6 @@ export const CourseComparisonWrapper = styled.div`
     margin: 0 0 0 8px;
     white-space: nowrap;
     overflow-wrap: break-word;
-
   }
 
   .course-comparison-content {

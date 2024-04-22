@@ -16,13 +16,14 @@ export const callApiGetUserByEmail = async (userEmail) => {
       email: userEmail
     }
   });
+  console.log(data);
   return data;
 }
 
-export const callApiGetUserById = async (userId) => {
+export const callApiGetUserById = async (id) => {
   const { data } = await api.get('/users/id', { 
     params:{ 
-      userId
+      id
     }
   });
   return data;

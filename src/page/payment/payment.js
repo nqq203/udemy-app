@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -28,31 +28,30 @@ import {
     PaymentContainer, 
     PaymentSummaryContainer, 
     PaymentInfoContainer, 
-    PaymentInfoItem
+    PaymentInfoItem,
+    PaymentLoading,
+    PaymentImage
 } from "./paymentStyles";
 
 import { countries } from "../data/country";
 import { callApiCreateOrder } from "../../api/order";
+import { changePriceFormat } from "../../utils/changePriceFormat";
+import { callApiGetCartCourses } from "../../api/course";
+import { CircularProgress } from "@mui/material";
 
-const courses = [
-    {
-        id: "660666f9b3f1e1cc048f2b57",
-        name: "The Complete Android 14 & Kotlin Development Masterclass",
-        price: 1700000
-    },
-    {
-        id: "66066837b3f1e1cc048f2b66",
-        name: "Business Analysis Fundamentals - ECBA, CCBA, CBAP endorsed",
-        price: 1700000
-    }
-];
+const course = ["661de8ca20d64b253d60ece9", "661e4284775e2501b826b249"];
+
+const getCourseDetails = async (courses) => {
+    const courseDetails = await callApiGetCartCourses(courses);
+    return courseDetails;
+  }
 
 export default function Payment() {
     const navigate = useNavigate();
     const [choice, setChoice] = React.useState('');
     const [expanded, setExpanded] = React.useState('');
     const [notification, setNotification] = React.useState({});
-    const totalPrice = courses.reduce((acc, course) => acc + course.price, 0);
+    const { data, isLoading} = useQuery('courseDetails', () => getCourseDetails(course));
 
     const orderMutation = useMutation(
         (orderDetails) => callApiCreateOrder(orderDetails), 
@@ -71,6 +70,17 @@ export default function Payment() {
             }
         }
     )
+
+    const courses = data;
+    if(isLoading){
+        return (
+            <PaymentLoading>
+                <CircularProgress color="inherit" />
+            </PaymentLoading>
+        );
+    }
+    const courseData = courses.metadata;
+    const totalPrice = changePriceFormat(courseData.reduce((acc, course) => acc + course.price, 0));
 
     const handleSelectCountryChange = (event) => {
         setChoice(event.target.value);
@@ -106,9 +116,9 @@ export default function Payment() {
         else if(paymentMethod === 'card') {
             orderData = {
                 userId: localStorage.getItem('_id'),
-                items: courses.map(course => {
+                items: courseData.map(course => {
                     return {
-                        courseId: course.id,
+                        courseId: course._id,
                         price: course.price
                     }
                 
@@ -135,9 +145,9 @@ export default function Payment() {
         else if (paymentMethod === 'paypal') {
             orderData = {
                 userId: localStorage.getItem('_id'),
-                items: courses.map(course => {
+                items: courseData.map(course => {
                     return {
-                        itemId: course.id,
+                        itemId: course._id,
                         price: course.price
                     }
                 
@@ -235,7 +245,7 @@ export default function Payment() {
                                                 In order to complete your transaction, we will transfer you over to PayPal's secure servers.
                                             </p>
                                             <h4>
-                                                The amount you will be charged by Paypal is ${totalPrice}.
+                                                The amount you will be charged by Paypal is {totalPrice}VNĐ.
                                             </h4>
                                         </AccordionDetails>
                                     </Accordion>
@@ -245,15 +255,22 @@ export default function Payment() {
 
                         <PaymentInfoItem>
                             <h2>Order details</h2>
-                            {courses.map((course, index) => (
-                                <PaymentSummaryContainer key={index}>
-                                    <Stack flexDirection='row'>
-                                        <img src="/images/reactnative.png" alt="test"></img>
-                                        <h4>{course.name}</h4>
-                                    </Stack>
-                                    <p>{course.price}VNĐ</p>
-                                </PaymentSummaryContainer>
-                            ))}
+                            {courseData.map((course, index) => {
+                                const formatPrice = changePriceFormat(course.price);
+                                return(
+                                    <PaymentSummaryContainer key={index}>
+                                        <Stack flexDirection='row' justifyContent="center" alignItems="center">
+                                            <PaymentImage src={course.imageUrl} alt="test"></PaymentImage>
+                                            <Typography variant="subtitle1" marginLeft={2} fontWeight={700}>
+                                                {course.name}
+                                            </Typography> 
+                                        </Stack>
+                                        <Typography variant="subtitle1">
+                                            {formatPrice}VNĐ
+                                        </Typography>
+                                    </PaymentSummaryContainer>
+                                );
+                            })}
                         </PaymentInfoItem>
                     </Grid>
 
