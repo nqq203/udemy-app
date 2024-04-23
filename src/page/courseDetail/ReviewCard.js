@@ -9,7 +9,7 @@ import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import Rating from "@mui/material/Rating";
 
-export default function ReviewCard({ review }) {
+export default function ReviewCard({ review, reviewer }) {
   return (
     <Card
       sx={{
@@ -19,11 +19,22 @@ export default function ReviewCard({ review }) {
         borderTop: 1,
         boxShadow: 0,
         borderColor: "var(--color-gray-250)",
+        borderRadius: 0,
       }}
     >
       <CardHeader
-        avatar={<Avatar sx={{ bgcolor: "var(--color-gray-300)" }}>R</Avatar>}
-        title="Sample Review"
+        avatar={<Avatar sx={{ bgcolor: "var(--color-gray-300)" }}>{reviewer[0]}</Avatar>}
+        title={
+          <span
+            style={{
+              fontWeight: "bold",
+              fontFamily: `var(--font-stack-heading)`,
+              fontSize: '15px'
+            }}
+          >
+            {reviewer}
+          </span>
+        }
         subheader={
           <div
             style={{
@@ -32,16 +43,16 @@ export default function ReviewCard({ review }) {
               justifyContent: "space-between",
             }}
           >
-            <Rating size="small"></Rating>
-            <span>16 September 2024</span>
+            <Rating
+              size="small"
+              value={review.rating}
+              readOnly
+              className="rating"
+            ></Rating>
           </div>
         }
       ></CardHeader>
-      <CardContent>
-        This impressive paella is a perfect party dish and a fun meal to cook
-        together with your guests. Add 1 cup of frozen peas along with the
-        mussels, if you like.
-      </CardContent>
+      <CardContent>{review.comment}</CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
           {/* TODO: add the action */}
