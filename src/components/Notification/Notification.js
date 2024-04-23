@@ -31,7 +31,8 @@ export default function Notification({ message, visible, onClose, bgColor }) {
     boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
     transition: 'opacity 0.5s, transform 0.5s',
     opacity: show ? 1 : 0,
-    transform: show ? 'translateX(0)' : 'translateX(100%)'
+    transform: show ? 'translateX(0)' : 'translateX(100%)',
+    zIndex: 9999,
   };
 
   return (

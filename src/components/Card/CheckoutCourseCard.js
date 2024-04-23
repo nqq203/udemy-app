@@ -13,7 +13,6 @@ import {
   Authors,
   Ratings,
   RatingStats,
-  RatingNumber,
   RatingCount,
   CourseDetails,
   Box23,
@@ -25,14 +24,14 @@ import {
 } from './CheckoutCourseCardStyle';
 
 const CheckoutCourseCard = (props) => {
-  const { data, extraCss } = props;
+  const { data, extraCss, onRemove } = props;
 
   const {
-    id = 1,
+    _id = 1,
     imageUrl = '',
-    link = '/',
-    ttl = 'xxx',
-    authors = ['xxx'],
+    link = '/course-detail/' + _id,
+    name = 'xxx',
+    instructorName = 'xxx',
     ratings = 0,
     duration = 0,
     lectures = 0,
@@ -43,25 +42,36 @@ const CheckoutCourseCard = (props) => {
     bestSeller = false,
   } = data;
 
+  const handleRemove = () => {
+    console.log(_id);
+    
+    onRemove(_id); 
+  };
+
   return (
-    <OuterDiv to={link} style={extraCss}>
-      <Box1>
+    <OuterDiv  style={extraCss}>
+      <Box1 to={`/course-detail/${_id}`} style={{ alignItems: "center" }}>
         <ImgBox>
           <Img src={imageUrl} alt='course thumbnail' />
         </ImgBox>
         <Details>
-          <Title>{ttl}</Title>
-          <Authors>By {authors?.join(', ')?.toString()}</Authors>
+          <Title>{name}</Title>
+          <Authors>By {instructorName}</Authors>
           <Ratings>
             {bestSeller ? <Tag /> : ''}
             <RatingStats>
-              <Rating name="half-rating-read" value={ratings} precision={0.5} readOnly />
+              <Rating
+                name='half-rating-read'
+                value={ratings}
+                precision={0.5}
+                readOnly
+              />
               <RatingCount>({ratings} ratings)</RatingCount>
             </RatingStats>
           </Ratings>
           <CourseDetails>
-          <li style={{ listStyleType: 'none' }}>{duration} total hours</li>
-            <li className='crsDet, css.mid'>{lectures} lectures    </li>
+            <li style={{ listStyleType: 'none' }}>{duration} total hours</li>
+            <li className='crsDet, css.mid'>{lectures} lectures </li>
             <li>{level} Levels</li>
           </CourseDetails>
         </Details>
@@ -75,7 +85,8 @@ const CheckoutCourseCard = (props) => {
             color='var(--color-purple-300)'
             margin='0.2rem'
             padding='0'
-
+            hoverBgColor='var(--color-purple-200)'
+            onClick={handleRemove}
           >
             Remove
           </Button>
@@ -87,6 +98,7 @@ const CheckoutCourseCard = (props) => {
             color='var(--color-purple-300)'
             margin='0.2rem'
             padding='0'
+            hoverBgColor='var(--color-purple-200)'
           >
             Save for Later
           </Button>
@@ -95,7 +107,7 @@ const CheckoutCourseCard = (props) => {
           <Price>
             {new Intl.NumberFormat('en-IN', {
               style: 'currency',
-              currency: 'VND',
+              currency: 'USD',
             }).format(price)}
           </Price>
           {/* <PriceTagIcon src={labelIcon} alt='price tag' /> */}

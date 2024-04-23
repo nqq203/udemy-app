@@ -1,44 +1,81 @@
 import { PurchaseSectionWrapper } from "./CourseDetailStyle";
 import { Button } from "../../components/Button/Button";
 import useScrollPosition from "../../hook/useScrollPosition";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { useMutation } from "react-query";
+import { callApiCreateItemCart } from "../../api/cart";
 import { changePriceFormat } from "../../utils/changePriceFormat";
-const PurchaseSection = ({ thumbnailImage, price }) => {
-  const sectionRef = useRef(null);
+import { useDispatch } from "react-redux";
+import Notification from "../../components/Notification/Notification";
+
+const PurchaseSection = ({ id, thumbnailImage, price }) => {
   const scrollPosition = useScrollPosition();
   const [isFixed, setFixed] = useState(false);
   const [bottomPosition, setBottomPosition] = useState(false);
   console.log(scrollPosition);
+  const dispatch = useDispatch();
+  const [topPosition, setTopPosition] = useState(false);
+  // console.log(scrollPosition);
 
-  function checkScroll() { 
-      const bottomLimit = document.body.scrollHeight - window.innerHeight - 110 - 32;
-      console.log(scrollPosition)
-      console.log(bottomPosition)
-      // 510 is the approximate height of the purchase section
-      if (scrollPosition > 100 && scrollPosition < bottomLimit) {
-        setFixed(true);
-        setBottomPosition(false);
-      } else {
-        if (
-          scrollPosition >= bottomLimit &&
-          bottomPosition === false
-        ) {
-          // Set the top position to keep the section in place
-          setBottomPosition(true);
-        }
-        setFixed(false);
+  const [notification, setNotification] = useState({
+    message: "",
+    visible: false,
+    bgColor: "green",
+  });
+
+  function checkScroll() {
+    const bottomLimit =
+      document.body.scrollHeight - window.innerHeight - 110 - 32;
+    console.log(scrollPosition);
+    console.log(bottomPosition);
+    // 510 is the approximate height of the purchase section
+    if (scrollPosition > 100 && scrollPosition < bottomLimit) {
+      setFixed(true);
+      setBottomPosition(false);
+    } else {
+      if (scrollPosition >= bottomLimit && bottomPosition === false) {
+        // Set the top position to keep the section in place
+        setBottomPosition(true);
       }
+      setFixed(false);
+    }
   }
+  const mutation = useMutation(callApiCreateItemCart, {
+    onSuccess: (data) => {
+      console.log(data);
+      if (data.success) {
+        setNotification({
+          message: data.message,
+          visible: true,
+          bgColor: "green",
+        });
+      } else {
+        setNotification({
+          message: data.message,
+          visible: true,
+          bgColor: "red",
+        });
+      }
+    },
+  });
 
+  async function handleAddToCart() {
+    mutation.mutate(id);
+  }
   useEffect(() => {
     checkScroll();
   }, [scrollPosition]);
   return (
-    <PurchaseSectionWrapper
-      isFixed={isFixed}
-      bottomPosition={bottomPosition}
-      ref={sectionRef}
-    >
+    <>
+      <Notification
+        message={notification?.message}
+        visible={notification?.visible}
+        bgColor={notification?.bgColor}
+        onClose={() =>
+          setNotification({ message: "", visible: false, bgColor: "green" })
+        }
+      />
+      <PurchaseSectionWrapper isFixed={isFixed} bottomPosition={bottomPosition}>
         <div className="course-thumbnail-container">
           <img src={thumbnailImage} alt="" className="course-thumbnail-img" />
         </div>
@@ -52,6 +89,7 @@ const PurchaseSection = ({ thumbnailImage, price }) => {
             width={"100%"}
             className="add-to-cart-btn"
             fontFamily={"var(--font-stack-heading)"}
+            onClick={handleAddToCart}
           >
             Add to cart
           </Button>
@@ -88,7 +126,8 @@ const PurchaseSection = ({ thumbnailImage, price }) => {
             </form>
           </div>
         </div>
-    </PurchaseSectionWrapper>
+      </PurchaseSectionWrapper>
+    </>
   );
 };
 

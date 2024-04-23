@@ -1,10 +1,10 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const OuterDiv = styled.div`
   width: 100%;
   height: auto;
   min-height: calc(100vh - 70px);
-  padding: 3rem;
+  padding: auto;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -14,6 +14,12 @@ export const OuterDiv = styled.div`
 export const InnerDiv = styled.div`
   width: 80%;
   height: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  @media screen and (max-width: 1055px) {
+    width: 100%;
+  }
 `;
 
 export const Title = styled.div`
@@ -24,16 +30,26 @@ export const Title = styled.div`
 export const BoxContainer = styled.div`
   margin: 10px 0;
   display: flex;
+  width: 100%;
   justify-content: space-between;
+  @media screen and (max-width: 1055px) {
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column-reverse;
+  }
 `;
 
 export const Box1 = styled.div`
   width: 73%;
   margin-right: 2rem;
+  @media screen and (max-width: 1055px) {
+    width: 100%;
+  }
 `;
 
 export const CourseContainer = styled.div`
-  margin: 5px 0; 
+  margin: 5px 0;
 `;
 
 export const Count = styled.div`
@@ -44,6 +60,9 @@ export const Count = styled.div`
 
 export const Box2 = styled.div`
   width: 25%;
+  @media screen and (max-width: 1055px) {
+    width: 100%;
+  }
 `;
 
 export const Currency = styled.div`
@@ -67,6 +86,13 @@ export const CouponBox = styled.div`
   display: flex;
   justify-content: start;
   align-items: center;
+  @media screen and (max-width: 1055px) {
+    width: 100%;
+    margin: 1rem 0;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+  }
 `;
 
 export const Icon = styled.img`
