@@ -116,18 +116,18 @@ const Header = () => {
                 </div>
                 <div className="dropdown-content">
                   <div className="dropdown-content-item">
-                    <Link to="/my-courses/learning">My Learning</Link>
+                    <Link to="/my-courses/learning" className="link">My Learning</Link>
                   </div>
                   <div className="dropdown-content-item">My Cart</div>
                   <div className="dropdown-content-item">
-                    <Link to="/my-courses/wishlist">Wishlist</Link>
+                    <Link to="/my-courses/wishlist" className="link">Wishlist</Link>
                   </div>
                   <div className="dropdown-content-item">
                     Instructor Dashboard
                   </div>
                 </div>
                 <div className="dropdown-content">
-                  <Link to="/profile/info">
+                  <Link to="/profile/info" className="link">
                     <div className="dropdown-content-item">Edit Profile</div>
                   </Link>
                   <div className="dropdown-content-item">Payment Methods</div>

@@ -156,4 +156,11 @@ export const HeaderWrapper = styled.header`
   .dropdown-content-item:hover, .dropdown-content-info-item:hover {
     color: var(--color-purple-300);
   }
+
+  .link {
+    color: var(--color-gray-500);
+  }
+  .link:hover {
+    color: var(--color-purple-300);
+  }
 `
