@@ -24,6 +24,7 @@ const getInstructor = async (userId) => {
 export default function CourseCard({ course }) {
   const { data, isLoading } = useQuery("instructor", () => getInstructor(course.instructorId));
   const [value, setValue] = React.useState(null);
+  const id = course._id || ""
   
   const instructor = data;
   if(isLoading){
@@ -35,7 +36,7 @@ export default function CourseCard({ course }) {
   }
   
   return (
-    <Link to={`/course-detail/${course._id}`}>
+    <Link to={`/view-lecture?courseId=${id}`}>
       <Card sx={{ maxWidth: 250 }}>
         <CardMedia
           sx={{ width: 250, height: 140 }}

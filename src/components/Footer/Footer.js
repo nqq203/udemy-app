@@ -1,11 +1,12 @@
 
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { MdLanguage } from "react-icons/md";
 import { FooterWrapper, FooterBottom, FooterTop, FooterTopLeft, FooterTopRight } from './FooterStyle';
 
-export default function Footer() {
+const Footer = React.forwardRef ((props, ref) => {
   return (
-    <FooterWrapper>
+    <FooterWrapper ref={ref}>
       <FooterTop>
         <FooterTopLeft>
           <ul>
@@ -41,4 +42,6 @@ export default function Footer() {
       </FooterBottom>
     </FooterWrapper>
   );
-}
+});
+
+export default Footer;
