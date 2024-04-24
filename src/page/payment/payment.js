@@ -39,7 +39,7 @@ import { changePriceFormat } from "../../utils/changePriceFormat";
 import { callApiGetCartCourses } from "../../api/course";
 import { CircularProgress } from "@mui/material";
 
-const course = ["661de8ca20d64b253d60ece9", "661e4284775e2501b826b249"];
+const course = ["661de8ca20d64b253d60ece9", "661f3da7f99f882605188c82"];
 
 const getCourseDetails = async (courses) => {
     const courseDetails = await callApiGetCartCourses(courses);
