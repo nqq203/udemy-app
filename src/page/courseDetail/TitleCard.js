@@ -1,7 +1,7 @@
 import Rating from "@mui/material/Rating";
 import { TitleCardWrapper } from "./CourseDetailStyle";
 
-const TitleCard = ({ course }) => {
+const TitleCard = ({ course, instructor }) => {
   return (
     <>
       <TitleCardWrapper>
@@ -24,7 +24,7 @@ const TitleCard = ({ course }) => {
               </span>
             </div>
 
-            <p>Created by {""}</p>
+            <p>Created by {instructor.fullName}</p>
           </div>
         </div>
       </TitleCardWrapper>

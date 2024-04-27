@@ -35,7 +35,7 @@ export default function Cart() {
                 <div>
                     <h4>Total:</h4>
                     <h1>${total}</h1>
-                    <Link to="/payment">
+                    <Link to="/payment/checkout">
                         <Button 
                             width='100%' 
                             fontWeight="700" 

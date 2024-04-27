@@ -1,32 +1,41 @@
 import SectionContent from "./SectionContent";
 import { CourseContentWrapper } from "./CourseDetailStyle";
 import { calculateDuration } from "../../utils/calculateDuration";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Lecture from "../lecture/lecture";
 /*
   courseContent {
     sections: [Sections]
   }
 */
-const CourseContent = ({ sections }) => {
+const CourseContent = ({ sections, lectures }) => {
+  //console.log(lectures)
   const [duration, setDuration] = useState(0);
   const [totalLectures, setTotalLectures] = useState(0);
   const [expanded, setExpanded] = useState(false);
-  const handleCalcDuration = (lectures) => {
-    let totalDuration = 0;
-    console.log(lectures);
-    lectures.forEach(lecture => {
-      totalDuration += lecture.duration;
-    });
-    setDuration(prev => prev + totalDuration);
-  }
 
-  const handleCalcLectures = (length) => {
-    setTotalLectures(prev => prev + length);
-  }
+  useEffect(() => {
+    const flatLectures = lectures.flat();
 
+    const totalDuration = flatLectures.reduce((total, lecture) => total + Number(lecture.duration), 0);
+    const totalLecturesCount = flatLectures.length;
+
+    setDuration(totalDuration);
+    setTotalLectures(totalLecturesCount);
+  }, [lectures]);
+  // const flatLectures = lectures.flat();
+
+  // const totalDuration = flatLectures.reduce((acc, lecture) => {
+  //   return acc + lecture.duration;
+  // })
+
+  // const totalLecturesCount = flatLectures.length;
+  
   const handleExpandAll = () => {
     setExpanded(prev => !prev);
   }
+  
+  
 
   const [hours, minutes] = calculateDuration(duration);
   return (
@@ -41,9 +50,9 @@ const CourseContent = ({ sections }) => {
           <span>Expand all sections</span>
         </button>
       </div>
-      {sections.map((section, index) => (
-        <SectionContent key={index} section={section} setDuration={handleCalcDuration} setTotalLectures={handleCalcLectures} isAllOpened={expanded} />
-      ))}
+      {sections.map((section, index) => {
+        return (<SectionContent key={index} section={section} lectures={lectures[index]}  isAllOpened={expanded} />)
+      })}
     </CourseContentWrapper>
   );
 };
