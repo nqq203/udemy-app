@@ -12,7 +12,7 @@ export default function HomePage(){
   const [courses,setCourses] = useState([])
   const [instructors,setInstructors] = useState([])
   const { isAuthenticated } = useAuth()
-  const [username, setUsername] = useState(localStorage.getItem("fullname") || null);
+  const [username, setUsername] = useState(null);
 
   const {data: fetchCourses, isSuccess, isLoading, isError,refetch } = useQuery(
     "fetch10Courses",
@@ -33,8 +33,8 @@ export default function HomePage(){
   )
 
   useEffect(() => {
-    if(!isAuthenticated) {
-      setUsername(null)
+    if(isAuthenticated) {
+      setUsername(localStorage.getItem("fullname"))
     }
     refetch()
   }, [isAuthenticated])  

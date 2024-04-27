@@ -125,7 +125,7 @@ export const CourseRowItem = (props) => {
               
               <Grid item xs={1.3} style={{ paddingLeft: "0px"}}>
                   <StyleH4 className="align-right">
-                      <u>đ</u>{formattedPrice}
+                      ${formattedPrice}
                   </StyleH4>
               </Grid>
           </Grid>

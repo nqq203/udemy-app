@@ -17,6 +17,7 @@ import InstructorCourse from './page/CreateCourse/InstructorListCourse/Instructo
 import InstructorCreateCourse from './page/CreateCourse/InstructorListCourse/InstructorCreateCourse';
 import InstructorLayout from './page/CreateCourse/InstructorLayout';
 import InstructorStatistic from './page/CreateCourse/InstructorListCourse/InstructorStatistic';
+import InstructorReviews from './page/CreateCourse/InstructorReviews/InstructorReviews';
 import SignIn from './page/SignIn/SignIn';
 import ShoppingCart from './page/ShoppingCart/ShoppingCart';
 import ViewListSearch from './page/viewListSearch/viewListSearch';
@@ -56,6 +57,7 @@ export default function App() {
               <Route path="courses" index element={<InstructorCourse />}/>
               <Route path="create" element={<InstructorCreateCourse />}/>
               <Route path="statistics" element={<InstructorStatistic />} />
+              <Route path="reviews" element={<InstructorReviews />} />
             </Route>
             <Route path="/profile">
               <Route path="info" element={<ProfileInfo />} />

@@ -1,3 +1,4 @@
+import { PagesRounded } from '@mui/icons-material';
 import api from './api';
 
 export const callApiCreateReview = async (review) => {
@@ -7,6 +8,18 @@ export const callApiCreateReview = async (review) => {
 
 export const callApiGetReviews = async (courseId) => {
     const {data} = await api.get(`/review/${courseId}`);
+    return data;
+}
+
+export const callApiGetReviewsPagination = async (courseId,ratings,pageNumber=1,sort=0) => {
+    const {data} = await api.get(`/review/reviews-instructor`,{
+        params:{
+            courseId: courseId,
+            ratings: ratings,
+            pageNumber: pageNumber,
+            sort: sort,
+        }
+    });
     return data;
 }
 

@@ -8,6 +8,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useMutation,useQuery } from "react-query";
 import { callApiCreateReview,callApiGetReviews,callApiUpdateReview,callApiGetReviewByUserAndCourseId } from "../../api/review";
 import { Link,useNavigate } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
+import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 
 
 export const ReviewOverlayStyle = styled.div`
@@ -288,8 +291,8 @@ export const LectureOptionContainer = ({content}) => {
 }
 
 export const OverviewSection = (props) => {
-    var course = props.course || undefined
-    var instructor = props.instructor || undefined
+    let course = props.course || undefined
+    let instructor = props.instructor || undefined
 
     return(
         (course && instructor) ? (
@@ -333,12 +336,28 @@ export const ReviewItemStyle = styled.div`
         flex-direction: column;
         gap: 5px;
     }
+
+    .custom-button-react{
+        border: 1px solid var(--color-gray-400);
+        width: 40px;
+        height: 40px;
+    }
+
+    .reaction-contain{
+        display: flex;
+        gap: 7px;
+    }
 `;
 
 export const ReviewItem = (props) => {
     const username = props.username || "";
     const rating = props.rating || 0;
     const comment = props.comment || "";
+
+    const handleClickThumbDownIcon = (e) => {
+        console.log(e)
+        
+    }
 
     return (
         <ReviewItemStyle>
@@ -356,6 +375,18 @@ export const ReviewItem = (props) => {
                 <Rating name="rating" value={rating} readOnly size="small"  />
                 <div>
                     {comment}
+                </div>
+                <h6 style={{margin:"2px", fontWeight:"500"}}>Was this review helpful?</h6>
+                <div className="reaction-contain">
+                    <IconButton aria-label="Dislike" className="custom-button-react" onClick={handleClickThumbDownIcon}>
+                        
+                        <ThumbDownOffAltIcon />
+                    </IconButton>
+
+                    <IconButton aria-label="Like" className="custom-button-react">
+                        
+                        <ThumbUpOffAltIcon />
+                    </IconButton>
                 </div>
             </div>
         </ReviewItemStyle>

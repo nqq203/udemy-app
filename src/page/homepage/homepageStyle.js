@@ -4,7 +4,7 @@ import {Card, Box, CardContent,Typography} from '@mui/material';
 import { Link } from 'react-router-dom';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import {Button} from "../../components/Button/Button.js"
 import {Chip} from "../../components/Chip/Chip.js"
@@ -27,6 +27,17 @@ export const StyleH4 = styled.h4`
     font-weight: 700;
     margin-bottom: 3px;
     font-size: 17px;
+    height: 3rem;
+
+    &.wrap{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2; /* number of lines to show */
+        line-height: 1.5rem; 
+        max-height: 3rem;       
+    }
 `;
 
 export const HomePageWrapper = styled.div`
@@ -161,9 +172,11 @@ export const UserWelcome = ({username}) => {
         <UserWelcomeStyle>
             <Typography variant="h4" component='div' fontWeight={800} fontFamily={"serif"}>Let's start learning, {username}</Typography>
 
-            <Button className="text-button">
-                My learning
-            </Button>
+            <Link to={`/my-courses/learning`}>
+                <Button className="text-button">
+                    My learning
+                </Button>
+            </Link>
         </UserWelcomeStyle>
     )
 }
@@ -207,7 +220,7 @@ export const CourseItem = (props ) => {
 
 
             <CardContent sx={{pr: 1,pl: 1, mt: 0}}>
-                <StyleH4>
+                <StyleH4 className="wrap">
                     {titleCourse}
                 </StyleH4>
 
@@ -218,7 +231,7 @@ export const CourseItem = (props ) => {
                 <CustomRating rates={ratingCourse} />
 
                 <StyleH4>
-                    <u>đ</u>{formattedPrice}
+                    ${formattedPrice}
                 </StyleH4>
 
                 {chipLabel && <Chip>Bestseller</Chip>}
@@ -287,6 +300,16 @@ export const SliderContainer = (props) => {
     const instructors = props?.instructors || []
     const listCourse = useRef(null)
     const courseScroll = 260
+    // const nextBtn = useRef(null);
+
+    // useEffect(() => {
+    //     if(allCourse.length < 6){
+    //         console.log(allCourse.length)
+    //         console.log(nextBtn.current)
+    
+    //         nextBtn?.current?.style.display = "none"
+    //     }
+    // },[listCourse])
      
     function slideAction(event){
         const id = event.target.id
