@@ -3,6 +3,11 @@ import { IoIosArrowDown } from "react-icons/io";
 
 export const CourseDetailWrapper = styled.div`
   position: relative;
+  & .purchase-position-container {
+    max-width: 1184px;
+    margin: 0 auto;
+  }
+
   & .course-content-container {
     margin-bottom: 40px;
   }
@@ -35,7 +40,7 @@ export const CourseDetailWrapper = styled.div`
 export const PurchaseSectionWrapper = styled.div`
   position: ${({ isFixed }) => (isFixed ? "fixed" : "absolute")};
   width: 23rem;
-  margin-left: 840px;
+  margin-left: 796px;
   display: block;
   ${({ bottomPosition }) =>
     bottomPosition ? `bottom: 32px` : "top: 32px"};
