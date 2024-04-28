@@ -164,7 +164,7 @@ export default function ViewListCourse() {
             {keyword !== "" ? (
               <h1>{total} results for keyword "{keyword}"</h1>
             ) : (
-              <h1>{total} results for category "{category}"</h1>
+              <h1 style={{fontFamily:"serif",fontSize:"40px"}}>{category} Course</h1>
             )
             }
             <Grid container spacing={2}>

@@ -9,7 +9,7 @@ import Lecture from "../lecture/lecture";
   }
 */
 const CourseContent = ({ sections, lectures }) => {
-  console.log(lectures)
+  //console.log(lectures)
   const [duration, setDuration] = useState(0);
   const [totalLectures, setTotalLectures] = useState(0);
   const [expanded, setExpanded] = useState(false);
