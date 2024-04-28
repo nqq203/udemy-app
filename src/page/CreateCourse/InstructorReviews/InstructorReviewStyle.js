@@ -5,9 +5,10 @@ import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import { Button } from "../../../components/Button/Button";
 import { useEffect,useState,useRef } from "react";
-import { Select,InputLabel,MenuItem,FormControl,Rating,Divider,Box } from "@mui/material";
+import { Select,InputLabel,MenuItem,FormControl,Rating,Divider,Box,Stack,Pagination } from "@mui/material";
 import { PropagateLoader   } from "react-spinners";
 import { useQuery } from "react-query";
+import { CSVLink } from "react-csv";
 import { callApiGetReviews,callApiGetReviewsPagination } from "../../../api/review";
 
 export const ReviewItemStyle = styled.div`
@@ -113,6 +114,75 @@ export const ReviewsCourseStyle = styled.div`
     }
 `;
 
+export const ReviewsCSV = (props) => {
+    const courseId = props.course.id || "";
+    const courseName = props.course.name || "";
+    const [dataReport,setDataReport] = useState([])
+    
+    const {refetch} = useQuery(
+        "fetch-all-reviews",
+        () => {
+            if(courseId != ""){
+                return callApiGetReviews(courseId)
+            }
+            return null
+        },
+        {
+            onSuccess: (data) => {
+                console.log("Fetch all reviews");
+                console.log(data);
+                if(data != null){
+                    let reviewsReport = []
+                    reviewsReport = data?.metadata?.reviews?.map((review, index) => ({
+                        "Username" : data?.metadata?.users ? data?.metadata?.users[index] : "",
+                        "Rating" : review.rating,
+                        "Comment": review.comment,
+                        "Time": review.createdAt,
+                    }));
+                    setDataReport(reviewsReport)
+                } else{
+                    setDataReport([])
+                }
+            },
+            onError: (error) => {
+                console.error("Error fetching data:", error);
+            },
+            staleTime: Infinity,
+        }
+    );
+
+    useEffect(() => {
+        refetch()
+    },[courseId])
+
+    const formatReviews = () => {
+        return [
+            { label: "Username", key: "Username" },
+            { label: "Rating", key: "Rating" },
+            { label: "Comment", key: "Comment" },
+            { label: "Time", key: "Time" },
+        ]
+    }
+
+    const createCsvFileName = () => `Reviews Report ${courseName}.csv`;
+  
+    return (
+        <CSVLink
+            data={dataReport}
+            headers={formatReviews()}
+            filename={createCsvFileName()}
+            target="_blank"
+            style={{ textDecoration: 'none', outline: 'none', height: '5vh' }}
+        >
+            <Button bgColor="white" color="black" fontWeight="700" height="50px"
+                border="1px solid black" padding="5px 10px" hoverBgColor="var(--color-gray-200)"
+            >
+                Export to CSV
+            </Button>
+        </CSVLink>
+    );
+};
+
 export const ReviewsCourseContainer = (props) => {
     const currentCourse = props.course || null
     // currentCourse.id = "661f3da7f99f882605188c82"
@@ -121,8 +191,10 @@ export const ReviewsCourseContainer = (props) => {
     const [sortField,setSortField] = useState("Newest first")
     const [reviewsList, setReviewsList] = useState([])
     const [usersList,setUsersList] = useState([])
-    const [sortType,setSortType] = useState(0)
+    const [sortType,setSortType] = useState(-1)
     const [pageNumber,setPageNumber] = useState(1)
+    const [totalPages, setTotalPages] = useState(0);
+    const [isCourseChange,setIsCourseChange] = useState(false)
 
     const ratings = ["All","1 star","2 stars","3 stars","4 stars","5 stars"];
     const sortings = ["Newest first", "Oldest first"]
@@ -136,6 +208,7 @@ export const ReviewsCourseContainer = (props) => {
                 console.log(data)
                 setReviewsList(data?.metadata?.results)
                 setUsersList(data?.metadata?.users)
+                setTotalPages(data?.metadata?.totalPages || 0)
                 setLoading(false)
             },
             onError: (error) => {
@@ -144,28 +217,46 @@ export const ReviewsCourseContainer = (props) => {
             staleTime: Infinity,
         }
     )
+    
+    useEffect(() => {
+        setRating("All")
+        setSortField("Newest first")
+        setSortType(-1)
+        setIsCourseChange(true)
+    },[currentCourse])
+
+    useEffect(() =>{
+        if(sortField === "Newest first"){
+            setSortType(-1)
+        } else if(sortField === "Oldest first"){
+            setSortType(1)
+        }
+        setPageNumber(1);
+    },[sortField])
 
     useEffect(() => {
         setLoading(true);
-        if(sortField === "Newest first"){
-            setSortType(1)
-        } else if(sortField === "Oldest first"){
-            setSortType(-1)
-        }
         refetch()
-    },[currentCourse,rating,sortField])
+        setIsCourseChange(false)
+    },[rating,sortType,isCourseChange,pageNumber])
 
     const handleRatingClick = (event) => {
         const id = event.currentTarget.id
         setRating(ratings[id])
+        setPageNumber(1);
     }
 
     const handleSortClick = (event) => {
-        // console.log(event.currentTarget);
         const id = event.currentTarget.id
-        setSortField(sortings[id])
+        setSortField(sortings[id])        
     }
 
+    const handlePagination = (event,value) => {
+        if(pageNumber === +value){
+            return;
+        }
+        setPageNumber(+value);
+    }
 
     return(
         <ReviewsCourseStyle>
@@ -208,10 +299,9 @@ export const ReviewsCourseContainer = (props) => {
                         </FormControl>
                     </div>
                 </div>
-                <Button bgColor="white" color="black" fontWeight="700" height="50px"
-                    border="1px solid black" padding="5px 10px" hoverBgColor="var(--color-gray-200)">
-                    Export to CSV
-                </Button>
+                {loading? (<></>) : (
+                    <ReviewsCSV course={currentCourse}></ReviewsCSV>
+                )}
             </div>
 
             {loading ? (
@@ -219,7 +309,16 @@ export const ReviewsCourseContainer = (props) => {
                     style={{ position:"relative",left:"50%",top:"100px",transform:"translateX(-50%)"}}
                 />
             ) : (
+                reviewsList?.length === 0 ? (
             <div className="result-container">
+                    <h4>
+                        No reviews found
+                    </h4>
+                    </div>
+                ) : (
+
+            <div className="result-container">
+                
                 <h4>
                     {reviewsList?.length} reviews found
                 </h4>
@@ -237,8 +336,16 @@ export const ReviewsCourseContainer = (props) => {
                     </div>
                     
                 ))}
+
+                <Stack spacing={2} marginLeft={"20px"}>
+                    <Pagination count={totalPages} variant="outlined" color="primary" size="large"
+                        onChange={handlePagination} page={pageNumber}
+                    />
+                </Stack>
             </div>
+            )
           )}
         </ReviewsCourseStyle>
     )
 }
+

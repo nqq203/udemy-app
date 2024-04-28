@@ -1,6 +1,6 @@
 import {HeaderLecture,LectureOptionStyle,CourseContentStyle,
   CourseContentContainer,LectureOptionContainer,
-  OverviewSection,ReviewSection,ReviewOverlay} from "./lectureStyle"
+  OverviewSection,ReviewSection,ReviewOverlay,NoteSection} from "./lectureStyle"
 import { useState,useEffect } from "react";
 
 import { Grid,Box,ListItemButton,ListItemText,Divider } from "@mui/material";
@@ -51,7 +51,6 @@ export default function Lecture(){
 
   // console.log(courseID);
   
-
   const {data: courseInfo, isSuccess, isLoading, isError,refetch } = useQuery(
     "courseInfo",
     async() => {
@@ -113,6 +112,7 @@ export default function Lecture(){
 
   useEffect(() =>{
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setLectureOptionClick("Overview")
     refetch();
   },[])
 
@@ -129,6 +129,9 @@ export default function Lecture(){
       setOptionContent(<OverviewSection course={course} instructor={instructor}></OverviewSection>)
     } else if(option === "Reviews"){
       setOptionContent(<ReviewSection dataReviews={dataReviews} courseRate={course?.ratings}></ReviewSection>)
+    } else if(option === "Notes"){
+      // pass data to this
+      setOptionContent(<NoteSection ></NoteSection>)
     }
   }
 
@@ -193,6 +196,7 @@ export default function Lecture(){
                 <ul>
                   <li className={lectureOptionClick === "Overview" ? "isClick" : "" } onClick={() => handleLectureOptionClick("Overview")}>Overview</li>
                   <li className={lectureOptionClick === "Reviews" ? "isClick" : "" } onClick={() => handleLectureOptionClick("Reviews")}>Reviews</li>
+                  <li className={lectureOptionClick === "Notes" ? "isClick" : "" } onClick={() => handleLectureOptionClick("Notes")}>Notes</li>
                 </ul>
               </nav>
             </LectureOptionStyle>

@@ -1,13 +1,12 @@
 import styled from "styled-components";
 import {CustomRating} from "../../components/Rating/Rating"
-import { useEffect,useState,useRef } from "react";
+import { useEffect,useState } from "react";
 import {Button} from "../../components/Button/Button"
 import { Grid,Rating,TextField,Divider} from "@mui/material";
-import { BorderBottom } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';
-import { useMutation,useQuery } from "react-query";
-import { callApiCreateReview,callApiGetReviews,callApiUpdateReview,callApiGetReviewByUserAndCourseId } from "../../api/review";
-import { Link,useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
+import { callApiCreateReview,callApiUpdateReview } from "../../api/review";
+import { Link } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
@@ -234,7 +233,7 @@ export const HeaderLecture = ({courseName,openOverlay}) => {
             </Grid>
             <Grid item xs={2} >
                 <HeaderLectureStyle>
-                    <Button border="1px solid white" padding="10px" onClick={openReview}>Add Reviews</Button>
+                    <Button border="1px solid white" padding="10px" onClick={openReview}>Reviews</Button>
                 </HeaderLectureStyle>
             </Grid>
         </Grid>
@@ -274,6 +273,7 @@ export const LectureOptionStyle = styled.div`
 
 export const LectureOptionContainerStyle = styled.div`
     margin: 20px 40px;
+    min-height: 500px;
     
     .authorName{
         font-style: italic;
@@ -353,11 +353,37 @@ export const ReviewItem = (props) => {
     const username = props.username || "";
     const rating = props.rating || 0;
     const comment = props.comment || "";
+    const [btnDownStyle,setBtnDownStyle] = useState({})
+    const [btnUpStyle,setBtnUpStyle] = useState({})
+    const [content,setContent] = useState("Was this review helpful?")
 
     const handleClickThumbDownIcon = (e) => {
-        console.log(e)
-        
-    }
+        if(btnDownStyle.background !== "var(--color-gray-400)") {
+            if(btnUpStyle.background === "var(--color-gray-400)"){
+                setBtnUpStyle({ background: "transparent", color: "rgba(0, 0, 0, 0.54)" });
+            }
+            setBtnDownStyle({ background: "var(--color-gray-400)", color: "white" });
+            setContent("Thank your for your feedbacks")
+        } else {
+            console.log("reset");
+            setBtnDownStyle({ background: "transparent", color: "rgba(0, 0, 0, 0.54)" });
+            setContent("Was this review helpful?")
+        }
+    };
+
+    const handleClickThumbUpIcon = (e) => {
+        if(btnUpStyle.background !== "var(--color-gray-400)") {
+            if(btnDownStyle.background === "var(--color-gray-400)"){
+                setBtnDownStyle({ background: "transparent", color: "rgba(0, 0, 0, 0.54)" });
+            }
+            setBtnUpStyle({ background: "var(--color-gray-400)", color: "white" });
+            setContent("Thank your for your feedbacks")
+        } else {
+            console.log("reset");
+            setBtnUpStyle({ background: "transparent", color: "rgba(0, 0, 0, 0.54)" });
+            setContent("Was this review helpful?")
+        }
+    };
 
     return (
         <ReviewItemStyle>
@@ -376,15 +402,16 @@ export const ReviewItem = (props) => {
                 <div>
                     {comment}
                 </div>
-                <h6 style={{margin:"2px", fontWeight:"500"}}>Was this review helpful?</h6>
+                <h6 style={{margin:"2px", fontWeight:"500"}}>{content}</h6>
                 <div className="reaction-contain">
-                    <IconButton aria-label="Dislike" className="custom-button-react" onClick={handleClickThumbDownIcon}>
+                    <IconButton aria-label="Dislike" className="custom-button-react" 
+                        onClick={handleClickThumbDownIcon} style={btnDownStyle}>
                         
                         <ThumbDownOffAltIcon />
                     </IconButton>
 
-                    <IconButton aria-label="Like" className="custom-button-react">
-                        
+                    <IconButton aria-label="Like" className="custom-button-react"
+                        onClick={handleClickThumbUpIcon} style={btnUpStyle}>
                         <ThumbUpOffAltIcon />
                     </IconButton>
                 </div>
@@ -396,6 +423,7 @@ export const ReviewItem = (props) => {
 export const ReviewSectionStyle = styled.div`
     display: flex;
     flex-direction: column;
+    padding: 0px 40px;
 
     .removePaddingText{
         margin: 5px;
@@ -420,7 +448,7 @@ const StyledRating = styled(Rating)({
     '& .MuiRating-iconFilled': {
       color: 'var(--color-orange-400)',
     },
-  });
+});
 
 export const ReviewSection = (props) => {
     // const [overalRating, setOveralRating] = useState(5)
@@ -469,4 +497,20 @@ export const CourseContentContainer = styled.div`
     height: 96%;
     background-color: var(--color-gray-100);
     position: relative;
+    max-height: 1000px;
 `;
+
+// Write here
+export const NoteSectionStyle = styled.div`
+    display: flex;
+    padding: 0px 40px;
+
+`;
+
+export const NoteSection = () => {
+    return(
+        <NoteSectionStyle>
+            <h3>Your notes</h3>
+        </NoteSectionStyle>
+    )
+}
