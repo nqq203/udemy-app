@@ -15,7 +15,6 @@ const CourseDetail = () => {
   const { courseId } = useParams();
   const [courseLoading, setCourseLoading] = useState(true);
   const [reviewLoading, setReviewLoading] = useState(true);
-  //console.log(courseId);
   const {
     isSuccess: isCourseSuccess,
     isError: isCourseError,
