@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { SearchBar } from "../SearchBar/SearchBar";
 import { MdLanguage, MdOutlineShoppingCart } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
@@ -105,25 +105,29 @@ const Header = () => {
                     alt="uesr-profile"
                     style={{ width: "60px" }}
                   />
-                  <div className="dropdown-content-info-item">
+                  <Link to="/profile/info" className="dropdown-content-info-item">
                     <div className="dropdown-content-info-item-name">
                       {localStorage.getItem("fullname")}
                     </div>
                     <div className="dropdown-content-info-item-email">
                       {localStorage.getItem("email")}
                     </div>
-                  </div>
+                  </Link>
                 </div>
                 <div className="dropdown-content">
-                  <div className="dropdown-content-item">My Learning</div>
+                  <div className="dropdown-content-item">
+                    <Link to="/my-courses/learning" className="link">My Learning</Link>
+                  </div>
                   <div className="dropdown-content-item">My Cart</div>
-                  <div className="dropdown-content-item">Wish List</div>
+                  <div className="dropdown-content-item">
+                    <Link to="/my-courses/wishlist" className="link">Wishlist</Link>
+                  </div>
                   <div className="dropdown-content-item">
                     Instructor Dashboard
                   </div>
                 </div>
                 <div className="dropdown-content">
-                  <Link to="/profile/info">
+                  <Link to="/profile/info" className="link">
                     <div className="dropdown-content-item">Edit Profile</div>
                   </Link>
                   <div className="dropdown-content-item">Payment Methods</div>

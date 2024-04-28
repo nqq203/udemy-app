@@ -1,29 +1,9 @@
 import styled from "styled-components"
 import {Chip} from "../../components/Chip/Chip.js"
 import {CustomRating} from "../../components/Rating/Rating.js"
-import { useState,useEffect } from "react";
 
-import {Typography,CardMedia,Grid} from '@mui/material';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-
-import Pagination from '@mui/material/Pagination';
-import Stack from '@mui/material/Stack';
-import {callApiGetCoursesBySearching} from '../../api/course'
-import { useQuery } from 'react-query';
+import {Typography,Grid} from '@mui/material';
 import { useNavigate } from "react-router-dom";
-import { PropagateLoader } from 'react-spinners';
-
-
-
 
 export const StyleH1 = styled.h1`
     margin-left: 16px;
@@ -125,7 +105,7 @@ export const CourseRowItem = (props) => {
               
               <Grid item xs={1.3} style={{ paddingLeft: "0px"}}>
                   <StyleH4 className="align-right">
-                      <u>đ</u>{formattedPrice}
+                      ${formattedPrice}
                   </StyleH4>
               </Grid>
           </Grid>

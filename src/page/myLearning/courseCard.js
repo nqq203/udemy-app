@@ -36,7 +36,7 @@ export default function CourseCard({ course }) {
   }
   
   return (
-    <Link to={`/view-lecture?courseId=${id}`}>
+    <Link to={`/view-lecture?courseId=${id}`} style={{textDecoration: 'none'}}>
       <Card sx={{ maxWidth: 250 }}>
         <CardMedia
           sx={{ width: 250, height: 140 }}
