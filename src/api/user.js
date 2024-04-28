@@ -49,7 +49,7 @@ export const callApiGetSessionMessage = async () => {
 }
 
 export const callApiLogOut = async (userData) => {
-  console.log(userData);
+  // console.log(userData);
   const accessToken = localStorage.getItem('accessToken');
   const { data } = await api.post('users/logout', {
     headers: {

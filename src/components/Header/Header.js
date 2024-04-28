@@ -10,6 +10,8 @@ import { callApiLogOut } from "../../api/user";
 const Header = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const [isHovering, setIsHovering] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const handleMouseOver = () => {
     setIsHovering(true);
   };
@@ -18,27 +20,41 @@ const Header = () => {
     setIsHovering(false);
   };
 
+  // useEffect(() => {
+  //   // console.log(isAuthenticated);
+  //   if (!isAuthenticated) {
+  //     // Log out the user
+  //     // localStorage.removeItem("accessToken");
+  //     // localStorage.removeItem("email");
+  //     // localStorage.removeItem("fullname");
+  //     // localStorage.removeItem("role");
+  //     // localStorage.removeItem("_id");
+  //     setIsAuthenticated(false);
+  //   }
+  // }, [isAuthenticated, setIsAuthenticated]);
+
   useEffect(() => {
-    console.log(isAuthenticated);
-    if (!isAuthenticated) {
-      // Log out the user
-      // localStorage.removeItem("accessToken");
-      // localStorage.removeItem("email");
-      // localStorage.removeItem("fullname");
-      // localStorage.removeItem("role");
-      // localStorage.removeItem("_id");
-      setIsAuthenticated(false);
-    }
-  }, [isAuthenticated, setIsAuthenticated]);
+    const checkAuth = async () => {
+      // Add your authentication check logic here
+      const accessToken = localStorage.getItem("accessToken");
+      setIsAuthenticated(!!accessToken);  // Set authenticated based on session existence
+      setLoading(false);  // Set loading to false once the check is complete
+    };
+  
+    checkAuth();
+  }, [setIsAuthenticated]);
 
   async function onLogout() {
-    const data = await callApiLogOut(localStorage.getItem("sessionId"));
-    setIsAuthenticated(false);
+    await callApiLogOut();
     localStorage.clear();
+    setIsAuthenticated(false);
     window.location.href = "http://localhost:3030";
-    console.log(data);
   }
 
+  if (loading) {
+    return <div></div>
+  }
+  
   return (
     <HeaderWrapper>
       <nav className="header-first">
