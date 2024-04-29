@@ -12,9 +12,7 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
   const scrollPosition = useScrollPosition();
   const [isFixed, setFixed] = useState(false);
   const [bottomPosition, setBottomPosition] = useState(false);
-  console.log(scrollPosition);
   const dispatch = useDispatch();
-  const [topPosition, setTopPosition] = useState(false);
   // console.log(scrollPosition);
 
   const [notification, setNotification] = useState({
@@ -26,8 +24,6 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
   function checkScroll() {
     const bottomLimit =
       document.body.scrollHeight - window.innerHeight - 110 - 32;
-    console.log(scrollPosition);
-    console.log(bottomPosition);
     // 510 is the approximate height of the purchase section
     if (scrollPosition > 100 && scrollPosition < bottomLimit) {
       setFixed(true);
