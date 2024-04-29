@@ -74,7 +74,7 @@ export const ReviewOverlay = ({courseId,openOverlay,userReview,setUserReview}) =
             userReview.rating = rating;
             userReview.comment = comments;
         }
-    },[rating,comments])
+    },[rating,comments,userReview])
 
     const createReviewMutation = useMutation(callApiCreateReview, {
         onSuccess: (data) => {
@@ -453,8 +453,25 @@ const StyledRating = styled(Rating)({
 export const ReviewSection = (props) => {
     // const [overalRating, setOveralRating] = useState(5)
     const usersList = props.dataReviews?.users || [];
-    const reviewsData = props.dataReviews?.reviews || [];
+    const reviewsData = props.dataReviews?.reviews;
     const ratings = props.courseRate || 0;
+    const pageSize = 5;
+    const [numberOfReviews,setNumberOfReviews] = useState(pageSize);
+    const [reviewsPagination, setReviewsPagination] = useState(reviewsData?.slice(0,numberOfReviews))
+    const [hasMoreReviews,setHasMoreReviews] = useState(true)
+    
+    useEffect(()=>{
+        setReviewsPagination(reviewsData?.slice(0,numberOfReviews))
+    },[numberOfReviews,reviewsData])
+
+    const handleLoadMore = () => {
+        if(numberOfReviews <= reviewsData?.length){
+            setNumberOfReviews(numberOfReviews + pageSize)
+        } 
+        if(numberOfReviews + pageSize > reviewsData?.length){
+            setHasMoreReviews(false)
+        }
+    }
 
     return(
         <ReviewSectionStyle>
@@ -466,7 +483,7 @@ export const ReviewSection = (props) => {
             </div>
             <h2>Reviews</h2>
 
-                {reviewsData?.map((review,index) => (
+                {reviewsPagination?.map((review,index) => (
                     <div key={review._id}>
                         <ReviewItem 
                             key={review._id}
@@ -478,6 +495,10 @@ export const ReviewSection = (props) => {
                     </div>
                     
                 ))}
+
+            {hasMoreReviews? (
+                <Button onClick={handleLoadMore}>Load more reviews</Button>
+            ) : null}
 
         </ReviewSectionStyle>
     )
