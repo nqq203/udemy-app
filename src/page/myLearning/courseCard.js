@@ -60,10 +60,10 @@ export default function CourseCard({ course }) {
                 {course.name}
             </MyCourseCardItemName>
 
-            <MyCourseCardItemDescription>
-                By {instructor ? instructor.metadata.fullName : ""}
-            </MyCourseCardItemDescription>
-          </div>
+          <MyCourseCardItemDescription>
+              By {instructor ? instructor.metadata?.fullName : ""}
+          </MyCourseCardItemDescription>
+        </div>
 
           <MyCourseRating>
             <Rating name="simple-controlled" value={value} onChange={(event, newValue) => { setValue(newValue);}}/>

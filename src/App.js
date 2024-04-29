@@ -34,8 +34,14 @@ import Lecture from './page/lecture/lecture';
 import { AuthProvider } from './context/AuthContext';
 import CourseDetail from "./page/courseDetail/CourseDetail";
 import PaymentSuccess from './page/payment/paymentSuccess';
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 const queryClient = new QueryClient();
+const initialOptions = {
+  clientId: "Ae7aB3Ho8RlhyOoOYcHPtAoPle_RkcwlsiLjMv95ilt8TQuQsvad25Xw_gbuWvj6bbTJEjzjcjlbOSDJ",
+  currency: "USD",
+  intent: "capture",
+};
 
 export default function App() { 
 
@@ -43,43 +49,45 @@ export default function App() {
     <AuthProvider>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-      <AppWrapper>
-        <Header />
-        <MainContent>
-          <Routes>
-            <Route path="/" element={<HomePage />}/>
-            <Route path="/sign-in" element={<SignIn />} />
-            <Route path="/sign-up" element={<SignUp />}/>
-            <Route path="/view-list-courses" element={<ViewListSearch />}/>
-            <Route path="/view-lecture" element={<Lecture />}/>
-            <Route path="/shopping-cart" element={<ShoppingCart />} />
-            <Route path="/course-detail/:courseId" element={<CourseDetail/>} />
-            <Route path="/instructor" element={<InstructorLayout />} >
-              <Route path="courses" index element={<InstructorCourse />}/>
-              <Route path="create" element={<InstructorCreateCourse />}/>
-              <Route path="statistics" element={<InstructorStatistic />} />
-              <Route path="reviews" element={<InstructorReviews />} />
-            </Route>
-            <Route path="/profile">
-              <Route path="info" element={<ProfileInfo />} />
-              <Route path="photo" element={<ProfilePhoto />} />
-              <Route path="privacy" element={<ProfilePrivacy />} />
-            </Route>
-            <Route path="cart" element={<Cart />} />
-            <Route path="payment">
-              <Route path="checkout" element={<Payment />} />
-              <Route path="success" element={<PaymentSuccess />} />
-            </Route>
-            <Route path="my-courses">
-              <Route path="learning" element={<MyCourses />} />
-              <Route path="wishlist" element={<MyWishList />} />
-              <Route path="archived" element={<MyArchived />} />
-              <Route path="learning-tools" element={<MyLearningTools />} />
-            </Route>
-          </Routes>
-        </MainContent>
-        <Footer/>
-        </AppWrapper>
+        <PayPalScriptProvider options={initialOptions}>
+          <AppWrapper>
+            <Header />
+            <MainContent>
+              <Routes>
+                <Route path="/" element={<HomePage />}/>
+                <Route path="/sign-in" element={<SignIn />} />
+                <Route path="/sign-up" element={<SignUp />}/>
+                <Route path="/view-list-courses" element={<ViewListSearch />}/>
+                <Route path="/view-lecture" element={<Lecture />}/>
+                <Route path="/shopping-cart" element={<ShoppingCart />} />
+                <Route path="/course-detail/:courseId" element={<CourseDetail/>} />
+                <Route path="/instructor" element={<InstructorLayout />} >
+                    <Route path="courses" index element={<InstructorCourse />}/>
+                    <Route path="create" element={<InstructorCreateCourse />}/>
+                    <Route path="statistics" element={<InstructorStatistic />} />
+                    <Route path="reviews" element={<InstructorReviews />} />
+                </Route>
+                <Route path="/profile">
+                  <Route path="info" element={<ProfileInfo />} />
+                  <Route path="photo" element={<ProfilePhoto />} />
+                  <Route path="privacy" element={<ProfilePrivacy />} />
+                </Route>
+                <Route path="cart" element={<Cart />} />
+                <Route path="payment">
+                  <Route path="checkout" element={<Payment />} />
+                  <Route path="success" element={<PaymentSuccess />} />
+                </Route>
+                <Route path="my-courses">
+                  <Route path="learning" element={<MyCourses />} />
+                  <Route path="wishlist" element={<MyWishList />} />
+                  <Route path="archived" element={<MyArchived />} />
+                  <Route path="learning-tools" element={<MyLearningTools />} />
+                </Route>
+              </Routes>
+            </MainContent>
+            <Footer/>
+          </AppWrapper>
+        </PayPalScriptProvider>
       </QueryClientProvider> 
     </BrowserRouter>
     </AuthProvider>

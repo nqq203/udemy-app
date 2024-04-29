@@ -30,7 +30,6 @@ export default function PaymentOrder({ cartCourses }) {
             </PaymentLoading>
         );
     }
-    console.log(courses);
     const courseData = courses?.metadata;
     return (
         <>

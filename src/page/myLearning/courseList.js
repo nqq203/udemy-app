@@ -29,7 +29,7 @@ export default function CourseList(orders) {
   }
 
   const courseData = courses.metadata;
-  if(courseData.length === 0){
+  if(courseData === undefined || courseData === null || courseData.length === 0){
       return (
           <MyLearningContainer>
               <MyLearningHeadingContainer>
@@ -52,7 +52,7 @@ export default function CourseList(orders) {
                 >
                     You have not enrolled in any courses yet.
                 </Typography>
-                <Link to="/courses">
+                <Link to="/">
                   <Typography
                     variant="body1" 
                     color={"var(--color-purple-300)"}
