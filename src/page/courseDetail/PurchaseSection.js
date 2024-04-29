@@ -40,6 +40,7 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
       setFixed(false);
     }
   }
+
   const mutation = useMutation(callApiCreateItemCart, {
     onSuccess: (data) => {
       console.log(data);
@@ -62,6 +63,11 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
   async function handleAddToCart() {
     mutation.mutate(id);
   }
+
+  function handleBuyNow() {
+    alert(id);
+  }
+
   useEffect(() => {
     checkScroll();
   }, [scrollPosition]);
@@ -102,6 +108,7 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
             width={"100%"}
             className="buy-now-btn"
             fontFamily={"var(--font-stack-heading)"}
+            onClick={handleBuyNow}
           >
             Buy now
           </Button>

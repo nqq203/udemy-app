@@ -34,6 +34,24 @@ export const callApiUpdateProfile = async (userData) => {
   return data;
 };
 
+export const callApiUpdateAvatar = async (imageFile) => {
+  const formData = new FormData();
+
+  formData.append('email', JSON.stringify(localStorage.getItem('email')));
+  
+  if (imageFile && imageFile instanceof File) {
+    formData.append('imageFile', imageFile);
+  }
+
+  const accessToken = localStorage.getItem('accessToken');
+  const { data } = await api.post('/users/change-avatar', formData, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return data;
+}
+
 export const callApiChangePassword = async (newPassword) => {
   const { data } = await api.patch('/users/change-password', newPassword);
   return data;
