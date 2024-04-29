@@ -195,6 +195,7 @@ export const ReviewsCourseContainer = (props) => {
     const [pageNumber,setPageNumber] = useState(1)
     const [totalPages, setTotalPages] = useState(0);
     const [isCourseChange,setIsCourseChange] = useState(false)
+    const [totalDocs,setTotalDocs] = useState(0)
 
     const ratings = ["All","1 star","2 stars","3 stars","4 stars","5 stars"];
     const sortings = ["Newest first", "Oldest first"]
@@ -209,6 +210,7 @@ export const ReviewsCourseContainer = (props) => {
                 setReviewsList(data?.metadata?.results)
                 setUsersList(data?.metadata?.users)
                 setTotalPages(data?.metadata?.totalPages || 0)
+                setTotalDocs(data?.metadata?.totalDocs)
                 setLoading(false)
             },
             onError: (error) => {
@@ -309,7 +311,7 @@ export const ReviewsCourseContainer = (props) => {
                     style={{ position:"relative",left:"50%",top:"100px",transform:"translateX(-50%)"}}
                 />
             ) : (
-                reviewsList?.length === 0 ? (
+                totalDocs === 0 ? (
             <div className="result-container">
                     <h4>
                         No reviews found
@@ -320,7 +322,7 @@ export const ReviewsCourseContainer = (props) => {
             <div className="result-container">
                 
                 <h4>
-                    {reviewsList?.length} reviews found
+                    {totalDocs} reviews found
                 </h4>
 
                 {reviewsList?.map((review,index) => (
