@@ -10,6 +10,7 @@ import { useState, useRef } from "react";
 import { PropagateLoader } from "react-spinners";
 import { callApiGetReviews } from "../../api/review";
 import ReviewSection from "./ReviewSection";
+import { callApiGetRelatedCourses } from "../../api/course";
 const CourseDetail = () => {
   // React query for fetching course details
   const { courseId } = useParams();
@@ -50,25 +51,17 @@ const CourseDetail = () => {
     },
   });
 
-  // fetching related course
-  // const {
-  //   isSuccess: isRelatedCoursesSuccess,
-  //   isError: isRelatedCoursesError,
-  //   data: relatedCoursesData,
-  //   error: relatedCoursesError,
-  // } = useQuery({
-  //   queryKey: "relatedCourses",
-  //   queryFn: async () => {
-  //     const response = await fetch(
-  //       `http://localhost:8080/courses/${courseId}/related`
-  //     );
-  //     if (!response.ok) {
-  //       throw new Error("Network response was not ok");
-  //     }
-  //     const jsonData = await response.json();
-  //     return jsonData;
-  //   },
-  // });
+  //fetching related course
+  const {
+    isSuccess: isRelatedCoursesSuccess,
+    isError: isRelatedCoursesError,
+    data: relatedCoursesData,
+    error: relatedCoursesError,
+    isLoading: isRelatedCoursesLoading,
+  } = useQuery({
+    queryKey: "relatedCourses",
+    queryFn: () => callApiGetRelatedCourses(courseId),
+  });
 
   if (isCourseError) {
     console.log("Error fetching course data" + courseError);
@@ -78,7 +71,7 @@ const CourseDetail = () => {
     <CourseDetailWrapper>
       {/* Sticky Sidebar */}
 
-      {courseLoading || reviewLoading ? (
+      {courseLoading || reviewLoading || isRelatedCoursesLoading ? (
         <div className="container">
           <PropagateLoader color="var(--color-blue-300)" />
         </div>
@@ -107,10 +100,12 @@ const CourseDetail = () => {
                   lectures={courseData.metadata.lectures}
                 />
               </div>
+              {relatedCoursesData.success ? (
+                <StudentAlsoBought
+                  courses={relatedCoursesData.metadata}
+                ></StudentAlsoBought>
+              ) : null}
 
-              {/* <StudentAlsoBought
-            // courses={relatedCoursesData.metadata}
-          ></StudentAlsoBought> */}
               {/* Reviews */}
 
               <ReviewSection reviewData={reviewData}></ReviewSection>

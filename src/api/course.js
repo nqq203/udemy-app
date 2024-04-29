@@ -142,10 +142,6 @@ export const callApiGetCartCourses = async (courses) => {
 }
 
 export const callApiGetRelatedCourses = async (courseId) => {
-  const {data} = await api.get(`/courses/get-related-courses`, {
-    params: {
-      courseId
-    }
-  })
+  const {data} = await api.get(`/courses/${courseId}/related`);
   return data;
 }

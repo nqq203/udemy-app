@@ -187,6 +187,7 @@ export const CourseComparisonWrapper = styled.div`
     position: relative;
     box-sizing: border-box;
     margin: 0;
+
   }
 
   .course-comparison-main-content {
@@ -194,6 +195,7 @@ export const CourseComparisonWrapper = styled.div`
     flex-direction: column;
     margin-left: 16px;
     min-width: 180px;
+    max-width: 400px;
     width: 100%;
     margin: 0 0 0 8px;
     white-space: nowrap;
@@ -215,7 +217,7 @@ export const CourseComparisonWrapper = styled.div`
   }
 
   & .price {
-    max-width: 60px;
+    width: 45px;
   }
 
   .ratings {
@@ -234,7 +236,7 @@ export const CourseComparisonWrapper = styled.div`
   }
 
   & .course-comparison-image-container {
-    width: 10em;
+    width: 95px;
   }
 
   & .rating-score-container {
