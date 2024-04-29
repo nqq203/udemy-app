@@ -38,7 +38,9 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Oauth from './page/Oauth/Oauth';
 import EmailActivation from './page/EmailActivation/EmailActivation';
-
+import ForgotPassword from './page/ForgotPassword/ForgotPassword';
+import ResetPassword from './page/ResetPassword/ResetPassword';
+import { ResetTv } from '@mui/icons-material';
 const queryClient = new QueryClient();
 
 export default function App() { 
@@ -54,6 +56,8 @@ export default function App() {
             <Route path="/" element={<HomePage />}/>
             <Route path="/sign-in" element={<SignInWrapper />} />
             <Route path="/sign-up" element={<SignUpWrapper />}/>
+            <Route path="/forgot-password" element={<ForgotPasswordWrapper />}/>
+            <Route path="/reset-password/:token" element={<ResetPassword />}/>
             <Route path="/view-list-courses" element={<ViewListSearch />}/>
             <Route path="/view-lecture" element={<Lecture />}/>
             <Route path="/shopping-cart" element={<ShoppingCart />} />
@@ -114,6 +118,10 @@ function SignUpWrapper() {
   return isAuthenticated ? <Navigate to="/" /> : <SignUp />;
 }
 
+function ForgotPasswordWrapper() {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Navigate to="/" /> : <ForgotPassword />;
+}
 function PrivateRoute({ element }) {
   const { isAuthenticated } = useAuth();
   const RouteElement = element;

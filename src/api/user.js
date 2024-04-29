@@ -96,3 +96,18 @@ export const callApiConfirmAccount = async (token) => {
   console.log(data);
   return data;
 }
+
+export const callApiForgotPassword = async (email) => {
+  const { data } = await api.post('/users/forgot-password', {email});
+  return data;
+}
+
+export const callApiCheckTokenValidity = async (token) => {
+  const { data } = await api.get(`/users/check-token/${token}`);
+  return data;
+}
+export const callApiResetPassword = async (dataInput) => {
+
+  const { data } = await api.put(`/users/reset-password/${dataInput.token}`, dataInput);
+  return data;
+}

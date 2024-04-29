@@ -178,18 +178,18 @@ const SignIn = () => {
           >Login</Button>
           <Block>
             <span className="blckTxt">or</span>
-            <Link to="/join/forgot-password" className="anchor">
+            <Link to="/forgot-password" className="anchor">
               Forgot password
             </Link>
           </Block>
           <Block>
             <span className="blckTxt">Dont have an account?</span>
-            <Link to="/join/signup" className="anchor">
+            <Link to="/sign-up" className="anchor">
               <b>Signup</b>
             </Link>
           </Block>
           <Block>
-            <Link to="/join/login" className="anchor">
+            <Link to="/sign-in" className="anchor">
               <b>Login with your organization</b>
             </Link>
           </Block>
