@@ -23,7 +23,6 @@ const SectionContent = ({
     setIsOpened((prevIsOpened) => !prevIsOpened);
   };
 
-  console.log(lectures)
   return (
     <SectionContentWrapper>
       <div>

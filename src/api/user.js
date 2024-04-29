@@ -1,4 +1,5 @@
 import api from './api';
+import { jwtDecode } from 'jwt-decode';
 
 export const callApiCreateAccount = async (userData) => {
   const { data } = await api.post('/users/signup', userData);
@@ -34,6 +35,24 @@ export const callApiUpdateProfile = async (userData) => {
   return data;
 };
 
+export const callApiUpdateAvatar = async (imageFile) => {
+  const formData = new FormData();
+
+  formData.append('email', JSON.stringify(localStorage.getItem('email')));
+  
+  if (imageFile && imageFile instanceof File) {
+    formData.append('imageFile', imageFile);
+  }
+
+  const accessToken = localStorage.getItem('accessToken');
+  const { data } = await api.post('/users/change-avatar', formData, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return data;
+}
+
 export const callApiChangePassword = async (newPassword) => {
   const { data } = await api.patch('/users/change-password', newPassword);
   return data;
@@ -43,18 +62,37 @@ export const callApiLoginWithGoogle = async () => {
   window.location.href = `http://localhost:8080/users/google`;
 };
 
-export const callApiGetSessionMessage = async () => {
-  const { data } = await api.get('users/getSessionMessage', { withCredentials: true });
-  return data;
-}
+export const callApiLoginWithFacebook = async () => {
+  window.location.href = `http://localhost:8080/users/facebook`;
+};
+
 
 export const callApiLogOut = async (userData) => {
-  console.log(userData);
+  // console.log(userData);
   const accessToken = localStorage.getItem('accessToken');
-  const { data } = await api.post('users/logout', {
+  let typeLogin = localStorage.getItem('typeLogin'); 
+  if (typeLogin === undefined || typeLogin === null) {
+    typeLogin = 'normal';
+  }
+  const decodedToken = jwtDecode(accessToken);
+  const request = {
+    sessionId: decodedToken.sessionId,
+    typeLogin: typeLogin,
+  }
+  console.log(request);
+  console.log(accessToken);
+  const { data } = await api.post('users/logout', request, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   });
+  localStorage.clear();
+  console.log(data);
+  return data;
+}
+
+export const callApiConfirmAccount = async (token) => {
+  const { data } = await api.get(`/users/activate-account/${token}`);
+  console.log(data);
   return data;
 }

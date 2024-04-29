@@ -14,6 +14,7 @@ const isTokenExpired = (accessToken) => {
 
   const decodedToken = jwtDecode(accessToken);
   const currentDate = new Date();
+  console.log(decodedToken);
 
   // JWT exp is in seconds
   return decodedToken.exp * 1000 < currentDate.getTime();

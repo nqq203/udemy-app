@@ -140,3 +140,8 @@ export const callApiGetCartCourses = async (courses) => {
   })
   return data;
 }
+
+export const callApiGetRelatedCourses = async (courseId) => {
+  const {data} = await api.get(`/courses/${courseId}/related`);
+  return data;
+}

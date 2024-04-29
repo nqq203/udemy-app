@@ -4,6 +4,7 @@ import { LuMonitorPlay } from 'react-icons/lu';
 import { FaChartBar } from 'react-icons/fa';
 import { SiUdemy } from 'react-icons/si';
 import { IoIosAddCircleOutline } from 'react-icons/io';
+import { MdOutlineReviews } from "react-icons/md";
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setInstructorPage } from '../../redux/instructorPageSlice';
@@ -28,6 +29,7 @@ export default function InstructorLayout() {
     { id: 1, icon: <LuMonitorPlay />, link: '/instructor/courses' },
     { id: 2, icon: <IoIosAddCircleOutline />, link: '/instructor/create' },
     { id: 3, icon: <FaChartBar />, link: '/instructor/statistics' },
+    { id: 4, icon: <MdOutlineReviews />, link: '/instructor/reviews'}
   ];
 
   const getItemActive = (id) => id === isActivePage ? 'is-active' : '';
