@@ -34,12 +34,17 @@ const Header = () => {
   async function onLogout() {
     setIsAuthenticated(false);
     await callApiLogOut();
-    // window.location.href="http://localhost:3030/";
+    window.location.href="http://localhost:3030/";
   }
+
+  useEffect(() => {
+    console.log(isAuthenticated);
+  }, [isAuthenticated]);
 
   if (loading) {
     return <div></div>
   }
+  
   
   return (
     <HeaderWrapper>

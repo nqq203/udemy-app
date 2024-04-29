@@ -1,13 +1,14 @@
 import { useLocation } from "react-router-dom";
 import queryString from 'query-string';
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Oauth() {
+  const { setIsAuthenticated } = useAuth();
+  const [authen, setAuthen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, setIsAuthenticated } = useAuth();
   const queryParams = queryString.parse(location.search);
   const decodedUserInfo = JSON.parse(queryParams.userInfo);
   const decodedAccessToken = JSON.parse(queryParams.accessToken);
@@ -23,15 +24,18 @@ export default function Oauth() {
     localStorage.setItem('_id', decodedUserInfo._id);
     localStorage.setItem('role', decodedUserInfo.role);
     localStorage.setItem('typeLogin', 'oauth2');
-    // window.location.href = "http://localhost:3030";
-    setIsAuthenticated(true);
-  }, [decodedAccessToken, decodedUserInfo]);
+    // window.location.href = "http://localhost:3030/"
+    if (!authen) 
+      setAuthen(true);
+  }, [authen]);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    console.log("hello");
+    console.log(authen);
+    if (authen) {
+      setIsAuthenticated(authen);
       navigate("/");
     }
-  }, [isAuthenticated])
-
+  }, [authen]);
   return <div></div>
 }
