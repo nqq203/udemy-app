@@ -12,9 +12,7 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
   const scrollPosition = useScrollPosition();
   const [isFixed, setFixed] = useState(false);
   const [bottomPosition, setBottomPosition] = useState(false);
-  console.log(scrollPosition);
   const dispatch = useDispatch();
-  const [topPosition, setTopPosition] = useState(false);
   // console.log(scrollPosition);
 
   const [notification, setNotification] = useState({
@@ -26,8 +24,6 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
   function checkScroll() {
     const bottomLimit =
       document.body.scrollHeight - window.innerHeight - 110 - 32;
-    console.log(scrollPosition);
-    console.log(bottomPosition);
     // 510 is the approximate height of the purchase section
     if (scrollPosition > 100 && scrollPosition < bottomLimit) {
       setFixed(true);
@@ -40,6 +36,7 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
       setFixed(false);
     }
   }
+
   const mutation = useMutation(callApiCreateItemCart, {
     onSuccess: (data) => {
       console.log(data);
@@ -62,6 +59,11 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
   async function handleAddToCart() {
     mutation.mutate(id);
   }
+
+  function handleBuyNow() {
+    alert(id);
+  }
+
   useEffect(() => {
     checkScroll();
   }, [scrollPosition]);
@@ -102,6 +104,7 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
             width={"100%"}
             className="buy-now-btn"
             fontFamily={"var(--font-stack-heading)"}
+            onClick={handleBuyNow}
           >
             Buy now
           </Button>

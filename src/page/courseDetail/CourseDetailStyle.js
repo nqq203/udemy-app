@@ -3,6 +3,11 @@ import { IoIosArrowDown } from "react-icons/io";
 
 export const CourseDetailWrapper = styled.div`
   position: relative;
+  & .purchase-position-container {
+    max-width: 1184px;
+    margin: 0 auto;
+  }
+
   & .course-content-container {
     margin-bottom: 40px;
   }
@@ -35,7 +40,7 @@ export const CourseDetailWrapper = styled.div`
 export const PurchaseSectionWrapper = styled.div`
   position: ${({ isFixed }) => (isFixed ? "fixed" : "absolute")};
   width: 23rem;
-  margin-left: 840px;
+  margin-left: 796px;
   display: block;
   ${({ bottomPosition }) =>
     bottomPosition ? `bottom: 32px` : "top: 32px"};
@@ -182,6 +187,7 @@ export const CourseComparisonWrapper = styled.div`
     position: relative;
     box-sizing: border-box;
     margin: 0;
+
   }
 
   .course-comparison-main-content {
@@ -189,6 +195,7 @@ export const CourseComparisonWrapper = styled.div`
     flex-direction: column;
     margin-left: 16px;
     min-width: 180px;
+    max-width: 400px;
     width: 100%;
     margin: 0 0 0 8px;
     white-space: nowrap;
@@ -210,7 +217,7 @@ export const CourseComparisonWrapper = styled.div`
   }
 
   & .price {
-    max-width: 60px;
+    width: 45px;
   }
 
   .ratings {
@@ -229,7 +236,7 @@ export const CourseComparisonWrapper = styled.div`
   }
 
   & .course-comparison-image-container {
-    width: 10em;
+    width: 95px;
   }
 
   & .rating-score-container {
