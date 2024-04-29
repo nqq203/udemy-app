@@ -8,7 +8,7 @@ import aImg from "../icons/apple-logo.svg";
 import email from "../icons/email.png";
 import lock from "../icons/lock.png";
 import Notification from "../../components/Notification/Notification";
-import { callApiGetSessionMessage, callApiLogin, callApiLoginWithGoogle } from "../../api/user";
+import { callApiGetSessionMessage, callApiLogin, callApiLoginWithFacebook, callApiLoginWithGoogle } from "../../api/user";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -123,6 +123,18 @@ const SignIn = () => {
     }
   }, [signUpMessage, isSignUp]);
 
+  async function signInOauth(id) {
+    if (id === 0) {
+      await callApiLoginWithFacebook();
+    }
+    else if (id === 1) {
+      await callApiLoginWithGoogle();
+    }
+    else if (id === 2) {
+
+    }
+  }
+
   return (
     <OuterDiv>
       <Notification message={notification.message} visible={notification.visible} bgColor={notification.bgColor} onClose={() => setNotification({ message: '', visible: false, bgColor: 'green' })} />
@@ -132,7 +144,7 @@ const SignIn = () => {
         <BoxBody>
           {oauth?.map((item, id) => {
             return (
-              <OAuth key={id} onClick={async () => id === 1 && await callApiLoginWithGoogle()}>
+              <OAuth key={id} onClick={() => signInOauth(id)}>
                 <img src={item?.img} alt="login img" className="icon" />
                 <span className="txt">{item?.txt}</span>
               </OAuth>

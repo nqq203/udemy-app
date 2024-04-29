@@ -20,19 +20,6 @@ const Header = () => {
     setIsHovering(false);
   };
 
-  // useEffect(() => {
-  //   // console.log(isAuthenticated);
-  //   if (!isAuthenticated) {
-  //     // Log out the user
-  //     // localStorage.removeItem("accessToken");
-  //     // localStorage.removeItem("email");
-  //     // localStorage.removeItem("fullname");
-  //     // localStorage.removeItem("role");
-  //     // localStorage.removeItem("_id");
-  //     setIsAuthenticated(false);
-  //   }
-  // }, [isAuthenticated, setIsAuthenticated]);
-
   useEffect(() => {
     const checkAuth = async () => {
       // Add your authentication check logic here
@@ -45,10 +32,9 @@ const Header = () => {
   }, [setIsAuthenticated]);
 
   async function onLogout() {
-    await callApiLogOut();
-    localStorage.clear();
     setIsAuthenticated(false);
-    window.location.href = "http://localhost:3030";
+    await callApiLogOut();
+    // window.location.href="http://localhost:3030/";
   }
 
   if (loading) {

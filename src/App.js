@@ -34,6 +34,10 @@ import Lecture from './page/lecture/lecture';
 import { AuthProvider } from './context/AuthContext';
 import CourseDetail from "./page/courseDetail/CourseDetail";
 import PaymentSuccess from './page/payment/paymentSuccess';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
+import Oauth from './page/Oauth/Oauth';
+import EmailActivation from './page/EmailActivation/EmailActivation';
 
 const queryClient = new QueryClient();
 
@@ -48,35 +52,38 @@ export default function App() {
         <MainContent>
           <Routes>
             <Route path="/" element={<HomePage />}/>
-            <Route path="/sign-in" element={<SignIn />} />
-            <Route path="/sign-up" element={<SignUp />}/>
+            <Route path="/sign-in" element={<SignInWrapper />} />
+            <Route path="/sign-up" element={<SignUpWrapper />}/>
             <Route path="/view-list-courses" element={<ViewListSearch />}/>
             <Route path="/view-lecture" element={<Lecture />}/>
             <Route path="/shopping-cart" element={<ShoppingCart />} />
             <Route path="/course-detail/:courseId" element={<CourseDetail/>} />
-            <Route path="/instructor" element={<InstructorLayout />} >
+            <Route path="/instructor" element={<PrivateRoute element={InstructorLayout}/>} >
               <Route path="courses" index element={<InstructorCourse />}/>
               <Route path="create" element={<InstructorCreateCourse />}/>
               <Route path="statistics" element={<InstructorStatistic />} />
               <Route path="reviews" element={<InstructorReviews />} />
             </Route>
             <Route path="/profile">
-              <Route path="info" element={<ProfileInfo />} />
-              <Route path="photo" element={<ProfilePhoto />} />
-              <Route path="privacy" element={<ProfilePrivacy />} />
+              <Route path="info" element={<PrivateRoute element={ProfileInfo} />} />
+              <Route path="photo" element={<PrivateRoute element={ProfilePhoto} />} />
+              <Route path="privacy" element={<PrivateRoute element={ProfilePrivacy} />} />
             </Route>
-            <Route path="cart" element={<Cart />} />
+            <Route path="cart" element={<PrivateRoute element={Cart} />} />
             <Route path="payment">
-              <Route path="checkout" element={<Payment />} />
-              <Route path="success" element={<PaymentSuccess />} />
+              <Route path="checkout" element={<PrivateRoute element={Payment} />} />
+              <Route path="success" element={<PrivateRoute element={PaymentSuccess} />} />
             </Route>
             <Route path="my-courses">
-              <Route path="learning" element={<MyCourses />} />
-              <Route path="wishlist" element={<MyWishList />} />
-              <Route path="archived" element={<MyArchived />} />
-              <Route path="learning-tools" element={<MyLearningTools />} />
+              <Route path="learning" element={<PrivateRoute element={MyCourses} />} />
+              <Route path="wishlist" element={<PrivateRoute element={MyWishList} />} />
+              <Route path="archived" element={<PrivateRoute element={MyArchived} />} />
+              <Route path="learning-tools" element={<PrivateRoute element={MyLearningTools} />} />
             </Route>
+            <Route path="/oauth2/" element={<Oauth />}/>
+          <Route path="/activate-account/:token" element={<EmailActivation />} />
           </Routes>
+          
         </MainContent>
         <Footer/>
         </AppWrapper>
@@ -96,3 +103,23 @@ const MainContent = styled.main`
   flex: 1;
   // Apply necessary padding or margins as needed for your layout
 `;
+
+function SignInWrapper() {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Navigate to="/" /> : <SignIn />;
+}
+
+function SignUpWrapper() {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Navigate to="/" /> : <SignUp />;
+}
+
+function PrivateRoute({ element }) {
+  const { isAuthenticated } = useAuth();
+  const RouteElement = element;
+  return isAuthenticated ? (
+    <RouteElement />
+  ) : (
+    <Navigate to="/sign-in" replace/>
+  );
+}
