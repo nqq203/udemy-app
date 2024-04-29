@@ -115,7 +115,7 @@ export default function Payment() {
                 userId: localStorage.getItem('_id'),
                 items: cartData.map(cartItem => {
                     return {
-                        courseId: cartItem.itemId,
+                        itemId: cartItem.itemId,
                         price: 100
                     }
                 
@@ -144,7 +144,7 @@ export default function Payment() {
                 userId: localStorage.getItem('_id'),
                 items: cartData.map(cartItem => {
                     return {
-                        itemId: cartItem._id,
+                        itemId: cartItem.itemId,
                         price: 100
                     }
                 
@@ -161,8 +161,8 @@ export default function Payment() {
     return (
         <PaymentContainer>
             {cartData.length === 0 ? (
-                <Stack justifyContent="center" alignItems="center">
-                    <Typography variant="h4" fontWeight={800} fontFamily={"serif"}>There is something wrong :c</Typography>
+                <Stack height="400px" justifyContent="center" alignItems="center">
+                    <Typography variant="h4" fontWeight={600}>There is something wrong.</Typography>
                 </Stack>
             ) : (
                 <>
