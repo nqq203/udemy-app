@@ -38,14 +38,14 @@ export const callApiUpdateProfile = async (userData) => {
 export const callApiUpdateAvatar = async (imageFile) => {
   const formData = new FormData();
 
-  formData.append('email', JSON.stringify(localStorage.getItem('email')));
+  formData.append('email', localStorage.getItem('email'));
   
   if (imageFile && imageFile instanceof File) {
-    formData.append('imageFile', imageFile);
+    formData.append('image', imageFile);
   }
 
   const accessToken = localStorage.getItem('accessToken');
-  const { data } = await api.post('/users/change-avatar', formData, {
+  const { data } = await api.put('/users/change-avatar', formData, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

@@ -61,14 +61,14 @@ const SignIn = () => {
           // const role = JSON.stringify(data.metadata.ROLE);
           console.log(data.metadata);
 
-          const { email, fullName, role, _id } = data.metadata.userInfo;
+          const { email, fullName, role, _id,avatar } = data.metadata.userInfo;
           localStorage.setItem('accessToken', data.metadata.accessToken);
           localStorage.setItem('token', data.metadata.accessToken);
           localStorage.setItem('email', email);
           localStorage.setItem('fullname', fullName);
           localStorage.setItem('role', role);
           localStorage.setItem('_id', _id);
-          localStorage.setItem('role', role);
+          localStorage.setItem('avatar', avatar);
           window.location.href = "http://localhost:3030";
           setIsAuthenticated(true);
         }

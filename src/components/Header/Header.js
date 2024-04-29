@@ -98,7 +98,7 @@ const Header = () => {
           >
             <Link to="/profile/info">
               <img
-                src="https://pluspng.com/img-png/user-png-icon-download-icons-logos-emojis-users-2240.png"
+                src={localStorage.getItem("avatar")}
                 style={{ width: "40px" }}
                 alt="user-profile"
               />
@@ -108,7 +108,7 @@ const Header = () => {
                 <div className="dropdown-content-info">
                   <img
                     className="dropdown-content-info-item"
-                    src="https://pluspng.com/img-png/user-png-icon-download-icons-logos-emojis-users-2240.png"
+                    src={localStorage.getItem("avatar")}
                     alt="uesr-profile"
                     style={{ width: "60px" }}
                   />
