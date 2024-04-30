@@ -44,7 +44,7 @@ export default function PaymentPrice({ cartCourses }) {
     )
 
     const courses = data;
-    if(isLoading){
+    if(isLoading || courses === undefined){
         return (
             <PaymentLoading>
                 <CircularProgress color="inherit" />
@@ -52,7 +52,7 @@ export default function PaymentPrice({ cartCourses }) {
         );
     }
     const courseData = courses?.metadata;
-    const price = courseData.reduce((acc, course) => acc + course.price, 0)
+    const price = courseData?.reduce((acc, course) => acc + course.price, 0)
     const totalPrice = changePriceFormat(price);
 
     const onCreateOrder = (data, actions) => {       
@@ -70,7 +70,7 @@ export default function PaymentPrice({ cartCourses }) {
                             }
                         }
                     },
-                    items: courseData.map(course => {
+                    items: courseData?.map(course => {
                         return {
                             name: course.name,
                             description: course.name,
@@ -93,7 +93,7 @@ export default function PaymentPrice({ cartCourses }) {
         return actions.order.capture().then((details) => {
             const orderData = {
                 userId: localStorage.getItem('_id'),
-                items: courseData.map(course => {
+                items: courseData?.map(course => {
                     return {
                         itemId: course._id,
                         price: course.price

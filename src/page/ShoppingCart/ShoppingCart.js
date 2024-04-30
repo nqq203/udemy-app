@@ -196,7 +196,7 @@ const ShoppingCart =   () => {
                     btnClick={submitCoupon}
                     placeholderTxt="Enter coupon code"
                   />
-                  <Link to="/payment/checkout">
+                  <Link to="/payment/checkout" reloadDocument>
                     <Button
                       width="100%"
                       fontWeight="700"

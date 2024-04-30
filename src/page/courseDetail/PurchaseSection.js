@@ -66,6 +66,7 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
 
   function handleBuyNow() {
     navigate(`/payment/checkout/${id}`);
+    window.location.reload();
   }
 
   useEffect(() => {

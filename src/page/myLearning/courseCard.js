@@ -22,7 +22,7 @@ const getInstructor = async (userId) => {
 }
 
 export default function CourseCard({ course }) {
-  const { data, isLoading } = useQuery("instructor", () => getInstructor(course.instructorId));
+  const { data, isLoading } = useQuery("instructor", () => getInstructor(course?.instructorId));
   const [value, setValue] = React.useState(null);
   const id = course._id || ""
   
@@ -40,8 +40,8 @@ export default function CourseCard({ course }) {
       <Card sx={{ maxWidth: 250 }}>
         <CardMedia
           sx={{ width: 250, height: 140 }}
-          image={course.imageUrl}
-          title={course.name}
+          image={course?.imageUrl}
+          title={course?.name}
         />
         <CardContent sx={{
           height: 160,
@@ -57,7 +57,7 @@ export default function CourseCard({ course }) {
         }}>
           <div>
             <MyCourseCardItemName variant="h6" fontWeight={600}>
-                {course.name}
+                {course?.name}
             </MyCourseCardItemName>
 
           <MyCourseCardItemDescription>

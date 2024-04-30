@@ -83,9 +83,9 @@ export default function App() {
                 </Route>
                 <Route path="cart" element={<PrivateRoute element={Cart} />} />
                 <Route path="payment">
-                  <Route path="checkout" element={<PrivateRoute element={Payment} />} /> 
+                  <Route path="checkout" element={<Payment />} /> 
                   <Route path="checkout/:id" element={<PaymentBuyNow />} />
-                  <Route path="success" element={<PrivateRoute element={PaymentSuccess} />} />
+                  <Route path="success" element={<PaymentSuccess />} />
                 </Route>
                 <Route path="my-courses">
                   <Route path="learning" element={<PrivateRoute element={MyCourses} />} />

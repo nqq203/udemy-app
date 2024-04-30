@@ -23,7 +23,7 @@ export default function PaymentOrder({ cartCourses }) {
     const { data, isLoading } = useQuery('courseDetails', () => getCourseDetails(cartCourses));
 
     const courses = data;
-    if(isLoading){
+    if(isLoading || courses === undefined){
         return (
             <PaymentLoading>
                 <CircularProgress color="inherit" />
@@ -33,7 +33,7 @@ export default function PaymentOrder({ cartCourses }) {
     const courseData = courses?.metadata;
     return (
         <>
-          {courseData.map((course, index) => {
+          {courseData?.map((course, index) => {
               const formatPrice = changePriceFormat(course.price);
               return(
                   <PaymentSummaryContainer key={index}>

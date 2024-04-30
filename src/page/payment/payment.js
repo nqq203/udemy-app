@@ -40,7 +40,7 @@ export default function Payment() {
         );
     }
     const cartData = cart?.metadata;
-    const cartCourses = cartData.map(cartItem => cartItem.itemId);
+    const cartCourses = cartData?.map(cartItem => cartItem.itemId);
 
     const handleSelectCountryChange = (event) => {
         setChoice(event.target.value);
@@ -48,7 +48,7 @@ export default function Payment() {
 
     return (
         <PaymentContainer>
-            {cartData.length === 0 ? (
+            {cartData?.length === 0 ? (
                 <Stack height="400px" justifyContent="center" alignItems="center">
                     <Typography variant="h4" fontWeight={600}>There is something wrong.</Typography>
                 </Stack>
@@ -81,12 +81,22 @@ export default function Payment() {
     
                             <PaymentInfoItem>
                                 <h2>Order details</h2>
-                                <PaymentOrder cartCourses={cartCourses} />
+                                {cartCourses?.length === 0 ? (
+                                        <></>
+                                    ) : (
+                                        <PaymentOrder cartCourses={cartCourses} />
+                                    )
+                                }
                             </PaymentInfoItem>
                         </Grid>
     
                         <Grid item xs={12} md={5} px={10} sx={{backgroundColor: 'var(--color-gray-100)'}}>
-                            <PaymentPrice cartCourses={cartCourses} />
+                            {cartCourses?.length === 0 ? (
+                                    <></>
+                                ) : (
+                                    <PaymentPrice cartCourses={cartCourses} />
+                                )
+                            }
                         </Grid>
                     </Grid>
                 </>

@@ -66,7 +66,6 @@ export default function PaymentBuyNow() {
     const courseData = courses?.metadata;
     const price = courseData?.price;
     const totalPrice = changePriceFormat(price);
-    console.log(courseData);
 
     const handleSelectCountryChange = (event) => {
         setChoice(event.target.value);
@@ -79,20 +78,20 @@ export default function PaymentBuyNow() {
               {
                   amount: {
                       currency_code: 'USD',
-                      value: price,
+                      value: price || 1,
                       breakdown: {
                           item_total: {
                               currency_code: 'USD',
-                              value: price
+                              value: price || 1
                           }
                       }
                   },
                   items: [{
-                      name: courseData.name,
-                      description: courseData.description,
+                      name: courseData?.name,
+                      description: courseData?.name,
                       unit_amount: {
                           currency_code: 'USD',
-                          value: courseData.price
+                          value: price || 1
                       },
                       quantity: 1
                   }]
@@ -109,10 +108,10 @@ export default function PaymentBuyNow() {
           const orderData = {
               userId: localStorage.getItem('_id'),
               items: [{
-                itemId: courseData._id,
-                price: courseData.price
+                itemId: courseData?._id,
+                price: courseData?.price
               }],
-              paymentId: details.id,
+              paymentId: details?.id,
               totalPrice: price
           };
 
@@ -120,10 +119,9 @@ export default function PaymentBuyNow() {
       });
   }
 
-
     return (
         <PaymentContainer>
-            {courseData.length === 0 ? (
+            {courseData?.length === 0 ? (
                 <Stack height="400px" justifyContent="center" alignItems="center">
                     <Typography variant="h4" fontWeight={600}>There is something wrong.</Typography>
                 </Stack>
@@ -158,9 +156,9 @@ export default function PaymentBuyNow() {
                                 <h2>Order details</h2>
                                 <PaymentSummaryContainer>
                                   <Stack flexDirection='row' justifyContent="center" alignItems="center">
-                                      <PaymentImage src={courseData.imageUrl} alt="test"></PaymentImage>
+                                      <PaymentImage src={courseData?.imageUrl} alt="test"></PaymentImage>
                                       <Typography variant="subtitle1" marginLeft={2} fontWeight={700}>
-                                          {courseData.name}
+                                          {courseData?.name}
                                       </Typography> 
                                   </Stack>
                                   <Typography variant="subtitle1">
