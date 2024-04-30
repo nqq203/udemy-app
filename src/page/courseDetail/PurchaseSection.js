@@ -7,8 +7,10 @@ import { callApiCreateItemCart } from "../../api/cart";
 import { changePriceFormat } from "../../utils/changePriceFormat";
 import { useDispatch } from "react-redux";
 import Notification from "../../components/Notification/Notification";
+import { useNavigate } from "react-router-dom";
 
 const PurchaseSection = ({ id, thumbnailImage, price }) => {
+  const navigate = useNavigate();
   const scrollPosition = useScrollPosition();
   const [isFixed, setFixed] = useState(false);
   const [bottomPosition, setBottomPosition] = useState(false);
@@ -61,7 +63,7 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
   }
 
   function handleBuyNow() {
-    alert(id);
+    navigate(`/payment/checkout/${id}`);
   }
 
   useEffect(() => {

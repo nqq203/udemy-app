@@ -85,7 +85,7 @@ export default function CourseList(orders) {
   
         <Stack justifyContent='center'>
           <Grid container my={8} px={24}>
-            {courseData.map((course, index) => (
+            {courseData?.map((course, index) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={index} mb={4} sx={{display: 'flex', justifyContent: 'center'}}>
                 <CourseCard course={course} />
               </Grid>

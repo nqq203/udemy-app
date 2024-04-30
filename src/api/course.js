@@ -5,6 +5,15 @@ export const callApiGetCourseById = async (courseId) => {
     return data;
 }
 
+export const callApiGetCourseByCId = async (courseId) => {
+    const {data} = await api.get('/courses/course-by-id', {
+      params: {
+        courseId
+      }
+    });
+    return data;
+}
+
 export const callApiGetCoursesPagination = async (pageNumber,pageSize) => {
     const {data} = await api.get(`/courses?pageNum=${pageNumber}&pageSize=${pageSize}`);
     return data;

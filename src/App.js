@@ -35,6 +35,7 @@ import { AuthProvider } from './context/AuthContext';
 import CourseDetail from "./page/courseDetail/CourseDetail";
 import PaymentSuccess from './page/payment/paymentSuccess';
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import PaymentBuyNow from './page/payment/paymentBuyNow';
 
 const queryClient = new QueryClient();
 const initialOptions = {
@@ -67,14 +68,15 @@ export default function App() {
                     <Route path="statistics" element={<InstructorStatistic />} />
                     <Route path="reviews" element={<InstructorReviews />} />
                 </Route>
-                <Route path="/profile">
+                <Route path="profile">
                   <Route path="info" element={<ProfileInfo />} />
                   <Route path="photo" element={<ProfilePhoto />} />
                   <Route path="privacy" element={<ProfilePrivacy />} />
                 </Route>
                 <Route path="cart" element={<Cart />} />
                 <Route path="payment">
-                  <Route path="checkout" element={<Payment />} />
+                  <Route path="checkout" element={<Payment />} /> 
+                  <Route path="checkout/:id" element={<PaymentBuyNow />} />
                   <Route path="success" element={<PaymentSuccess />} />
                 </Route>
                 <Route path="my-courses">
