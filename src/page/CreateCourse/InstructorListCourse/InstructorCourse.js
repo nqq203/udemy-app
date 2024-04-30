@@ -148,6 +148,7 @@ export default function InstructorCourse() {
 
   function onNavigateCreateCourse() {
     dispatch(setCourseType("create"));
+    dispatch(setInstructorPage(2));
     dispatch(setCourseData(null));
     dispatch(setSectionsData([]));
     dispatch(setLecturesData([]));

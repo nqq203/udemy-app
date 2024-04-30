@@ -8,7 +8,7 @@ import { MdDelete } from "react-icons/md";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { useMutation } from "react-query";
-import { callApiCreateNote, callApiAddNote, callApiDeleteNote } from "../../api/note";
+import { callApiAddNote, callApiUpdateNote, callApiDeleteNote } from "../../api/note";
 import { callApiCreateReview, callApiUpdateReview } from "../../api/review";
 import { Link } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
@@ -77,13 +77,6 @@ export const ReviewOverlay = ({
     openOverlay(false);
   };
 
-  useEffect(() => {
-    if (userReview) {
-      userReview.rating = rating;
-      userReview.comment = comments;
-    }
-  }, [rating, comments]);
-
   const createReviewMutation = useMutation(callApiCreateReview, {
     onSuccess: (data) => {
       console.log(data);
@@ -100,6 +93,12 @@ export const ReviewOverlay = ({
       console.error("Error creating data", error);
     },
   });
+    useEffect(() => {
+        if(userReview){
+            userReview.rating = rating;
+            userReview.comment = comments;
+        }
+    },[rating,comments,userReview])
 
   const updateReviewMutation = useMutation(callApiUpdateReview, {
     onSuccess: (data) => {
@@ -483,40 +482,60 @@ const StyledRating = styled(Rating)({
 });
 
 export const ReviewSection = (props) => {
-  // const [overalRating, setOveralRating] = useState(5)
-  const usersList = props.dataReviews?.users || [];
-  const reviewsData = props.dataReviews?.reviews || [];
-  const ratings = props.courseRate || 0;
+    // const [overalRating, setOveralRating] = useState(5)
+    const usersList = props.dataReviews?.users || [];
+    const reviewsData = props.dataReviews?.reviews;
+    const ratings = props.courseRate || 0;
+    const pageSize = 5;
+    const [numberOfReviews,setNumberOfReviews] = useState(pageSize);
+    const [reviewsPagination, setReviewsPagination] = useState(reviewsData?.slice(0,numberOfReviews))
+    const [hasMoreReviews,setHasMoreReviews] = useState(true)
+    
+    useEffect(()=>{
+        setReviewsPagination(reviewsData?.slice(0,numberOfReviews))
+    },[numberOfReviews,reviewsData])
 
-  return (
-    <ReviewSectionStyle>
-      <h2>Students feedbacks</h2>
-      <div className="flexbox-rating-overal">
-        <h1 className="removePaddingText fontLarge">{ratings}</h1>
-        <StyledRating
-          size="large"
-          name="overalRating"
-          value={ratings}
-          readOnly
-        />
-        <h4 className="removePaddingText">Course Rating</h4>
-      </div>
-      <h2>Reviews</h2>
+    const handleLoadMore = () => {
+        if(numberOfReviews <= reviewsData?.length){
+            setNumberOfReviews(numberOfReviews + pageSize)
+        } 
+        if(numberOfReviews + pageSize > reviewsData?.length){
+            setHasMoreReviews(false)
+        }
+    }
 
-      {reviewsData?.map((review, index) => (
-        <div key={review._id}>
-          <ReviewItem
-            key={review._id}
-            username={usersList ? usersList[index] : ""}
-            rating={review.rating}
-            comment={review.comment}
-          ></ReviewItem>
-          <Divider component="div" sx={{ marginBottom: "10px" }} />
-        </div>
-      ))}
-    </ReviewSectionStyle>
-  );
-};
+    return(
+        <ReviewSectionStyle>
+            <h2 >Students feedbacks</h2>
+            <div className="flexbox-rating-overal">
+                <h1 className="removePaddingText fontLarge">{ratings}</h1>
+                <StyledRating size="large" name="overalRating" value={ratings} readOnly />
+                <h4 className="removePaddingText">Course Rating</h4>
+            </div>
+            <h2>Reviews</h2>
+
+                {reviewsPagination?.map((review,index) => (
+                    <div key={review._id}>
+                        <ReviewItem 
+                            key={review._id}
+                            username={usersList ? usersList[index] : ""}
+                            rating={review.rating}
+                            comment={review.comment}
+                        ></ReviewItem>
+                        <Divider component="div" sx={{marginBottom:"10px"}} />
+                    </div>
+                    
+                ))}
+
+            {hasMoreReviews? (
+                <Button onClick={handleLoadMore}>Load more reviews</Button>
+            ) : null}
+
+        </ReviewSectionStyle>
+    )
+}
+
+      
 
 export const CourseContentStyle = styled.div`
   border-bottom: 0.5px solid var(--color-gray-200);
@@ -600,7 +619,7 @@ export const NoteItem = ({ time, content, id }) => {
     setIsEditing(true);
   };
 
-  const createNoteMutation = useMutation(callApiCreateNote, {
+  const createNoteMutation = useMutation(callApiAddNote, {
     onSuccess: (data) => {
       console.log(data);
     },
@@ -609,7 +628,7 @@ export const NoteItem = ({ time, content, id }) => {
     }
   })
 
-  const updateNoteMutation = useMutation(callApiAddNote, {
+  const updateNoteMutation = useMutation(callApiUpdateNote, {
     onSuccess: (data) => {
       console.log(data);
     },

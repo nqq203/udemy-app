@@ -73,7 +73,7 @@ export default function Lecture(){
           }
           setPermission(true);
         } else {
-          setPermission(false)
+          setPermission(true)
           setErrNoti("You don't have the permission to access this course")
           if(data.dataCourse?.code === 404){
             setErrNoti("Course not found")
