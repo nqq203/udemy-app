@@ -1,6 +1,6 @@
 import {HeaderLecture,LectureOptionStyle,CourseContentStyle,
   CourseContentContainer,LectureOptionContainer,
-  OverviewSection,ReviewSection,ReviewOverlay,NoteSection} from "./lectureStyle"
+  OverviewSection,ReviewSection,ReviewOverlay,NoteSection, NoteItem} from "./lectureStyle"
 import { useState,useEffect } from "react";
 
 import { Grid,Box,ListItemButton,ListItemText,Divider } from "@mui/material";
@@ -131,7 +131,18 @@ export default function Lecture(){
       setOptionContent(<ReviewSection dataReviews={dataReviews} courseRate={course?.ratings}></ReviewSection>)
     } else if(option === "Notes"){
       // pass data to this
-      setOptionContent(<NoteSection ></NoteSection>)
+      const notes = [{
+        section: "Section 1",
+        lecture: "Lecture 1",
+        content: "This is a note",
+        createAt: ' 2021-10-10 10:10:10'
+      }, {
+        section: "Section 2",
+        lecture: "Lecture 2",
+        content: "This is another note",
+        createAt: ' 2021-10-10 10:10:10'
+      }]
+      setOptionContent(<NoteSection notes={notes}></NoteSection>)
     }
   }
 
