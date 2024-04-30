@@ -77,11 +77,14 @@ const CourseDetail = () => {
         </div>
       ) : (
         <div>
-          <PurchaseSection
-            id = {courseData.metadata.course._id}
-            thumbnailImage={courseData.metadata.course.imageUrl}
-            price={courseData.metadata.course.price}
-          />
+          <div className="purchase-position-container">
+            <PurchaseSection
+              id={courseData.metadata.course._id}
+              thumbnailImage={courseData.metadata.course.imageUrl}
+              price={courseData.metadata.course.price}
+            />
+          </div>
+
           <div style={{ position: "relative" }}>
             {/* Title Card */}
             <TitleCard
