@@ -10,6 +10,8 @@ import { callApiLogOut } from "../../api/user";
 const Header = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const [isHovering, setIsHovering] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const handleMouseOver = () => {
     setIsHovering(true);
   };
@@ -19,26 +21,31 @@ const Header = () => {
   };
 
   useEffect(() => {
-    console.log(isAuthenticated);
-    if (!isAuthenticated) {
-      // Log out the user
-      // localStorage.removeItem("accessToken");
-      // localStorage.removeItem("email");
-      // localStorage.removeItem("fullname");
-      // localStorage.removeItem("role");
-      // localStorage.removeItem("_id");
-      setIsAuthenticated(false);
-    }
-  }, [isAuthenticated, setIsAuthenticated]);
+    const checkAuth = async () => {
+      // Add your authentication check logic here
+      const accessToken = localStorage.getItem("accessToken");
+      setIsAuthenticated(!!accessToken);  // Set authenticated based on session existence
+      setLoading(false);  // Set loading to false once the check is complete
+    };
+  
+    checkAuth();
+  }, [setIsAuthenticated]);
 
   async function onLogout() {
-    const data = await callApiLogOut(localStorage.getItem("sessionId"));
     setIsAuthenticated(false);
-    localStorage.clear();
-    window.location.href = "http://localhost:3030";
-    console.log(data);
+    await callApiLogOut();
+    window.location.href="http://localhost:3030/";
   }
 
+  useEffect(() => {
+    console.log(isAuthenticated);
+  }, [isAuthenticated]);
+
+  if (loading) {
+    return <div></div>
+  }
+  
+  
   return (
     <HeaderWrapper>
       <nav className="header-first">
@@ -91,7 +98,7 @@ const Header = () => {
           >
             <Link to="/profile/info">
               <img
-                src="https://pluspng.com/img-png/user-png-icon-download-icons-logos-emojis-users-2240.png"
+                src={localStorage.getItem("avatar")}
                 style={{ width: "40px" }}
                 alt="user-profile"
               />
@@ -101,7 +108,7 @@ const Header = () => {
                 <div className="dropdown-content-info">
                   <img
                     className="dropdown-content-info-item"
-                    src="https://pluspng.com/img-png/user-png-icon-download-icons-logos-emojis-users-2240.png"
+                    src={localStorage.getItem("avatar")}
                     alt="uesr-profile"
                     style={{ width: "60px" }}
                   />

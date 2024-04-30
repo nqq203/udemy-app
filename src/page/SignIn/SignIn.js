@@ -8,7 +8,7 @@ import aImg from "../icons/apple-logo.svg";
 import email from "../icons/email.png";
 import lock from "../icons/lock.png";
 import Notification from "../../components/Notification/Notification";
-import { callApiGetSessionMessage, callApiLogin, callApiLoginWithGoogle } from "../../api/user";
+import { callApiGetSessionMessage, callApiLogin, callApiLoginWithFacebook, callApiLoginWithGoogle } from "../../api/user";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -61,14 +61,14 @@ const SignIn = () => {
           // const role = JSON.stringify(data.metadata.ROLE);
           console.log(data.metadata);
 
-          const { email, fullName, role, _id } = data.metadata.userInfo;
+          const { email, fullName, role, _id,avatar } = data.metadata.userInfo;
           localStorage.setItem('accessToken', data.metadata.accessToken);
           localStorage.setItem('token', data.metadata.accessToken);
           localStorage.setItem('email', email);
           localStorage.setItem('fullname', fullName);
           localStorage.setItem('role', role);
           localStorage.setItem('_id', _id);
-          localStorage.setItem('role', role);
+          localStorage.setItem('avatar', avatar);
           window.location.href = "http://localhost:3030";
           setIsAuthenticated(true);
         }
@@ -123,6 +123,18 @@ const SignIn = () => {
     }
   }, [signUpMessage, isSignUp]);
 
+  async function signInOauth(id) {
+    if (id === 0) {
+      await callApiLoginWithFacebook();
+    }
+    else if (id === 1) {
+      await callApiLoginWithGoogle();
+    }
+    else if (id === 2) {
+
+    }
+  }
+
   return (
     <OuterDiv>
       <Notification message={notification.message} visible={notification.visible} bgColor={notification.bgColor} onClose={() => setNotification({ message: '', visible: false, bgColor: 'green' })} />
@@ -132,7 +144,7 @@ const SignIn = () => {
         <BoxBody>
           {oauth?.map((item, id) => {
             return (
-              <OAuth key={id} onClick={async () => id === 1 && await callApiLoginWithGoogle()}>
+              <OAuth key={id} onClick={() => signInOauth(id)}>
                 <img src={item?.img} alt="login img" className="icon" />
                 <span className="txt">{item?.txt}</span>
               </OAuth>
@@ -166,18 +178,18 @@ const SignIn = () => {
           >Login</Button>
           <Block>
             <span className="blckTxt">or</span>
-            <Link to="/join/forgot-password" className="anchor">
+            <Link to="/forgot-password" className="anchor">
               Forgot password
             </Link>
           </Block>
           <Block>
             <span className="blckTxt">Dont have an account?</span>
-            <Link to="/join/signup" className="anchor">
+            <Link to="/sign-up" className="anchor">
               <b>Signup</b>
             </Link>
           </Block>
           <Block>
-            <Link to="/join/login" className="anchor">
+            <Link to="/sign-in" className="anchor">
               <b>Login with your organization</b>
             </Link>
           </Block>

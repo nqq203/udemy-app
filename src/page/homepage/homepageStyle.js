@@ -97,7 +97,8 @@ export const CatogoryStyle = styled.div`
     align-items: center;
     justify-content: center;
     background-color: var(--color-white);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 4px 12px rgba(0, 0, 0, .08);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, .08), 0 6px 12px rgba(0, 0, 0, .08);
+    position: relative;
 
     ul{
         list-style: none;
@@ -299,17 +300,16 @@ export const SliderContainer = (props) => {
     const allCourse = props?.courses || []
     const instructors = props?.instructors || []
     const listCourse = useRef(null)
+    const nextBtn = useRef(null);
     const courseScroll = 260
-    // const nextBtn = useRef(null);
 
-    // useEffect(() => {
-    //     if(allCourse.length < 6){
-    //         console.log(allCourse.length)
-    //         console.log(nextBtn.current)
-    
-    //         nextBtn?.current?.style.display = "none"
-    //     }
-    // },[listCourse])
+    useEffect(() => {
+        if(nextBtn.current != null){
+            if(allCourse.length <= 5){
+                nextBtn.current.style.display = "none"
+            }
+        }
+    },[nextBtn])
      
     function slideAction(event){
         const id = event.target.id
@@ -325,7 +325,6 @@ export const SliderContainer = (props) => {
             const scrollAmount = courseScroll*direction;
             listCourse.current.scrollBy({left:scrollAmount, behavior: "smooth"})
         }
-        // handleSlideButtons()
     }
 
     function handleSlideButtons(){
@@ -349,7 +348,7 @@ export const SliderContainer = (props) => {
                 <div className="floating-button position-left" id="prev-slide" onClick={slideAction}>
                     <ArrowBackIosNewIcon id="prev-slide" onClick={slideAction}></ArrowBackIosNewIcon>
                 </div>
-                <div className="floating-button position-right" id="next-slide" onClick={slideAction}>
+                <div ref={nextBtn} className="floating-button position-right" id="next-slide" onClick={slideAction}>
                     <ArrowForwardIosRoundedIcon id="next-slide" onClick={slideAction}></ArrowForwardIosRoundedIcon>
                 </div>
 

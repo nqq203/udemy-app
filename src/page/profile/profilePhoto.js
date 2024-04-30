@@ -29,12 +29,14 @@ export default function ProfilePhoto() {
                         content: data.message,
                         visible: true
                     });
-                    navigate('/profile/photo');
+                    localStorage.setItem('avatar', data.metadata.avatar);
+                    navigate('/');
                 }
                 else{
                     setNotification({
                         content: data.message, 
-                        visible: true
+                        visible: true,
+                        bgColor: 'red'
                     });
                 }
             }

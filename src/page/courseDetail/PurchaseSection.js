@@ -15,6 +15,7 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
   const [isFixed, setFixed] = useState(false);
   const [bottomPosition, setBottomPosition] = useState(false);
   const dispatch = useDispatch();
+  const [topPosition, setTopPosition] = useState(false); 
   // console.log(scrollPosition);
 
   const [notification, setNotification] = useState({
@@ -59,6 +60,7 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
   });
 
   async function handleAddToCart() {
+    console.log("Course: ", id)
     mutation.mutate(id);
   }
 
