@@ -304,6 +304,7 @@ export const ReviewsWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
+  margin-bottom: 20px;
 
   & .rating {
     margin-top: 4px;

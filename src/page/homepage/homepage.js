@@ -6,8 +6,6 @@ import { PropagateLoader } from 'react-spinners';
 import { useAuth } from "../../context/AuthContext";
 import { Divider } from "@mui/material";
 
-
-
 export default function HomePage(){
   const [loading,setLoading] = useState(true)
   const [courses,setCourses] = useState([])
@@ -20,7 +18,7 @@ export default function HomePage(){
     () => callApiGetCoursesPagination(1,10),
     {
       onSuccess: (data) => {
-        console.log(data)
+        // console.log(data)
         setCourses(data?.metadata?.results)
         setInstructors(data?.metadata?.instructors)
         setLoading(false)

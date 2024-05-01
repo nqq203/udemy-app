@@ -1,19 +1,21 @@
 import styled from "styled-components";
 import { CustomRating } from "../../components/Rating/Rating";
-import { useEffect, useState } from "react";
 import { Button } from "../../components/Button/Button";
-import { Grid, Rating, TextField, Divider } from "@mui/material";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
-
-import CloseIcon from "@mui/icons-material/Close";
-import { useMutation } from "react-query";
-import { callApiAddNote, callApiUpdateNote, callApiDeleteNote } from "../../api/note";
+import { useEffect, useState } from "react";
 import { callApiCreateReview, callApiUpdateReview } from "../../api/review";
+import { callApiAddNote, callApiUpdateNote, callApiDeleteNote } from "../../api/note";
+
+import { useMutation } from "react-query";
 import { Link } from "react-router-dom";
+import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
+import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
+import { Grid, Rating, TextField,ListItemButton,ListItemText,Divider } from "@mui/material";
 
 export const ReviewOverlayStyle = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
@@ -79,9 +81,8 @@ export const ReviewOverlay = ({
 
   const createReviewMutation = useMutation(callApiCreateReview, {
     onSuccess: (data) => {
-      console.log(data);
+      // console.log(data);
       if (data.success) {
-        // console.log("Create Success")
         setUserReview(data.metadata);
         setIsNewReview(false);
         openOverlay(false);
@@ -102,10 +103,8 @@ export const ReviewOverlay = ({
 
   const updateReviewMutation = useMutation(callApiUpdateReview, {
     onSuccess: (data) => {
-      console.log(data);
+      // console.log(data);
       if (data.success) {
-        console.log("Update Success");
-        // setIsNewReview(false)
         openOverlay(false);
       } else {
         console.log("Error");
@@ -333,11 +332,132 @@ export const OverviewSection = (props) => {
         </li>
       </ul>
     </div>
-  ) : (
-    //Loading
-    <></>
-  );
+  ) : null;
 };
+
+export const SectionContainerWrapper = styled.div`
+  .section-name {
+    font-size: 16px;
+    font-family: var(--font-stack-heading);
+    margin: 0;
+    cursor: pointer;
+    border: 1px solid #e0e0e0;
+    background-color: var(--color-gray-100);
+    padding: 16px 24px;
+    line-height: 17px;
+    display: flex;
+  }
+
+  .arrowIcon,
+  .videoIcon {
+    margin-right: 15px;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .itemContainer {
+    border: 1px solid #e0e0e0;
+    margin: 0;
+    padding: 16px 24px;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    padding: 7px;
+  }
+`;
+
+export const SectionContainer= ({
+    section,
+    lectures,
+    isSelectedLecture,
+    setSelectedVideoId,
+    setSelectedIndex,
+    setSelectedSection,
+  }) => {
+
+  const [open, setOpen] = useState(false);
+
+  const handleListItemClick = (event, index, sectionName,idVideo) => {
+    setSelectedIndex(index);
+    setSelectedSection(sectionName);
+    setSelectedVideoId(idVideo);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+    return(
+    <SectionContainerWrapper>
+        <ListItemButton
+            alignItems="flex-start"
+            onClick={() => {setOpen(!open);}}
+            sx={{
+                px: 3,
+                pt: 2,
+                pb: 2,
+                backgroundColor: "var(--color-gray-100)",
+            }}
+        >
+        <ListItemText
+            primary= {section.name}
+            primaryTypographyProps={{
+            fontSize: 17,
+            fontWeight: 'bold',
+            lineHeight: '20px',
+            mb: '2px',
+            }}
+            secondary= {`${lectures?.length} lectures`}
+            secondaryTypographyProps={{
+            noWrap: true,
+            fontSize: 12,
+            lineHeight: '16px',
+            color: "var(--color-gray-300)",
+            }}
+            sx={{ my: 0}}
+        />
+        <KeyboardArrowDown
+            sx={{
+            mr: -1,
+            opacity: 1,
+            transform: open ? 'rotate(-180deg)' : 'rotate(0)',
+            transition: '0.2s',
+            }}
+        />
+        </ListItemButton>
+
+        {open &&
+        lectures?.map((item,index) => (
+            <ListItemButton
+            key={index}
+            sx={{ py: 0.5, minHeight: 32,mb:1,backgroundColor:"white" }}
+            selected={isSelectedLecture(index,section.name)}
+            onClick={(event) => handleListItemClick(event, index,section.name,item.url)}
+            >
+            <div style={{margin:"10px", color:"var(--color-grey-100)"}}>
+                <PlayCircleFilledIcon/>
+            </div>
+
+            <ListItemText
+                primary={item.title}
+                primaryTypographyProps={{ fontSize: 14, fontWeight: 'medium', }}
+                secondary= {`${Math.round(parseInt(item.duration)/60)} min`}
+                secondaryTypographyProps={{
+                  noWrap: true,
+                  fontSize: 12,
+                  lineHeight: '16px',
+                  color: "var(--color-gray-300)",
+                }}
+            />
+            </ListItemButton>
+        ))}
+        <Divider />
+    </SectionContainerWrapper>
+    )
+}
 
 export const ReviewItemStyle = styled.div`
   display: flex;
@@ -382,7 +502,6 @@ export const ReviewItem = (props) => {
       setBtnDownStyle({ background: "var(--color-gray-400)", color: "white" });
       setContent("Thank your for your feedbacks");
     } else {
-      console.log("reset");
       setBtnDownStyle({
         background: "transparent",
         color: "rgba(0, 0, 0, 0.54)",
@@ -402,7 +521,6 @@ export const ReviewItem = (props) => {
       setBtnUpStyle({ background: "var(--color-gray-400)", color: "white" });
       setContent("Thank your for your feedbacks");
     } else {
-      console.log("reset");
       setBtnUpStyle({
         background: "transparent",
         color: "rgba(0, 0, 0, 0.54)",
@@ -489,7 +607,7 @@ export const ReviewSection = (props) => {
     const pageSize = 5;
     const [numberOfReviews,setNumberOfReviews] = useState(pageSize);
     const [reviewsPagination, setReviewsPagination] = useState(reviewsData?.slice(0,numberOfReviews))
-    const [hasMoreReviews,setHasMoreReviews] = useState(true)
+    const [hasMoreReviews,setHasMoreReviews] = useState(reviewsData?.length <= pageSize ? false : true)
     
     useEffect(()=>{
         setReviewsPagination(reviewsData?.slice(0,numberOfReviews))
@@ -514,18 +632,23 @@ export const ReviewSection = (props) => {
             </div>
             <h2>Reviews</h2>
 
-                {reviewsPagination?.map((review,index) => (
-                    <div key={review._id}>
-                        <ReviewItem 
-                            key={review._id}
-                            username={usersList ? usersList[index] : ""}
-                            rating={review.rating}
-                            comment={review.comment}
-                        ></ReviewItem>
-                        <Divider component="div" sx={{marginBottom:"10px"}} />
-                    </div>
-                    
-                ))}
+            {reviewsPagination?.map((review,index) => (
+                <div key={review._id}>
+                    <ReviewItem 
+                        key={review._id}
+                        username={usersList ? usersList[index] : ""}
+                        rating={review.rating}
+                        comment={review.comment}
+                    ></ReviewItem>
+                    <Divider component="div" sx={{marginBottom:"10px"}} />
+                </div>
+                
+            ))}
+
+            {reviewsData?.length === 0 ? (
+                <span>No reviews found</span>
+            ) : null}
+
 
             {hasMoreReviews? (
                 <Button onClick={handleLoadMore}>Load more reviews</Button>

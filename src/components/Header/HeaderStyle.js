@@ -7,6 +7,7 @@ export const HeaderWrapper = styled.header`
   padding: 20px 10px;
   background-color: var(--color-white);
   box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 4px 12px rgba(0, 0, 0, .08);
+  overflow: hidden;
 
   img {
     width: 70px;

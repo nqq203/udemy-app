@@ -61,11 +61,14 @@ export const HomePageWrapper = styled.div`
 
 export const Herobanner = styled.div`
     height: 400px;
-    width: auto;
+    width: 100vw;
     display: flex;
     align-items: center;
     background-image: url('/imgs/herobanner.png');
     padding-bottom: 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 `
 
 export const QuoteCard = () => {
@@ -99,6 +102,7 @@ export const CatogoryStyle = styled.div`
     background-color: var(--color-white);
     box-shadow: 0 4px 4px rgba(0, 0, 0, .08), 0 6px 12px rgba(0, 0, 0, .08);
     position: relative;
+    overflow: hidden;
 
     ul{
         list-style: none;
@@ -301,15 +305,15 @@ export const SliderContainer = (props) => {
     const instructors = props?.instructors || []
     const listCourse = useRef(null)
     const nextBtn = useRef(null);
-    const courseScroll = 260
+    const courseScroll = 258
 
     useEffect(() => {
         if(nextBtn.current != null){
-            if(allCourse.length <= 5){
+            if(allCourse?.length*courseScroll <= window.innerWidth){
                 nextBtn.current.style.display = "none"
             }
         }
-    },[nextBtn])
+    },[nextBtn,allCourse?.length])
      
     function slideAction(event){
         const id = event.target.id
@@ -328,9 +332,8 @@ export const SliderContainer = (props) => {
     }
 
     function handleSlideButtons(){
-        const width = 144
         const listCourses = listCourse.current;
-        const maxScrollLeft = (allCourse?.length - 1) * width; //1303
+        const maxScrollLeft = (allCourse?.length - 4)*courseScroll;
 
         const slideButtons = [
             document.getElementById('prev-slide'),

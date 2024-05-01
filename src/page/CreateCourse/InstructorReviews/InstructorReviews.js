@@ -1,13 +1,11 @@
 import styled from "styled-components";
-import FilterDropdown from "../../../components/FilterDropdown/FilterDropdown";
-import { Button } from "../../../components/Button/Button";
 import { useState,useEffect } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { useAuth } from "../../../context/AuthContext";
 import { callApiGetListCourses } from "../../../api/course";
 
-import { Select,InputLabel,MenuItem,FormControl,Rating } from "@mui/material";
-import { ReviewItem,ReviewsCourseContainer } from "./InstructorReviewStyle";
+import { Select,InputLabel,MenuItem,FormControl } from "@mui/material";
+import { ReviewsCourseContainer } from "./InstructorReviewStyle";
 
 export default function InstructorReviews() {
     const { isAuthenticated } = useAuth();
@@ -21,8 +19,8 @@ export default function InstructorReviews() {
         () => callApiGetListCourses(userId),
         {
             onSuccess: (data) => {
-                console.log("SUccess")
-                console.log(data)
+                // console.log("Success")
+                // console.log(data)
                 setCourseItems(data?.metadata)
             },
             onError: (error) => {
@@ -42,20 +40,13 @@ export default function InstructorReviews() {
     useEffect(() => {
         setCourseItems(coursesData?.metadata)
     },[coursesData])
-        
-    // useEffect(() => {
-    //     console.log("currentCourse")
-    // },[currentCourse])
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // const formData = new FormData(event.currentTarget);
-        // console.log(event.target);
-        // setCurrentCourse(event.target.value)
     };
 
     const handleCourseClick = (event) => {
-        console.log(event.currentTarget);
         if(event.currentTarget.id === ""){
             setCurrentCourse({id: null, name: event.currentTarget.dataset.value})
         } else{
@@ -91,8 +82,6 @@ export default function InstructorReviews() {
             </div>
 
             <ReviewsCourseContainer course={currentCourse}></ReviewsCourseContainer>
-
-            
         </InstructorReviewsContainer>
     )
 }
