@@ -29,8 +29,12 @@ export default function ProfilePhoto() {
                         content: data.message,
                         visible: true
                     });
+                    console.log("avatar", data.metadata.avatar);
+
+                    localStorage.removeItem('avatar'); // Xóa avatar trước đó (nếu có)
                     localStorage.setItem('avatar', data.metadata.avatar);
-                    navigate('/');
+                    // navigate('/');
+                    window.location.reload(); 
                 }
                 else{
                     setNotification({
