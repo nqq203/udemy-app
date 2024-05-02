@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { callApiConfirmAccount } from '../../api/user';
+import { ActivationContainer, Message, Loader } from './EmailActivationStyle'; // Import your styled components
 
 const EmailActivation = () => {
   const { token } = useParams();
@@ -11,12 +12,10 @@ const EmailActivation = () => {
   useEffect(() => {
     const confirmEmail = async () => {
       try {
-        console.log(token);
         const data = await callApiConfirmAccount(token);
-        // Gửi yêu cầu tới backend để xác nhận email
         setSuccess(data.message);
       } catch (err) {
-        setError('Error when confirm email account.');
+        setError('Error when confirming email account. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -26,11 +25,15 @@ const EmailActivation = () => {
   }, [token]);
 
   return (
-    <div style={{margin: "0 auto", alignItems: "center", justifyContent: "center"}}>
-      {loading && <p>Waiting to confirm</p>}
-      {error && <p className="error">{error}</p>}
-      {success && <p className="success">{success}</p>}
-    </div>
+    <ActivationContainer>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message type="error">{error}</Message>
+      ) : (
+        <Message type="success">{success}</Message>
+      )}
+    </ActivationContainer>
   );
 };
 

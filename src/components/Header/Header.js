@@ -32,7 +32,7 @@ const Header = () => {
   }, [setIsAuthenticated]);
 
   async function onLogout() {
-    setIsAuthenticated(false);
+    // setIsAuthenticated(false);
     await callApiLogOut();
     window.location.href="http://localhost:3030/";
   }
@@ -55,9 +55,9 @@ const Header = () => {
               <img src="../../../assets/udemy.png" alt="udemy-logo" />
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link to="/courses">Categories</Link>
-          </li>
+          </li> */}
         </ul>
       </nav>
       <div className="header-search-bar">
@@ -125,12 +125,14 @@ const Header = () => {
                   <div className="dropdown-content-item">
                     <Link to="/my-courses/learning" className="link">My Learning</Link>
                   </div>
-                  <div className="dropdown-content-item">My Cart</div>
+                  <div className="dropdown-content-item">
+                    <Link to="/shopping-cart">My Cart</Link>
+                  </div>
                   <div className="dropdown-content-item">
                     <Link to="/my-courses/wishlist" className="link">Wishlist</Link>
                   </div>
                   <div className="dropdown-content-item">
-                    Instructor Dashboard
+                    <Link to="/instructor/courses" className="link">Instructor Dashboard</Link>
                   </div>
                 </div>
                 <div className="dropdown-content">

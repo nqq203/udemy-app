@@ -16,11 +16,12 @@ export default function InstructorStatistic() {
   const processRevenueDataFunc = (data) => {
     let processRevenueData = Array(12).fill(0);
     let processRevenueEnrollments = Array(12).fill(0);
-    data.metadata.forEach(item => {
-      // Subtract 1 from the month because array indices are 0-based
-      const monthIndex = item._id.month - 1;
-      processRevenueData[monthIndex] = item.totalRevenue;
-      processRevenueEnrollments[monthIndex] = item.totalSoldItems;
+    data?.metadata?.forEach(item => {
+      const monthIndex = item?._id?.month - 1;
+      if (monthIndex >= 0 && monthIndex < 12) {
+        processRevenueData[monthIndex] = item?.totalRevenue || 0;
+        processRevenueEnrollments[monthIndex] = item?.totalSoldItems || 0;
+      }
     });
     setProcessedRevenue(processRevenueData);
     setProcessedEnrollments(processRevenueEnrollments);
@@ -31,7 +32,7 @@ export default function InstructorStatistic() {
     () =>  callApiGetCompletedOrder(instructorId),
     {
       onSuccess: (data) => {
-        if (data.metadata[0] !== undefined) {
+        if (data?.metadata[0] !== undefined) {
           setTotalRevenue(data.metadata[0].totalRevenue);
           setTotalEnrollments(data.metadata[0].totalSoldItems);
         }
@@ -44,7 +45,7 @@ export default function InstructorStatistic() {
     () => callApiGetCompletedOrderByYear(instructorId),
     {
       onSuccess: (data) => {
-        if (data.metadata[0] !== undefined) {
+        if (!data || data.length === 0) {
           processRevenueDataFunc(data);
         }
       },
@@ -67,15 +68,15 @@ export default function InstructorStatistic() {
             <div style={{ fontSize: "25px" }}>Total Enrollments</div>
             <div>{totalEnrollments}</div>
           </TotalEnrollments>
-          <Rating className="instructor-statistic-content">
+          {/* <Rating className="instructor-statistic-content">
             <div style={{ fontSize: "25px" }}>Instructor Rating</div>
             <div>0.00</div>
-          </Rating>
+          </Rating> */}
         </StatisticOption>
         <StatisticChart>
           <RevenueChart revenueData={processedRevenue} />
           <EnrollmentChart enrollmentData={processedEnrollments} />
-          <CourseRatingChart />
+          {/* <CourseRatingChart /> */}
         </StatisticChart>
       </Statistic>
     </InstructorStatisticWrapper>
