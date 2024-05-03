@@ -4,10 +4,10 @@ import 'chart.js/auto'; // Đảm bảo tất cả các thành phần được �
 
 const EnrollmentChart = ({ enrollmentData }) => {
   const data = {
-    labels: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     datasets: [
       {
-        label: 'Tổng Enroll',
+        label: 'Total Enrollment',
         data: enrollmentData, // Giả sử đây là số lượng enroll trong mỗi tháng
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',

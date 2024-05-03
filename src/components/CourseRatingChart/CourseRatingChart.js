@@ -4,7 +4,7 @@ import 'chart.js/auto'; // Đảm bảo các module được đăng ký tự đ�
 
 const CourseRatingChart = () => {
   const data = {
-    labels: ['Khóa Học 1', 'Khóa Học 2', 'Khóa Học 3', 'Khóa Học 4'], // Tên của các khóa học
+    labels: ['Course 1', 'Course 2', 'Course 3', 'Course 4'], // Tên của các khóa học
     datasets: [
       {
         label: 'Rating',

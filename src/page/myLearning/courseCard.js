@@ -24,7 +24,7 @@ const getInstructor = async (userId) => {
 export default function CourseCard({ course }) {
   const { data, isLoading } = useQuery("instructor", () => getInstructor(course?.instructorId));
   const [value, setValue] = React.useState(null);
-  const id = course._id || ""
+  const id = course?._id || ""
   
   const instructor = data;
   if(isLoading){
@@ -61,7 +61,7 @@ export default function CourseCard({ course }) {
             </MyCourseCardItemName>
 
           <MyCourseCardItemDescription>
-              By {instructor ? instructor.metadata?.fullName : ""}
+              By {instructor ? instructor?.metadata?.fullName : ""}
           </MyCourseCardItemDescription>
         </div>
 

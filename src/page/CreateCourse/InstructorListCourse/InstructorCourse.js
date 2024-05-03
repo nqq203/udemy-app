@@ -24,7 +24,7 @@ import { BsFillPencilFill } from "react-icons/bs";
 import { setCourseType } from "../../../redux/courseManagementSlice";
 import { setSectionsData } from "../../../redux/sectionsSlice";
 import { setLecturesData } from "../../../redux/lecturesSlice";
-import { ClipLoader } from "react-spinners"
+import { PropagateLoader } from "react-spinners"
 import { setInstructorPage } from "../../../redux/instructorPageSlice";
 
 export default function InstructorCourse() {
@@ -176,7 +176,7 @@ export default function InstructorCourse() {
           <Button 
             style={{ display: "flex", alignItems: "center" }} 
             onClick={handleSearch}
-            disabled={isLoading}>
+            disabled={isLoading || isLoadingGetListCourses}>
               <IoSearch />
             </Button>
         </div>
@@ -187,9 +187,9 @@ export default function InstructorCourse() {
             onClick={onNavigateCreateCourse}>New Course</Button>
         </Link>
       </div>
-      {isLoading ? 
+      {isLoading || isLoadingGetListCourses ? 
       <div style={{margin: "30% auto", justifyContent: "center"}}>
-        <ClipLoader size={30} color="var(--color-purple-300)"/>
+        <PropagateLoader size={30} color="var(--color-purple-300)"/>
       </div> :
       <Fragment>
         {isAuthenticated &&

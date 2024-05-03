@@ -112,4 +112,3 @@ export const FormControl = styled.div`
   position: relative;
   cursor: text;
 `
-
