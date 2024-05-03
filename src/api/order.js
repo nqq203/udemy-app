@@ -32,3 +32,12 @@ export const callApiGetCompletedOrderByYear = async (instructorId) => {
   })
   return data
 } 
+
+export const callApiGetPurchaseHistory = async (userId) => {
+  const { data } = await api.get('/orders/get-purchase-history', {
+    params: {
+      userId: userId
+    }
+  });
+  return data;
+}
