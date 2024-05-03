@@ -130,7 +130,7 @@ const Header = () => {
                     </Link>
                   </div>
                   <div className="dropdown-content-item">
-                    <Link to="/shopping-cart">My Cart</Link>
+                    <Link to="/shopping-cart" className="link">My Cart</Link>
                   </div>
                   <div className="dropdown-content-item">
                     <Link to="/my-courses/wishlist" className="link">
