@@ -10,7 +10,7 @@ import { useMutation } from "react-query";
 
 // const listPriceTier = ["USD", "VND", "EUR"];
 // const listUSD = ["19.99", "22.99", "24.99", "27.99", "29.99", "34.99", "39.99"];
-const listVND = ["390000", "449000", "499000", "549000", "599000", "649000", "699000", "799000", "899000", "1000000", "1299000", "1399000", "1499000", "1599000", "1699000", "1799000", "1899000", "2000000"];
+const listVND = ["9", "19", "29", "39", "49", "59", "69", "79", "89", "99", "109", "119", "129", "139", "149", "159", "169", "179"];
 // const listEUR = ["19.99", "22.99", "24.99", "29.99", "34.99", "39.99", "44.99"];
 
 export default function InstructorPricing({ isPublished, setIsPublished}) {
@@ -91,7 +91,7 @@ export default function InstructorPricing({ isPublished, setIsPublished}) {
               })}
             </select> */}
             <select>
-              <option key="">VND</option>
+              <option key="">USD</option>
             </select>
           </CourseContent>
           <CourseContent>
@@ -103,7 +103,7 @@ export default function InstructorPricing({ isPublished, setIsPublished}) {
               {tier?.map((item) => {
                 return (
                   // <option key={item}> {currency === listPriceTier[0] ? '$' : (currency === listPriceTier[1] ? 'đ' : '€')}{item}</option>
-                  <option key={item}>đ{item}</option>
+                  <option key={item}>${item}</option>
                 );
               })}
             </select>
