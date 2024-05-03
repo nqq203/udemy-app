@@ -27,6 +27,7 @@ import MyCourses from './page/myLearning/myCourses';
 import ProfileInfo from './page/profile/profileInfo';
 import ProfilePhoto from './page/profile/profilePhoto';
 import ProfilePrivacy from './page/profile/profilePrivacy';
+import ProfilePurchaseHistory from './page/profile/profilePurchaseHistory';
 import MyWishList from './page/myLearning/myWishList';
 import MyArchived from './page/myLearning/myArchived';
 import MyLearningTools from './page/myLearning/myLearningTools';
@@ -80,6 +81,7 @@ export default function App() {
                   <Route path="info" element={<PrivateRoute element={ProfileInfo} />} />
                   <Route path="photo" element={<PrivateRoute element={ProfilePhoto} />} />
                   <Route path="privacy" element={<PrivateRoute element={ProfilePrivacy} />} />
+                  <Route path="payment-history" element={<PrivateRoute element={ProfilePurchaseHistory} />} />
                 </Route>
                 <Route path="cart" element={<PrivateRoute element={Cart} />} />
                 <Route path="payment">

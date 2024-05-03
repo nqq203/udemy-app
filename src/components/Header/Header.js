@@ -24,17 +24,17 @@ const Header = () => {
     const checkAuth = async () => {
       // Add your authentication check logic here
       const accessToken = localStorage.getItem("accessToken");
-      setIsAuthenticated(!!accessToken);  // Set authenticated based on session existence
-      setLoading(false);  // Set loading to false once the check is complete
+      setIsAuthenticated(!!accessToken); // Set authenticated based on session existence
+      setLoading(false); // Set loading to false once the check is complete
     };
-  
+
     checkAuth();
   }, [setIsAuthenticated]);
 
   async function onLogout() {
     setIsAuthenticated(false);
     await callApiLogOut();
-    window.location.href="http://localhost:3030/";
+    window.location.href = "http://localhost:3030/";
   }
 
   useEffect(() => {
@@ -42,10 +42,9 @@ const Header = () => {
   }, [isAuthenticated]);
 
   if (loading) {
-    return <div></div>
+    return <div></div>;
   }
-  
-  
+
   return (
     <HeaderWrapper>
       <nav className="header-first">
@@ -112,7 +111,10 @@ const Header = () => {
                     alt="uesr-profile"
                     style={{ width: "60px" }}
                   />
-                  <Link to="/profile/info" className="dropdown-content-info-item">
+                  <Link
+                    to="/profile/info"
+                    className="dropdown-content-info-item"
+                  >
                     <div className="dropdown-content-info-item-name">
                       {localStorage.getItem("fullname")}
                     </div>
@@ -123,11 +125,15 @@ const Header = () => {
                 </div>
                 <div className="dropdown-content">
                   <div className="dropdown-content-item">
-                    <Link to="/my-courses/learning" className="link">My Learning</Link>
+                    <Link to="/my-courses/learning" className="link">
+                      My Learning
+                    </Link>
                   </div>
                   <div className="dropdown-content-item">My Cart</div>
                   <div className="dropdown-content-item">
-                    <Link to="/my-courses/wishlist" className="link">Wishlist</Link>
+                    <Link to="/my-courses/wishlist" className="link">
+                      Wishlist
+                    </Link>
                   </div>
                   <div className="dropdown-content-item">
                     Instructor Dashboard
@@ -138,6 +144,11 @@ const Header = () => {
                     <div className="dropdown-content-item">Edit Profile</div>
                   </Link>
                   <div className="dropdown-content-item">Payment Methods</div>
+                  <Link to="/profile/payment-history" className="link">
+                    <div className="dropdown-content-item">
+                      Purchase History
+                    </div>
+                  </Link>
                 </div>
                 <div className="dropdown-content">
                   <Link to="/">

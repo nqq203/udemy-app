@@ -8,7 +8,7 @@ import { Grid,Box } from "@mui/material";
 import { useQuery } from "react-query";
 import { callApiGetCourseById } from "../../api/course";
 import { callApiGetReviews,callApiGetReviewByUserAndCourseId } from "../../api/review";
-
+import { callApiGetNotes } from "../../api/note";
 import ReactPlayer from 'react-player';
 
 import 'cloudinary-video-player/cld-video-player.min.css';
@@ -19,6 +19,7 @@ import { PropagateLoader } from 'react-spinners';
 export default function Lecture(){
   const [dataCourse,setDataCourse] = useState(null)
   const [dataReviews,setDataReviews] = useState(null)
+  const [dataNotes, setDataNotes] = useState(null)
   const [loading,setLoading] = useState(true)
 
   // Course content
@@ -56,7 +57,8 @@ export default function Lecture(){
       const dataCourse = await callApiGetCourseById(courseID);
       const dataReviews = await callApiGetReviews(courseID);
       const userReview = await callApiGetReviewByUserAndCourseId(courseID,userId)
-      return {dataCourse,dataReviews,userReview}
+      const dataNotes = await callApiGetNotes({courseId: courseID, userId})
+      return {dataCourse,dataReviews,userReview, dataNotes}
     },
     {
       onSuccess: (data) => {
@@ -70,6 +72,9 @@ export default function Lecture(){
           }
           if(data.userReview?.code === 200){
             setUserReview(data.userReview)
+          }
+          if(data.dataNotes?.code === 200){
+            setDataNotes(data.dataNotes)
           }
           setPermission(true);
         } else {
@@ -107,6 +112,9 @@ export default function Lecture(){
       setDataReviews(dataReviews?.metadata)
       setUserReview(userReview?.metadata?.review)
       // console.log("hi\n" + userReview)
+
+      // Notes
+      setDataNotes(dataNotes?.metadata)
     }
 
     
@@ -143,7 +151,7 @@ export default function Lecture(){
         content: "This is another note",
         createAt: ' 2021-10-10 10:10:10'
       }]
-      setOptionContent(<NoteSection notes={notes}></NoteSection>)
+      setOptionContent(<NoteSection notes={dataNotes} courseId={courseID}></NoteSection>)
     }
   }
 

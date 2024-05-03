@@ -1,11 +1,17 @@
 import styled from "styled-components";
+import Notification from "../../components/Notification/Notification";
 import { CustomRating } from "../../components/Rating/Rating";
 import { Button } from "../../components/Button/Button";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { callApiCreateReview, callApiUpdateReview } from "../../api/review";
-import { callApiAddNote, callApiUpdateNote, callApiDeleteNote } from "../../api/note";
+import {
+  callApiAddNote,
+  callApiUpdateNote,
+  callApiDeleteNote,
+} from "../../api/note";
 
 import { useMutation } from "react-query";
 import { Link } from "react-router-dom";
@@ -13,9 +19,16 @@ import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
-import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
-import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
-import { Grid, Rating, TextField,ListItemButton,ListItemText,Divider } from "@mui/material";
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
+import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
+import {
+  Grid,
+  Rating,
+  TextField,
+  ListItemButton,
+  ListItemText,
+  Divider,
+} from "@mui/material";
 
 export const ReviewOverlayStyle = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
@@ -94,12 +107,12 @@ export const ReviewOverlay = ({
       console.error("Error creating data", error);
     },
   });
-    useEffect(() => {
-        if(userReview){
-            userReview.rating = rating;
-            userReview.comment = comments;
-        }
-    },[rating,comments,userReview])
+  useEffect(() => {
+    if (userReview) {
+      userReview.rating = rating;
+      userReview.comment = comments;
+    }
+  }, [rating, comments, userReview]);
 
   const updateReviewMutation = useMutation(callApiUpdateReview, {
     onSuccess: (data) => {
@@ -372,92 +385,95 @@ export const SectionContainerWrapper = styled.div`
   }
 `;
 
-export const SectionContainer= ({
-    section,
-    lectures,
-    isSelectedLecture,
-    setSelectedVideoId,
-    setSelectedIndex,
-    setSelectedSection,
-  }) => {
-
+export const SectionContainer = ({
+  section,
+  lectures,
+  isSelectedLecture,
+  setSelectedVideoId,
+  setSelectedIndex,
+  setSelectedSection,
+}) => {
   const [open, setOpen] = useState(false);
 
-  const handleListItemClick = (event, index, sectionName,idVideo) => {
+  const handleListItemClick = (event, index, sectionName, idVideo) => {
     setSelectedIndex(index);
     setSelectedSection(sectionName);
     setSelectedVideoId(idVideo);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-    return(
+  return (
     <SectionContainerWrapper>
-        <ListItemButton
-            alignItems="flex-start"
-            onClick={() => {setOpen(!open);}}
-            sx={{
-                px: 3,
-                pt: 2,
-                pb: 2,
-                backgroundColor: "var(--color-gray-100)",
-            }}
-        >
+      <ListItemButton
+        alignItems="flex-start"
+        onClick={() => {
+          setOpen(!open);
+        }}
+        sx={{
+          px: 3,
+          pt: 2,
+          pb: 2,
+          backgroundColor: "var(--color-gray-100)",
+        }}
+      >
         <ListItemText
-            primary= {section.name}
-            primaryTypographyProps={{
+          primary={section.name}
+          primaryTypographyProps={{
             fontSize: 17,
-            fontWeight: 'bold',
-            lineHeight: '20px',
-            mb: '2px',
-            }}
-            secondary= {`${lectures?.length} lectures`}
-            secondaryTypographyProps={{
+            fontWeight: "bold",
+            lineHeight: "20px",
+            mb: "2px",
+          }}
+          secondary={`${lectures?.length} lectures`}
+          secondaryTypographyProps={{
             noWrap: true,
             fontSize: 12,
-            lineHeight: '16px',
+            lineHeight: "16px",
             color: "var(--color-gray-300)",
-            }}
-            sx={{ my: 0}}
+          }}
+          sx={{ my: 0 }}
         />
         <KeyboardArrowDown
-            sx={{
+          sx={{
             mr: -1,
             opacity: 1,
-            transform: open ? 'rotate(-180deg)' : 'rotate(0)',
-            transition: '0.2s',
-            }}
+            transform: open ? "rotate(-180deg)" : "rotate(0)",
+            transition: "0.2s",
+          }}
         />
-        </ListItemButton>
+      </ListItemButton>
 
-        {open &&
-        lectures?.map((item,index) => (
-            <ListItemButton
+      {open &&
+        lectures?.map((item, index) => (
+          <ListItemButton
             key={index}
-            sx={{ py: 0.5, minHeight: 32,mb:1,backgroundColor:"white" }}
-            selected={isSelectedLecture(index,section.name)}
-            onClick={(event) => handleListItemClick(event, index,section.name,item.url)}
-            >
-            <div style={{margin:"10px", color:"var(--color-grey-100)"}}>
-                <PlayCircleFilledIcon/>
+            sx={{ py: 0.5, minHeight: 32, mb: 1, backgroundColor: "white" }}
+            selected={isSelectedLecture(index, section.name)}
+            onClick={(event) =>
+              handleListItemClick(event, index, section.name, item.url)
+            }
+          >
+            <div style={{ margin: "10px", color: "var(--color-grey-100)" }}>
+              <PlayCircleFilledIcon />
             </div>
 
             <ListItemText
-                primary={item.title}
-                primaryTypographyProps={{ fontSize: 14, fontWeight: 'medium', }}
-                secondary= {`${Math.round(parseInt(item.duration)/60)} min`}
-                secondaryTypographyProps={{
-                  noWrap: true,
-                  fontSize: 12,
-                  lineHeight: '16px',
-                  color: "var(--color-gray-300)",
-                }}
+              primary={item.title}
+              primaryTypographyProps={{ fontSize: 14, fontWeight: "medium" }}
+              secondary={`${Math.round(parseInt(item.duration) / 60)} min`}
+              secondaryTypographyProps={{
+                noWrap: true,
+                fontSize: 12,
+                lineHeight: "16px",
+                color: "var(--color-gray-300)",
+              }}
             />
-            </ListItemButton>
+          </ListItemButton>
         ))}
-        <Divider />
+      <Divider />
     </SectionContainerWrapper>
-    )
-}
+  );
+};
 
 export const ReviewItemStyle = styled.div`
   display: flex;
@@ -600,65 +616,67 @@ const StyledRating = styled(Rating)({
 });
 
 export const ReviewSection = (props) => {
-    // const [overalRating, setOveralRating] = useState(5)
-    const usersList = props.dataReviews?.users || [];
-    const reviewsData = props.dataReviews?.reviews;
-    const ratings = props.courseRate || 0;
-    const pageSize = 5;
-    const [numberOfReviews,setNumberOfReviews] = useState(pageSize);
-    const [reviewsPagination, setReviewsPagination] = useState(reviewsData?.slice(0,numberOfReviews))
-    const [hasMoreReviews,setHasMoreReviews] = useState(reviewsData?.length <= pageSize ? false : true)
-    
-    useEffect(()=>{
-        setReviewsPagination(reviewsData?.slice(0,numberOfReviews))
-    },[numberOfReviews,reviewsData])
+  // const [overalRating, setOveralRating] = useState(5)
+  const usersList = props.dataReviews?.users || [];
+  const reviewsData = props.dataReviews?.reviews;
+  const ratings = props.courseRate || 0;
+  const pageSize = 5;
+  const [numberOfReviews, setNumberOfReviews] = useState(pageSize);
+  const [reviewsPagination, setReviewsPagination] = useState(
+    reviewsData?.slice(0, numberOfReviews)
+  );
+  const [hasMoreReviews, setHasMoreReviews] = useState(
+    reviewsData?.length <= pageSize ? false : true
+  );
 
-    const handleLoadMore = () => {
-        if(numberOfReviews <= reviewsData?.length){
-            setNumberOfReviews(numberOfReviews + pageSize)
-        } 
-        if(numberOfReviews + pageSize > reviewsData?.length){
-            setHasMoreReviews(false)
-        }
+  useEffect(() => {
+    setReviewsPagination(reviewsData?.slice(0, numberOfReviews));
+  }, [numberOfReviews, reviewsData]);
+
+  const handleLoadMore = () => {
+    if (numberOfReviews <= reviewsData?.length) {
+      setNumberOfReviews(numberOfReviews + pageSize);
     }
+    if (numberOfReviews + pageSize > reviewsData?.length) {
+      setHasMoreReviews(false);
+    }
+  };
 
-    return(
-        <ReviewSectionStyle>
-            <h2 >Students feedbacks</h2>
-            <div className="flexbox-rating-overal">
-                <h1 className="removePaddingText fontLarge">{ratings}</h1>
-                <StyledRating size="large" name="overalRating" value={ratings} readOnly />
-                <h4 className="removePaddingText">Course Rating</h4>
-            </div>
-            <h2>Reviews</h2>
+  return (
+    <ReviewSectionStyle>
+      <h2>Students feedbacks</h2>
+      <div className="flexbox-rating-overal">
+        <h1 className="removePaddingText fontLarge">{ratings}</h1>
+        <StyledRating
+          size="large"
+          name="overalRating"
+          value={ratings}
+          readOnly
+        />
+        <h4 className="removePaddingText">Course Rating</h4>
+      </div>
+      <h2>Reviews</h2>
 
-            {reviewsPagination?.map((review,index) => (
-                <div key={review._id}>
-                    <ReviewItem 
-                        key={review._id}
-                        username={usersList ? usersList[index] : ""}
-                        rating={review.rating}
-                        comment={review.comment}
-                    ></ReviewItem>
-                    <Divider component="div" sx={{marginBottom:"10px"}} />
-                </div>
-                
-            ))}
+      {reviewsPagination?.map((review, index) => (
+        <div key={review._id}>
+          <ReviewItem
+            key={review._id}
+            username={usersList ? usersList[index] : ""}
+            rating={review.rating}
+            comment={review.comment}
+          ></ReviewItem>
+          <Divider component="div" sx={{ marginBottom: "10px" }} />
+        </div>
+      ))}
 
-            {reviewsData?.length === 0 ? (
-                <span>No reviews found</span>
-            ) : null}
+      {reviewsData?.length === 0 ? <span>No reviews found</span> : null}
 
-
-            {hasMoreReviews? (
-                <Button onClick={handleLoadMore}>Load more reviews</Button>
-            ) : null}
-
-        </ReviewSectionStyle>
-    )
-}
-
-      
+      {hasMoreReviews ? (
+        <Button onClick={handleLoadMore}>Load more reviews</Button>
+      ) : null}
+    </ReviewSectionStyle>
+  );
+};
 
 export const CourseContentStyle = styled.div`
   border-bottom: 0.5px solid var(--color-gray-200);
@@ -681,6 +699,22 @@ export const NoteSectionStyle = styled.div`
   display: flex;
   padding: 0px 40px;
   flex-direction: column;
+
+  & .note-content {
+    resize: none;
+    width: 100%;
+    font-family: var(--font-stack-text);
+    font-size: 16px;
+    padding: 10px;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  & .add-note-button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
 `;
 
 export const NoteItemStyle = styled.div`
@@ -707,34 +741,141 @@ export const NoteItemStyle = styled.div`
   & .note-operation {
     display: flex;
   }
+
+  & .note-editing-operation {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+    margin-bottom: 15px;
+  }
 `;
 
-export const NoteSection = ({ notes }) => {
+export const NoteSection = ({ notes, courseId }) => {
+  const [dataNotes, setDataNotes] = useState(notes || []);
+  const userId = localStorage.getItem("_id"); // get user id
+  const [isAddingNote, setIsAddingNote] = useState(false);
+  const [noteContent, setNoteContent] = useState("");
+  const [notification, setNotification] = useState({
+    message: "",
+    visible: false,
+    bgColor: "green",
+  });
+
+  const createNewNote = useMutation(callApiAddNote, {
+    onSuccess: (data) => {
+      console.log(data);
+      if (data.success) {
+        //console.log(data)
+        setDataNotes((prevNotes) => [...prevNotes, data.metadata]);
+        setNotification({
+          message: data.message,
+          visible: true,
+          bgColor: "green",
+        });
+      } else {
+        setNotification({
+          message: data.message,
+          visible: true,
+          bgColor: "red",
+        });
+      }
+    },
+  });
+
+  const addNoteOnClick = () => {
+    setIsAddingNote(true);
+  };
+
+  const handleSave = () => {
+    createNewNote.mutate({ courseId, userId, noteContent });
+
+    console.log({
+      courseId: courseId,
+      userId: userId,
+      content: noteContent,
+    });
+
+    setIsAddingNote(false);
+    setNoteContent("");
+  };
+
+  const handleCancel = () => {
+    setIsAddingNote(false);
+    setNoteContent("");
+  };
+
+  const handleTypingNewNote = (event) => {
+    setNoteContent(event.target.value);
+  };
+
   return (
     <NoteSectionStyle>
-      <Button
-        bgColor={"var(--color-white)"}
-        hoverBgColor={"var(--color-gray-200)"}
-        color={"var(--color-gray-500)"}
-        border={"1px solid var(--color-gray-400)"}
-        width={"100%"}
-      >
-        Add a new note
-      </Button>
+      <Notification
+        message={notification?.message}
+        visible={notification?.visible}
+        bgColor={notification?.bgColor}
+        onClose={() =>
+          setNotification({ message: "", visible: false, bgColor: "green" })
+        }
+      />
+      {isAddingNote ? (
+        <div>
+          <h4>Write your note below</h4>
+          <textarea
+            className="note-content"
+            value={noteContent}
+            onChange={handleTypingNewNote}
+          ></textarea>
+          <div className="add-note-button-container">
+            <Button
+              bgColor={"var(--color-gray-150)"}
+              color={"var(--color-gray-500)"}
+              hoverBgColor={"var(--color-gray-200)"}
+              onClick={handleSave}
+            >
+              Save
+            </Button>
+            <Button onClick={handleCancel}>Cancel</Button>
+          </div>
+        </div>
+      ) : (
+        <Button
+          bgColor={"var(--color-white)"}
+          hoverBgColor={"var(--color-gray-200)"}
+          color={"var(--color-gray-500)"}
+          border={"1px solid var(--color-gray-400)"}
+          width={"100%"}
+          onClick={addNoteOnClick}
+        >
+          Add a new note
+        </Button>
+      )}
       <h3>Your notes</h3>
-      {notes.map((note, index) => (
-        <NoteItem
-          key={index}
-          time={note.createAt}
-          content={note.content}
-          id={note._id}
-        ></NoteItem>
-      ))}
+      {dataNotes?.map((note, index) => {
+        const date = new Date(note.createdAt);
+        const formattedDate = date.toLocaleDateString("en-GB");
+        const formattedTime = date.toLocaleTimeString("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        const formattedDateTime = `${formattedDate} ${formattedTime}`;
+
+        return (
+          <NoteItem
+            key={index}
+            time={formattedDateTime}
+            content={note.content}
+            id={note._id}
+            setNotification={setNotification}
+            setCurrentNotes={setDataNotes}
+          ></NoteItem>
+        );
+      })}
     </NoteSectionStyle>
   );
 };
 
-export const NoteItem = ({ time, content, id }) => {
+export const NoteItem = ({ time, content, id, setNotification, setCurrentNotes }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [originalContent, setOriginalContent] = useState(content);
   const [currentContent, setCurrentContent] = useState(content);
@@ -742,40 +883,71 @@ export const NoteItem = ({ time, content, id }) => {
     setIsEditing(true);
   };
 
-  const createNoteMutation = useMutation(callApiAddNote, {
-    onSuccess: (data) => {
-      console.log(data);
-    },
-    onError: (error) => {
-      console.error("Error creating data", error);
-    }
-  })
-
   const updateNoteMutation = useMutation(callApiUpdateNote, {
     onSuccess: (data) => {
       console.log(data);
+      if (data.success) {
+        setNotification({
+          message: data.message,
+          visible: true,
+          bgColor: "green",
+        });
+      } else {
+        setNotification({
+          message: data.message,
+          visible: true,
+          bgColor: "red",
+        });
+      }
     },
     onError: (error) => {
       console.error("Error updating data", error);
-    }
-  })
+    },
+  });
 
   const deleteNoteMutation = useMutation(callApiDeleteNote, {
     onSuccess: (data) => {
+      
       console.log(data);
+      if (data.success) {
+        setCurrentNotes((prevNotes) => prevNotes.filter((note) => note._id !== id));
+
+        setNotification({
+          message: data.message,
+          visible: true,
+          bgColor: "green",
+        });
+      } else {
+        setNotification({
+          message: data.message,
+          visible: true,
+          bgColor: "red",
+        });
+      }
     },
     onError: (error) => {
       console.error("Error deleting data", error);
-    }
-  })
+    },
+  });
 
   const handleSave = () => {
     setIsEditing(false);
-    setOriginalContent(currentContent);
-    updateNoteMutation.mutate({
-      noteId: id,
-      newContent: currentContent
-    });
+    
+    if (currentContent !== "" && currentContent !== originalContent){
+      setOriginalContent(currentContent);
+      updateNoteMutation.mutate({
+        noteId: id,
+        newContent: currentContent,
+      });
+    } else {
+      setCurrentContent(originalContent);
+      setNotification({
+        message: "Note content cannot be empty or the same as before!",
+        visible: true,
+        bgColor: "red",
+      });
+    }
+    
   };
 
   const handleDelete = () => {

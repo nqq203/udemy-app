@@ -15,7 +15,6 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
   const [isFixed, setFixed] = useState(false);
   const [bottomPosition, setBottomPosition] = useState(false);
   const dispatch = useDispatch();
-  const [topPosition, setTopPosition] = useState(false); 
   // console.log(scrollPosition);
 
   const [notification, setNotification] = useState({
@@ -87,7 +86,7 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
           <img src={thumbnailImage} alt="" className="course-thumbnail-img" />
         </div>
         <div className="purchase-section">
-          <div className="course-price">{changePriceFormat(price)}đ</div>
+          <div className="course-price">${changePriceFormat(price)}</div>
 
           <Button
             bgColor={"var(--color-purple-300)"}
