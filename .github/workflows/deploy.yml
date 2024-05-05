@@ -27,7 +27,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: yourusername/yourrepository:latest  # Change this to your Docker Hub username/repository
+          tags: nqquy21/enlightify-udemy-app:latest  # Change this to your Docker Hub username/repository
 
       - name: Deploy (optional)
         run: echo "Deploy command or script can be added here"
