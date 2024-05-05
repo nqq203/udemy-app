@@ -68,7 +68,7 @@ const SignIn = () => {
           localStorage.setItem('fullname', fullName);
           localStorage.setItem('role', role);
           localStorage.setItem('_id', _id);
-          localStorage.setItem('avatar', avatar);
+          localStorage.setItem('avatar', avatar || "https://pluspng.com/img-png/user-png-icon-download-icons-logos-emojis-users-2240.png");
           window.location.href = "http://localhost:3030";
           setIsAuthenticated(true);
         }
