@@ -7,6 +7,7 @@ import { HeaderWrapper } from "./HeaderStyle";
 import { useAuth } from "../../context/AuthContext";
 import { callApiLogOut } from "../../api/user";
 
+
 const Header = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const [isHovering, setIsHovering] = useState(false);
@@ -89,7 +90,10 @@ const Header = () => {
           <Link to="/shopping-cart">
             <MdOutlineShoppingCart size={31} className="shopping" />
           </Link>
+          <Link to="/my-courses/wishlist">
           <CiHeart size={31} className="shopping" />
+
+          </Link>
           <Link
             className="profile"
             onMouseOver={handleMouseOver}

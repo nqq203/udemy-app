@@ -44,3 +44,9 @@ export const CourseCardLoading = styled.div`
     height: 100%;
 `
 
+export const WishlistItemContainer = styled.div`
+ & .rating {
+    display: flex;
+    align-items: center;
+ }
+`
