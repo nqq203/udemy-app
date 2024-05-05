@@ -2,7 +2,7 @@ import styled from "styled-components";
 import RevenueChart from "../../../components/RevenueChart/RevenueChart";
 import EnrollmentChart from "../../../components/EnrollmentChart/EnrollmentChart";
 import CourseRatingChart from "../../../components/CourseRatingChart/CourseRatingChart";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { callApiGetCompletedOrder, callApiGetCompletedOrderByYear } from "../../../api/order";
 import { useQuery } from "react-query";
 
@@ -16,6 +16,7 @@ export default function InstructorStatistic() {
   const processRevenueDataFunc = (data) => {
     let processRevenueData = Array(12).fill(0);
     let processRevenueEnrollments = Array(12).fill(0);
+    console.log(processedRevenue, processedEnrollments);
     data?.metadata?.forEach(item => {
       const monthIndex = item?._id?.month - 1;
       if (monthIndex >= 0 && monthIndex < 12) {
@@ -32,6 +33,7 @@ export default function InstructorStatistic() {
     () =>  callApiGetCompletedOrder(instructorId),
     {
       onSuccess: (data) => {
+        console.log("data: ", data);
         if (data?.metadata[0] !== undefined) {
           setTotalRevenue(data.metadata[0].totalRevenue);
           setTotalEnrollments(data.metadata[0].totalSoldItems);
@@ -45,7 +47,8 @@ export default function InstructorStatistic() {
     () => callApiGetCompletedOrderByYear(instructorId),
     {
       onSuccess: (data) => {
-        if (!data || data.length === 0) {
+        console.log(data);
+        if (!data?.success || data?.metadata?.length === 0) {
           processRevenueDataFunc(data);
         }
       },
