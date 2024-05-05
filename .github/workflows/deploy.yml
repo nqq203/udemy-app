@@ -3,7 +3,7 @@ name: Deploy React App
 on:
   push:
     branches:
-      - dev  # Set this to your default branch
+      - dev
 
 jobs:
   build-and-push:
