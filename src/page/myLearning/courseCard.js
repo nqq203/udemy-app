@@ -4,13 +4,11 @@ import { useQuery } from 'react-query';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Rating from '@mui/material/Rating';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { 
   MyCourseCardItemDescription, 
   MyCourseCardItemName, 
-  MyCourseRating,
   CourseCardLoading
 } from './myLearningStyle';
 import { callApiGetUserById } from '../../api/user';
@@ -23,7 +21,6 @@ const getInstructor = async (userId) => {
 
 export default function CourseCard({ course }) {
   const { data, isLoading } = useQuery("instructor", () => getInstructor(course?.instructorId));
-  const [value, setValue] = React.useState(null);
   const id = course?._id || ""
   
   const instructor = data;
@@ -44,7 +41,7 @@ export default function CourseCard({ course }) {
           title={course?.name}
         />
         <CardContent sx={{
-          height: 160,
+          height: 120,
           paddingTop: 0, 
           paddingBottom: 0,
           display: 'flex', 
@@ -64,11 +61,6 @@ export default function CourseCard({ course }) {
               By {instructor ? instructor?.metadata?.fullName : ""}
           </MyCourseCardItemDescription>
         </div>
-
-          <MyCourseRating>
-            <Rating name="simple-controlled" value={value} onChange={(event, newValue) => { setValue(newValue);}}/>
-            <MyCourseCardItemDescription>Leave a rating</MyCourseCardItemDescription>
-          </MyCourseRating>
         </CardContent>
       </Card>
     </Link>

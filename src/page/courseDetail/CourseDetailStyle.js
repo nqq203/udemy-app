@@ -82,6 +82,17 @@ export const PurchaseSectionWrapper = styled.div`
     padding: 24px;
   }
 
+  .cart-and-wishlist-btn {
+    display: flex;
+    gap: 5px;
+    width: 100%;
+  }
+
+  .wishlist-icon {
+    padding: 0px;
+    color:black;
+  }
+
   .coupon-section {
     display: flex;
     width: 100%;

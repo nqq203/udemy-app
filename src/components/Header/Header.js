@@ -7,6 +7,7 @@ import { HeaderWrapper } from "./HeaderStyle";
 import { useAuth } from "../../context/AuthContext";
 import { callApiLogOut } from "../../api/user";
 
+
 const Header = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const [isHovering, setIsHovering] = useState(false);
@@ -24,17 +25,17 @@ const Header = () => {
     const checkAuth = async () => {
       // Add your authentication check logic here
       const accessToken = localStorage.getItem("accessToken");
-      setIsAuthenticated(!!accessToken);  // Set authenticated based on session existence
-      setLoading(false);  // Set loading to false once the check is complete
+      setIsAuthenticated(!!accessToken); // Set authenticated based on session existence
+      setLoading(false); // Set loading to false once the check is complete
     };
-  
+
     checkAuth();
   }, [setIsAuthenticated]);
 
   async function onLogout() {
     // setIsAuthenticated(false);
     await callApiLogOut();
-    window.location.href="http://localhost:3030/";
+    window.location.href = "http://localhost:3030/";
   }
 
   useEffect(() => {
@@ -42,10 +43,9 @@ const Header = () => {
   }, [isAuthenticated]);
 
   if (loading) {
-    return <div></div>
+    return <div></div>;
   }
-  
-  
+
   return (
     <HeaderWrapper>
       <nav className="header-first">
@@ -90,7 +90,10 @@ const Header = () => {
           <Link to="/shopping-cart">
             <MdOutlineShoppingCart size={31} className="shopping" />
           </Link>
+          <Link to="/my-courses/wishlist">
           <CiHeart size={31} className="shopping" />
+
+          </Link>
           <Link
             className="profile"
             onMouseOver={handleMouseOver}
@@ -98,7 +101,7 @@ const Header = () => {
           >
             <Link to="/profile/info">
               <img
-                src={localStorage.getItem("avatar")}
+                src={localStorage.getItem("avatar") || "https://pluspng.com/img-png/user-png-icon-download-icons-logos-emojis-users-2240.png"}
                 style={{ width: "40px" }}
                 alt="user-profile"
               />
@@ -108,11 +111,14 @@ const Header = () => {
                 <div className="dropdown-content-info">
                   <img
                     className="dropdown-content-info-item"
-                    src={localStorage.getItem("avatar")}
+                    src={localStorage.getItem("avatar") || "https://pluspng.com/img-png/user-png-icon-download-icons-logos-emojis-users-2240.png"}
                     alt="uesr-profile"
                     style={{ width: "60px" }}
                   />
-                  <Link to="/profile/info" className="dropdown-content-info-item">
+                  <Link
+                    to="/profile/info"
+                    className="dropdown-content-info-item"
+                  >
                     <div className="dropdown-content-info-item-name">
                       {localStorage.getItem("fullname")}
                     </div>
@@ -123,13 +129,17 @@ const Header = () => {
                 </div>
                 <div className="dropdown-content">
                   <div className="dropdown-content-item">
-                    <Link to="/my-courses/learning" className="link">My Learning</Link>
+                    <Link to="/my-courses/learning" className="link">
+                      My Learning
+                    </Link>
                   </div>
                   <div className="dropdown-content-item">
-                    <Link to="/shopping-cart">My Cart</Link>
+                    <Link to="/shopping-cart" className="link">My Cart</Link>
                   </div>
                   <div className="dropdown-content-item">
-                    <Link to="/my-courses/wishlist" className="link">Wishlist</Link>
+                    <Link to="/my-courses/wishlist" className="link">
+                      Wishlist
+                    </Link>
                   </div>
                   <div className="dropdown-content-item">
                     <Link to="/instructor/courses" className="link">Instructor Dashboard</Link>
@@ -140,6 +150,11 @@ const Header = () => {
                     <div className="dropdown-content-item">Edit Profile</div>
                   </Link>
                   <div className="dropdown-content-item">Payment Methods</div>
+                  <Link to="/profile/payment-history" className="link">
+                    <div className="dropdown-content-item">
+                      Purchase History
+                    </div>
+                  </Link>
                 </div>
                 <div className="dropdown-content">
                   <Link to="/">

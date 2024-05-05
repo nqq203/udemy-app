@@ -21,15 +21,13 @@ import InstructorReviews from './page/CreateCourse/InstructorReviews/InstructorR
 import SignIn from './page/SignIn/SignIn';
 import ShoppingCart from './page/ShoppingCart/ShoppingCart';
 import ViewListSearch from './page/viewListSearch/viewListSearch';
-import Cart from './page/cart/cart';
 import Payment from './page/payment/payment';
 import MyCourses from './page/myLearning/myCourses';
 import ProfileInfo from './page/profile/profileInfo';
 import ProfilePhoto from './page/profile/profilePhoto';
 import ProfilePrivacy from './page/profile/profilePrivacy';
+import ProfilePurchaseHistory from './page/profile/profilePurchaseHistory';
 import MyWishList from './page/myLearning/myWishList';
-import MyArchived from './page/myLearning/myArchived';
-import MyLearningTools from './page/myLearning/myLearningTools';
 import Lecture from './page/lecture/lecture';
 import { AuthProvider } from './context/AuthContext';
 import CourseDetail from "./page/courseDetail/CourseDetail";
@@ -77,33 +75,31 @@ export default function App() {
                     <Route path="create" element={<InstructorCreateCourse />} />
                     <Route path="statistics" element={<InstructorStatistic />} />
                     <Route path="reviews" element={<InstructorReviews />} />
-                  </Route>
-                  <Route path="profile">
-                    <Route path="info" element={<PrivateRoute element={ProfileInfo} />} />
-                    <Route path="photo" element={<PrivateRoute element={ProfilePhoto} />} />
-                    <Route path="privacy" element={<PrivateRoute element={ProfilePrivacy} />} />
-                  </Route>
-                  <Route path="cart" element={<PrivateRoute element={Cart} />} />
-                  <Route path="payment">
-                    <Route path="checkout" element={<Payment />} />
-                    <Route path="checkout/:id" element={<PaymentBuyNow />} />
-                    <Route path="success" element={<PaymentSuccess />} />
-                  </Route>
-                  <Route path="my-courses">
-                    <Route path="learning" element={<PrivateRoute element={MyCourses} />} />
-                    <Route path="wishlist" element={<PrivateRoute element={MyWishList} />} />
-                    <Route path="archived" element={<PrivateRoute element={MyArchived} />} />
-                    <Route path="learning-tools" element={<PrivateRoute element={MyLearningTools} />} />
-                  </Route>
-                  <Route path="/oauth2/" element={<Oauth />} />
-                  <Route path="/activate-account/:token" element={<EmailActivation />} />
-                </Routes>
-              </MainContent>
-              <Footer />
-            </AppWrapper>
-          </PayPalScriptProvider>
-        </QueryClientProvider>
-      </BrowserRouter>
+                </Route>
+                <Route path="profile">
+                  <Route path="info" element={<PrivateRoute element={ProfileInfo} />} />
+                  <Route path="photo" element={<PrivateRoute element={ProfilePhoto} />} />
+                  <Route path="privacy" element={<PrivateRoute element={ProfilePrivacy} />} />
+                  <Route path="payment-history" element={<PrivateRoute element={ProfilePurchaseHistory} />} />
+                </Route>
+                <Route path="payment">
+                  <Route path="checkout" element={<Payment />} /> 
+                  <Route path="checkout/:id" element={<PaymentBuyNow />} />
+                  <Route path="success" element={<PaymentSuccess />} />
+                </Route>
+                <Route path="my-courses">
+                  <Route path="learning" element={<PrivateRoute element={MyCourses} />} />
+                  <Route path="wishlist" element={<PrivateRoute element={MyWishList} />} />
+                </Route>
+                <Route path="/oauth2/" element={<Oauth />}/>
+                <Route path="/activate-account/:token" element={<EmailActivation />} />
+              </Routes>
+            </MainContent>
+            <Footer/>
+          </AppWrapper>
+        </PayPalScriptProvider>
+      </QueryClientProvider> 
+    </BrowserRouter>
     </AuthProvider>
   );
 }

@@ -30,7 +30,7 @@ const CourseComparison = ({ course }) => {
               }}
             />
           </div>
-          <span className="price">{changePriceFormat(course.price)}đ</span>
+          <span className="price">${changePriceFormat(course.price)}</span>
         </div>
         <a className="course-comparison-card-link"></a>
       </div>

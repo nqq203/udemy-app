@@ -16,14 +16,6 @@ const pages = [
         name: 'Wishlist',
         path: '/my-courses/wishlist',
     }, 
-    {
-        name: 'Archived',
-        path: '/my-courses/archived',
-    }, 
-    {
-        name: 'Learning tools',
-        path: '/my-courses/learning-tools',
-    }, 
 ];
 
 const StyledButton = styled(Button)({
