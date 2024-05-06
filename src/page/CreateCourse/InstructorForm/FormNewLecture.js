@@ -114,22 +114,21 @@ function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCre
     <FormTitleAndLinkWrapper>
       <Notification message={notification.message} visible={notification.visible} bgColor={notification.bgColor} onClose={() => setNotification({message: '', visible: false, bgColor: 'green'})}/>
       <div className="form-title-and-link_title">
-        <div style={{width: "120px"}}>New Lecture: </div>
+        <div className="form-title-and-link_title_">Title: </div>
         <input type="text" placeholder="Enter the title" onChange={(e) => setLectureTitle(e.target.value)} value={lectureTitle}/>
       </div>
       <div className="form-title-and-link_resource">
-        <div style={{width: "100px"}}>Resource: </div>
-        <div class="inputfile-box">
+        <div className="form-title-and-link_resource_">Resource: </div>
+        <div className="inputfile-box">
           <input type="file" id="file" className="inputfile" onChange={(e) => {
              setFile(e.target.files[0]);
              setFilename(e.target.files[0] ? e.target.files[0].name : "");
           }}/>
-          <label for="file">
-            <span id="file-name" className="file-box">{filename}</span>
-            <span class="file-button">
-              <i class="fa fa-upload" aria-hidden="true"></i>
-              Select File
-            </span>
+          <label className="create-lecture-label" htmlFor="file">
+            <div id="file-name" className="file-box">
+              {filename}
+            </div>
+            <div className="file-button">Select file</div>
           </label>
         </div>
       </div>
@@ -137,14 +136,15 @@ function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCre
         <Button 
           style={{ color: "var(--color-gray-500)", fontWeight: "700" }} 
           bgColor="var(--color-white)" 
-          hoverBgColor="var(--color-white)"
+          hoverBgColor="var(--color-gray-200)"
           onClick={() => {
             setIsOpenFormTitleAndLink(false);
             setIsOpenCreateNewLecture(false);
           }}>Cancel</Button>
         <Button 
           style={{ fontWeight: "700" }}
-          onClick={() => onSubmitLecture()}>Add Section</Button>
+          onClick={() => onSubmitLecture()}
+          hoverBgColor="var(--color-gray-400)">Add Section</Button>
       </div>
     </FormTitleAndLinkWrapper>
   );
@@ -215,70 +215,62 @@ const FormTitleAndLinkWrapper = styled.div`
   width: 100%;
 
   .form-title-and-link_title {
-    text-align: center;
-    align-items: center;
-    padding: 10px 20px;
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    width: calc(100% - 70px);
-
-    input[type=text] {
-      width: calc(100% - 100px);
-      padding: 10px 15px;
-    }
-
-    input:focus{
-      outline: none;
-    }
+    margin-top: 20px;
   }
 
-  .form-title-and-link_resource {
-    text-align: center;
+  .form-title-and-link_title, .form-title-and-link_resource {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    margin-bottom: 20px;
     align-items: center;
-    padding: 10px 20px;
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    width: calc(100% - 70px);
+    padding: 0 30px;
+  }
 
-    .inputfile-box {
-      width: 100%;
-      margin-left: 25px;
-    }
-    
-    label {
-      display: flex;
-      flex-direction: row;
-      width: 100%;
-    }
-    
-    .inputfile {
-      display: none;
-    }
-    
-    .file-box {
-      display: inline-block;
-      width: 100%;
-      border: 1px solid;
-      padding: 5px 0px 5px 5px;
-      box-sizing: border-box;
-      height: calc(2rem - 2px);
-    }
-    
-    .file-button {
-      background: var(--color-gray-200);
-      padding: 5px;
-      border: 1px solid;
-      width: 100px;
-    }
+  .form-title-and-link_title_, .form-title-and-link_resource_ {
+    font-weight: bold;
+    width: 120px;
+  }
+
+  input[type=text] {
+    padding: 10px;
+    font-size: 15px;
+  }
+
+  input:focus {
+    outline: none;
+  }
+
+  input[type=file] {
+    display: none;
+  }
+
+  .create-lecture-label {
+    display: grid;
+    grid-template-columns: 9fr 1fr;
+  }
+
+  .file-box {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    border: 1px solid var(--color-gray-400);
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .file-button {
+    border: 1px solid var(--color-gray-400);
+    background-color: var(--color-gray-200);
+    padding: 10px;
+    width: 70px;
+    justify-content: center;
   }
 
   .form-title-and-link_button {
-    display: flex;
-    justify-content: flex-end;
-    margin: 10px 40px;
-    padding: 5px 10px;
-    gap: 30px;
+    display: grid;
+    grid-template-columns: 150px 150px;
+    gap: 20px;
+    margin-top: 20px;
+    margin-left: 30px;
   }
 `
