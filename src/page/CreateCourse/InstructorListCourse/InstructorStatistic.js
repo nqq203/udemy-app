@@ -48,7 +48,7 @@ export default function InstructorStatistic() {
     {
       onSuccess: (data) => {
         console.log(data);
-        if (!data?.success || data?.metadata?.length === 0) {
+        if (data?.success || data?.metadata?.length === 0) {
           processRevenueDataFunc(data);
         }
       },
