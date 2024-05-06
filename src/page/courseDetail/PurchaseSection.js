@@ -11,7 +11,7 @@ import Notification from "../../components/Notification/Notification";
 import { useNavigate } from "react-router-dom";
 import { CiHeart } from "react-icons/ci";
 
-const PurchaseSection = ({ id, thumbnailImage, price }) => {
+const PurchaseSection = ({ id, thumbnailImage, price, isBought }) => {
   const navigate = useNavigate();
   const scrollPosition = useScrollPosition();
   const [isFixed, setFixed] = useState(false);
@@ -40,28 +40,30 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
       setFixed(false);
     }
   }
-  const mutationAddWishlist = useMutation(({ userId, courseId }) => callApiAddWishListItem(userId, courseId), {
-    onSuccess: (data) => {
-      console.log(data);
-      if (data.success) {
-        setNotification({
-          message: data.message,
-          visible: true,
-          bgColor: "green",
-        });
-      } else {
-        setNotification({
-          message: data.message,
-          visible: true,
-          bgColor: "red",
-        });
-      }
-    },
-  })
+  const mutationAddWishlist = useMutation(
+    ({ userId, courseId }) => callApiAddWishListItem(userId, courseId),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        if (data.success) {
+          setNotification({
+            message: data.message,
+            visible: true,
+            bgColor: "green",
+          });
+        } else {
+          setNotification({
+            message: data.message,
+            visible: true,
+            bgColor: "red",
+          });
+        }
+      },
+    }
+  );
 
   const mutation = useMutation(callApiCreateItemCart, {
     onSuccess: (data) => {
-      console.log(data);
       if (data.success) {
         setNotification({
           message: data.message,
@@ -79,12 +81,19 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
   });
 
   async function handleAddToWishlist() {
-    mutationAddWishlist.mutate({userId: localStorage.getItem("_id"), courseId: id});
+    mutationAddWishlist.mutate({
+      userId: localStorage.getItem("_id"),
+      courseId: id,
+    });
   }
 
   async function handleAddToCart() {
-    console.log("Course: ", id)
+    console.log("Course: ", id);
     mutation.mutate(id);
+  }
+
+  function handleGoToCourse() {
+    navigate(`/view-lecture?courseId=${id}`)
   }
 
   function handleBuyNow() {
@@ -110,67 +119,87 @@ const PurchaseSection = ({ id, thumbnailImage, price }) => {
           <img src={thumbnailImage} alt="" className="course-thumbnail-img" />
         </div>
         <div className="purchase-section">
-          <div className="course-price">${changePriceFormat(price)}</div>
-          <div className="cart-and-wishlist-btn">
-          <Button
-            bgColor={"var(--color-purple-300)"}
-            fontWeight={"700"}
-            fontSize={"16px"}
-            width={"80%"}
-            className="add-to-cart-btn"
-            fontFamily={"var(--font-stack-heading)"}
-            onClick={handleAddToCart}
-          >
-            Add to card
-          </Button>
-          <Button
-            bgColor={"var(--color-white)"}
-            fontWeight={"700"}
-            fontSize={"16px"}
-            width={"20%"}
-            className="buy-now-btn"
-            fontFamily={"var(--font-stack-heading)"}
-            onClick={handleAddToWishlist}
-            border={"1px solid var(--color-gray-500)"}
-            padding={"0px"}
-          >
-            <CiHeart size={35} class="wishlist-icon"></CiHeart>
-          </Button>
-          </div>
-          
-          <Button
-            bgColor={"var(--color-white)"}
-            fontWeight={"700"}
-            color={"black"}
-            border={"1px solid var(--color-gray-500)"}
-            fontSize={"16px"}
-            width={"100%"}
-            className="buy-now-btn"
-            fontFamily={"var(--font-stack-heading)"}
-            onClick={handleBuyNow}
-          >
-            Buy now
-          </Button>
-          <div className="coupon-section">
-            <input
-              type="text"
-              className="coupon-input"
-              placeholder="Enter coupon here"
-            />
-            <form action="" className="coupon-form">
+          {!isBought ? (
+            <>
+              <div className="course-price">${changePriceFormat(price)}</div>
+              <div className="cart-and-wishlist-btn">
+                <Button
+                  bgColor={"var(--color-purple-300)"}
+                  fontWeight={"700"}
+                  fontSize={"16px"}
+                  width={"80%"}
+                  className="add-to-cart-btn"
+                  fontFamily={"var(--font-stack-heading)"}
+                  onClick={handleAddToCart}
+                >
+                  Add to cart
+                </Button>
+                <Button
+                  bgColor={"var(--color-white)"}
+                  fontWeight={"700"}
+                  fontSize={"16px"}
+                  width={"20%"}
+                  className="buy-now-btn"
+                  fontFamily={"var(--font-stack-heading)"}
+                  onClick={handleAddToWishlist}
+                  border={"1px solid var(--color-gray-500)"}
+                  padding={"0px"}
+                >
+                  <CiHeart size={35} class="wishlist-icon"></CiHeart>
+                </Button>
+              </div>
+
               <Button
-                className="apply-coupon-btn"
-                bgColor={"var(--color-gray-600)"}
+                bgColor={"var(--color-white)"}
                 fontWeight={"700"}
-                fontSize={"13px"}
-                width={"100px"}
-                color={"white"}
+                color={"black"}
+                border={"1px solid var(--color-gray-500)"}
+                fontSize={"16px"}
+                width={"100%"}
+                className="buy-now-btn"
                 fontFamily={"var(--font-stack-heading)"}
+                onClick={handleBuyNow}
               >
-                Apply
+                Buy now
               </Button>
-            </form>
-          </div>
+              <div className="coupon-section">
+                <input
+                  type="text"
+                  className="coupon-input"
+                  placeholder="Enter coupon here"
+                />
+                <form action="" className="coupon-form">
+                  <Button
+                    className="apply-coupon-btn"
+                    bgColor={"var(--color-gray-600)"}
+                    fontWeight={"700"}
+                    fontSize={"13px"}
+                    width={"100px"}
+                    color={"white"}
+                    fontFamily={"var(--font-stack-heading)"}
+                  >
+                    Apply
+                  </Button>
+                </form>
+              </div>
+            </>
+          ) : (
+            <>
+              <Button
+                bgColor={"var(--color-white)"}
+                fontWeight={"700"}
+                color={"black"}
+                border={"1px solid var(--color-gray-500)"}
+                fontSize={"16px"}
+                width={"100%"}
+                className="buy-now-btn"
+                fontFamily={"var(--font-stack-heading)"}
+                onClick={handleGoToCourse}
+              >
+                Go to course
+              </Button>
+            </>
+          )}
         </div>
       </PurchaseSectionWrapper>
     </>

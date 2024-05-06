@@ -10,9 +10,11 @@ import { useState, useRef } from "react";
 import { PropagateLoader } from "react-spinners";
 import { callApiGetReviews } from "../../api/review";
 import ReviewSection from "./ReviewSection";
+import { callApiGetOrderByUser } from "../../api/order";
 import { callApiGetRelatedCourses } from "../../api/course";
 const CourseDetail = () => {
   // React query for fetching course details
+  const [isBought, setIsBought] = useState(false);
   const { courseId } = useParams();
   const [courseLoading, setCourseLoading] = useState(true);
   const [reviewLoading, setReviewLoading] = useState(true);
@@ -36,6 +38,21 @@ const CourseDetail = () => {
       setCourseLoading(false);
     },
   });
+
+  const { data: orderData, isSuccess: isPurchasedCoursesSuccess} = useQuery("orders", () => callApiGetOrderByUser(localStorage.getItem('_id')),
+{
+  onSuccess: (data) => {
+    
+    data.metadata.forEach((order) => {
+      order.items.forEach((item) => {
+        if (courseId == item.itemId){
+          console.log(item.itemId)
+          setIsBought(true);
+        }
+      })
+    })
+  }
+})
 
   // React query for fetching reviews
   const {
@@ -82,6 +99,7 @@ const CourseDetail = () => {
               id={courseData.metadata.course._id}
               thumbnailImage={courseData.metadata.course.imageUrl}
               price={courseData.metadata.course.price}
+              isBought={isBought}
             />
           </div>
 
