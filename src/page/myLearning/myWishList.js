@@ -2,7 +2,7 @@ import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import MyLearningNavBar from "./myLearningNavbar";
-
+import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -26,7 +26,7 @@ import Notification from "../../components/Notification/Notification";
 import { useQuery, useMutation } from "react-query";
 import { useState } from "react";
 
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function MyWishList() {
   const [notification, setNotification] = useState({
@@ -36,26 +36,27 @@ export default function MyWishList() {
   });
   const [wishlist, setWishlist] = useState([]);
   const userId = localStorage.getItem("_id");
-  const { data: userWishlist, isLoading } = useQuery("wishlist", () =>
-    callApiGetWishlist(userId), {
+  const { data: userWishlist, isLoading } = useQuery(
+    "wishlist",
+    () => callApiGetWishlist(userId),
+    {
       onSuccess: (data) => {
-        if (data.success)
-          setWishlist(data.metadata)
-      }
+        if (data.success) setWishlist(data.metadata);
+      },
     }
   );
 
   if (!isLoading)
     return (
       <MyLearningContainer>
-      <Notification
-        message={notification.message}
-        visible={notification.visible}
-        bgColor={notification.bgColor}
-        onClose={() =>
-          setNotification({ message: "", visible: false, bgColor: "green" })
-        }
-      />
+        <Notification
+          message={notification.message}
+          visible={notification.visible}
+          bgColor={notification.bgColor}
+          onClose={() =>
+            setNotification({ message: "", visible: false, bgColor: "green" })
+          }
+        />
         <MyLearningHeadingContainer>
           <Typography
             variant="h3"
@@ -71,6 +72,23 @@ export default function MyWishList() {
         </MyLearningHeadingContainer>
 
         <Stack justifyContent="center" my={8} px={{ xs: 8, sm: 16, md: 20 }}>
+          {wishlist.length > 0 ? null : (
+            <Stack justifyContent="center" alignItems="center" height={200}>
+              <Typography variant="h6" color={"var(--color-gray-300)"}>
+                Your wishlist is empty.
+              </Typography>
+              <Link to="/">
+                <Typography
+                  variant="body1"
+                  color={"var(--color-purple-300)"}
+                  fontWeight={700}
+                  sx={{ "&:hover": { color: "var(--color-purple-400)" } }}
+                >
+                  Find courses now!
+                </Typography>
+              </Link>
+            </Stack>
+          )}
           <Grid container sx={{ gap: "10px" }}>
             {console.log(userWishlist)}
             {isLoading ? <CircularProgress color="inherit" /> : <></>}
@@ -86,7 +104,11 @@ export default function MyWishList() {
                 mb={4}
                 sx={{ display: "flex", justifyContent: "center" }}
               >
-                <WishlistItem course={course} setWishlist={setWishlist} setNoti={setNotification} />
+                <WishlistItem
+                  course={course}
+                  setWishlist={setWishlist}
+                  setNoti={setNotification}
+                />
               </Grid>
             ))}
           </Grid>
@@ -96,8 +118,6 @@ export default function MyWishList() {
 }
 
 const WishlistItem = ({ course, setWishlist, setNoti }) => {
-  
-
   const userId = localStorage.getItem("_id");
 
   const mutationRemoveWishlist = useMutation(
@@ -144,19 +164,22 @@ const WishlistItem = ({ course, setWishlist, setNoti }) => {
   const handleRemoveWishlist = () => {
     console.log("deleting: ", course._id);
     mutationRemoveWishlist.mutate({ userId: userId, courseId: course._id });
-    setWishlist((prevWishlist) => prevWishlist.filter((item) => item._id !== course._id));
+    setWishlist((prevWishlist) =>
+      prevWishlist.filter((item) => item._id !== course._id)
+    );
   };
 
   const handleAddToCart = () => {
     mutationRemoveWishlist.mutate({ userId: userId, courseId: course._id });
     mutationAddToCart.mutate(course._id);
-    
-    setWishlist((prevWishlist) => prevWishlist.filter((item) => item._id !== course._id));
+
+    setWishlist((prevWishlist) =>
+      prevWishlist.filter((item) => item._id !== course._id)
+    );
   };
 
   return (
     <WishlistItemContainer>
-      
       <Card sx={{ maxWidth: 250 }}>
         <CardMedia
           sx={{ width: 250, height: 140 }}
