@@ -10,14 +10,13 @@ export const callApiGetCart = async () => {
 export const callApiCreateItemCart = async (courseId) => {
     const { data } = await api.post('/carts', { courseId })
     return data;
-}
+} 
 
 export const callApiDeleteItemCart = async (cartId) => {
     const { data } = await api.delete(`/carts/${cartId}`)
     return data;
 }
 
-//Testing APIs
 export const callApiGetAllCart = async () => {
     const { data } = await api.get('/carts/all', {
         params: {
@@ -28,7 +27,7 @@ export const callApiGetAllCart = async () => {
 }
 
 export const callApiDeleteAllCart = async () => {
-    const { data } = await api.delete('/carts/all', {
+    const { data } = await api.delete('/carts', {
         params: {
             userId: localStorage.getItem('_id')
         }

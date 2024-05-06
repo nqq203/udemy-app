@@ -29,7 +29,7 @@ export default function CourseList(orders) {
   }
   const courseData = Array.isArray(courses?.metadata) ? courses?.metadata : [courses?.metadata];
 
-  if(courseData === undefined || courseData === null){
+  if(courseData === undefined || courseData === null || courseData.length === 0 || courseData[0] === undefined || courseData[0] === null){
       return (
           <MyLearningContainer>
               <MyLearningHeadingContainer>
