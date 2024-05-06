@@ -51,12 +51,13 @@ export default function InstructorPricing({ isPublished, setIsPublished}) {
     if (courseType === 'create') 
       setPrice(null);
     if (globalPrice)
-      setPrice("đ" + globalPrice);
+      setPrice("$" + globalPrice);
   }, [globalPrice, courseType]);
 
   async function onSavePrice() {
-    const newPrice = Number(price?.split("đ")[1]);
+    const newPrice = Number(price?.split("$")[1]);
     dispatch(setCoursePrice(newPrice));
+    console.log(newPrice);
     const newData = {
       ...globalCourseData,
       price: newPrice

@@ -84,9 +84,6 @@ const ProfilePurchaseHistory = () => {
                       Total Price
                     </TableCell>
                     <TableCell style={{ fontWeight: "bold", fontSize: '17px' }} align="center">
-                      Payment Method
-                    </TableCell>
-                    <TableCell style={{ fontWeight: "bold", fontSize: '17px' }} align="center">
                       Status
                     </TableCell>
                   </TableRow>
@@ -112,9 +109,6 @@ const ProfilePurchaseHistory = () => {
                         ))}
                       </TableCell>
                       <TableCell align="center">${order.totalPrice}</TableCell>
-                      <TableCell align="center">
-                        {order.paymentmethod}
-                      </TableCell>
                       <TableCell align="center">{order.status}</TableCell>
                     </TableRow>
                   ))}

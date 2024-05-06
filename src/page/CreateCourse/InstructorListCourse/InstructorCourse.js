@@ -213,8 +213,8 @@ export default function InstructorCourse() {
               </div>
 
               <div className="course-management-main_courseview_statistic">
-                <div>{item.price}</div>
-                <div style={{ position: "absolute", bottom: "0" }}>Sold: {item.amountSold}</div>
+                <div>${item.price}</div>
+                <div style={{ position: "absolute", bottom: "0" }}>Created: {moment(item.createAt).format("DD/MM/YYYY hh:mm:ss")}</div>
               </div>
             </div>
           )) :

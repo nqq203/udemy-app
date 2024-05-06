@@ -149,7 +149,6 @@ const Header = () => {
                   <Link to="/profile/info" className="link">
                     <div className="dropdown-content-item">Edit Profile</div>
                   </Link>
-                  <div className="dropdown-content-item">Payment Methods</div>
                   <Link to="/profile/payment-history" className="link">
                     <div className="dropdown-content-item">
                       Purchase History

@@ -26,6 +26,8 @@ import Notification from "../../components/Notification/Notification";
 import { useQuery, useMutation } from "react-query";
 import { useState } from "react";
 
+import CircularProgress from '@mui/material/CircularProgress';
+
 export default function MyWishList() {
   const [notification, setNotification] = useState({
     message: "",
@@ -42,6 +44,7 @@ export default function MyWishList() {
       }
     }
   );
+
   if (!isLoading)
     return (
       <MyLearningContainer>
@@ -70,6 +73,8 @@ export default function MyWishList() {
         <Stack justifyContent="center" my={8} px={{ xs: 8, sm: 16, md: 20 }}>
           <Grid container sx={{ gap: "10px" }}>
             {console.log(userWishlist)}
+            {isLoading ? <CircularProgress color="inherit" /> : <></>}
+
             {wishlist?.map((course, index) => (
               <Grid
                 item

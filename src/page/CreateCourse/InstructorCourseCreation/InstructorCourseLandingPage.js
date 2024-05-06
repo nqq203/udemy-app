@@ -147,7 +147,7 @@ export default function InstructorCourseLandingPage({ isPublished, setIsPublishe
       });
       return;
     }
-    if (!imageFile || !imageURL) {
+    if ((!imageFile || !imageURL) && courseType === 'create') {
       setNotification({
         message: 'Please select an image file.',
         visible: true,
@@ -166,6 +166,8 @@ export default function InstructorCourseLandingPage({ isPublished, setIsPublishe
       imageUrl: imageURL,
       publish: false,
     };
+
+    console.log(course);
    
     dispatch(setCourseType('update'));
     if (courseType === 'create') {

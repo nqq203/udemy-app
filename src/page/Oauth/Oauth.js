@@ -24,7 +24,6 @@ export default function Oauth() {
     localStorage.setItem('_id', decodedUserInfo._id);
     localStorage.setItem('role', decodedUserInfo.role);
     localStorage.setItem('typeLogin', 'oauth2');
-    // window.location.href = "http://localhost:3030/"
     if (!authen) 
       setAuthen(true);
   }, [authen]);

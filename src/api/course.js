@@ -77,6 +77,7 @@ export const callApiCreateOneCourse = async (courseData) => {
   dataWithoutImage.imageUrl = null;
 
   formData.append('courseData', JSON.stringify(dataWithoutImage));
+  console.log(formData);
   
   const accessToken = localStorage.getItem('accessToken');
   const { data } = await api.post('/courses/create-one-course', formData, {
