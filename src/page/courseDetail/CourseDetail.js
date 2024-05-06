@@ -25,7 +25,7 @@ const CourseDetail = () => {
   } = useQuery({
     queryKey: "courseDetail",
     queryFn: async () => {
-      const response = await fetch(`http://localhost:8080/courses/${courseId}`);
+      const response = await fetch(`https://udemy-app-backend.onrender.com/courses/${courseId}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
