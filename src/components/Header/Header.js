@@ -35,7 +35,7 @@ const Header = () => {
   async function onLogout() {
     // setIsAuthenticated(false);
     await callApiLogOut();
-    window.location.href = "https://enlightify.onrender.com";
+    window.location.href = "http://localhost:3030";
   }
 
   useEffect(() => {

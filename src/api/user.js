@@ -59,11 +59,11 @@ export const callApiChangePassword = async (newPassword) => {
 };
 
 export const callApiLoginWithGoogle = async () => {
-  window.location.href = `https://udemy-app-backend.onrender.com/users/google`;
+  window.location.href = `http://locahost:8080/users/google`;
 };
 
 export const callApiLoginWithFacebook = async () => {
-  window.location.href = `https://udemy-app-backend.onrender.com/users/facebook`;
+  window.location.href = `http://locahost:8080/users/facebook`;
 };
 
 export const callApiLogOut = async (userData) => {

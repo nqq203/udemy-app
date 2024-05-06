@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://udemy-app-backend.onrender.com',
+  baseURL: 'http://localhost:8080',
 }
 );
 
