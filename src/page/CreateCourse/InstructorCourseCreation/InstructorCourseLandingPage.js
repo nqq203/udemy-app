@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import 'draft-js/dist/Draft.css';
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Notification from "../../../components/Notification/Notification";
@@ -9,8 +9,9 @@ import { setCourseData } from "../../../redux/coursesSlice";
 import { setCourseType } from "../../../redux/courseManagementSlice";
 import { callApiCreateOneCourse, callApiUpdateCourse } from "../../../api/course";
 import { useMutation } from "react-query";
+import { ClipLoader } from "react-spinners"
 
-export default function InstructorCourseLandingPage() {
+export default function InstructorCourseLandingPage({ isPublished, setIsPublished}) {
   const dispatch = useDispatch();
   const globalCourseData = useSelector(state => state.courses.courseData);
   const courseType = useSelector(state => state.courseManagement.type);
@@ -21,6 +22,7 @@ export default function InstructorCourseLandingPage() {
   });
   const [imageFile, setImageFile] = useState(null);
   const [imageURL, setImageURL] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState({
     message: '',
     visible: false,
@@ -29,6 +31,9 @@ export default function InstructorCourseLandingPage() {
   const createCourseMutation = useMutation(
     (courseData) => callApiCreateOneCourse(courseData),
     {
+      onMutate: () => {
+        setIsLoading(true);
+      },
       onSuccess: (data) => {
         setNotification({
           message: data.message,
@@ -36,12 +41,20 @@ export default function InstructorCourseLandingPage() {
           bgColor: 'green'
         });
         dispatch(setCourseData(data?.metadata));
+        setIsLoading(false);
+      },
+      onError: (error) => {
+        setIsLoading(false);
       }
     }
   );
+
   const updateCourseMutation = useMutation(
     (courseData) => callApiUpdateCourse(courseData),
     {
+      onMutate: () => {
+        setIsLoading(true);
+      },
       onSuccess: (data) => {
         setNotification({
           message: data.message,
@@ -49,6 +62,10 @@ export default function InstructorCourseLandingPage() {
           bgColor: 'green'
         });
         dispatch(setCourseData(data?.metadata));
+        setIsLoading(false);
+      },
+      onError: (error) => {
+        setIsLoading(false);
       }
     }
   )
@@ -71,6 +88,17 @@ export default function InstructorCourseLandingPage() {
       setImageURL(globalCourseData.imageUrl);
     }
   }, [globalCourseData, courseType]);
+
+  useEffect(() => {
+    if (isPublished === true) {
+      setNotification({
+        message: 'Published course successfully',
+        visible: true,
+        bgColor: 'green'
+      });
+      setIsPublished(false);
+    }
+  }, [isPublished]);
 
   function handleFileChange(e) {
     const file = e.target.files[0]; // Get the selected file
@@ -119,14 +147,14 @@ export default function InstructorCourseLandingPage() {
       });
       return;
     }
-    // if (!imageFile || !imageURL) {
-    //   setNotification({
-    //     message: 'Please select an image file.',
-    //     visible: true,
-    //     bgColor:'red'
-    //   });
-    //   return;
-    // }
+    if ((!imageFile || !imageURL) && courseType === 'create') {
+      setNotification({
+        message: 'Please select an image file.',
+        visible: true,
+        bgColor:'red'
+      });
+      return;
+    }
 
     const course = {
       _id: null || globalCourseData?._id,
@@ -138,6 +166,8 @@ export default function InstructorCourseLandingPage() {
       imageUrl: imageURL,
       publish: false,
     };
+
+    console.log(course);
    
     dispatch(setCourseType('update'));
     if (courseType === 'create') {
@@ -159,6 +189,11 @@ export default function InstructorCourseLandingPage() {
           visible: false,
           bgColor: 'green'
         })}/>
+      {isLoading ? 
+      <div style={{margin: "30% auto", justifyContent: "center"}}>
+        <ClipLoader size={35} color="var(--color-purple-300)"/>
+      </div> :
+      <Fragment>
       <div className="course-landing-page-header">
         <h3 style={{ fontSize: "25px" }}>Course landing page</h3>
       </div>
@@ -226,7 +261,8 @@ export default function InstructorCourseLandingPage() {
           onClick={onSaveCourseLandingPage}>
             Save
         </CustomButton>
-      </div>
+      </div>  
+      </Fragment>}
     </InstructorCourseLandingPageWrapper>);
 }
 

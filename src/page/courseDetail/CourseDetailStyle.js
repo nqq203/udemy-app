@@ -2,11 +2,17 @@ import styled from "styled-components";
 import { IoIosArrowDown } from "react-icons/io";
 
 export const CourseDetailWrapper = styled.div`
+  position: relative;
+  & .purchase-position-container {
+    max-width: 1184px;
+    margin: 0 auto;
+  }
+
   & .course-content-container {
     margin-bottom: 40px;
   }
 
-  .product-detail-body {
+  & .product-detail-body {
     max-width: 1184px;
     margin: 0 auto;
     padding-top: 32px;
@@ -21,11 +27,29 @@ export const CourseDetailWrapper = styled.div`
     margin: 0;
     padding: 0;
   }
+
+  & .container {
+    height: 240px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 
 export const PurchaseSectionWrapper = styled.div`
-  max-width: 1184px;
-  margin: 0 auto;
+  position: ${({ isFixed }) => (isFixed ? "fixed" : "absolute")};
+  width: 23rem;
+  margin-left: 796px;
+  display: block;
+  ${({ bottomPosition }) =>
+    bottomPosition ? `bottom: 32px` : "top: 32px"};
+  padding: 0;
+  z-index: 1;
+  border-bottom: 1px solid #d1d7dc;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
   box-sizing: border-box;
   padding: 0;
   .course-thumbnail-container {
@@ -39,17 +63,6 @@ export const PurchaseSectionWrapper = styled.div`
   }
 
   .sidebar-container {
-    position: ${({ isFixed }) => (isFixed ? "fixed" : "absolute")};
-    width: 23rem;
-    margin-left: 796px;
-    display: block;
-    top: 32px;
-    padding: 0;
-    z-index: 1;
-    border-bottom: 1px solid #d1d7dc;
-    box-sizing: border-box;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.08);
-    background-color: #fff;
   }
 
   .fixed-sidebar-container {
@@ -67,6 +80,17 @@ export const PurchaseSectionWrapper = styled.div`
     gap: 8px;
     align-items: center;
     padding: 24px;
+  }
+
+  .cart-and-wishlist-btn {
+    display: flex;
+    gap: 5px;
+    width: 100%;
+  }
+
+  .wishlist-icon {
+    padding: 0px;
+    color:black;
   }
 
   .coupon-section {
@@ -174,6 +198,7 @@ export const CourseComparisonWrapper = styled.div`
     position: relative;
     box-sizing: border-box;
     margin: 0;
+
   }
 
   .course-comparison-main-content {
@@ -181,11 +206,11 @@ export const CourseComparisonWrapper = styled.div`
     flex-direction: column;
     margin-left: 16px;
     min-width: 180px;
+    max-width: 400px;
     width: 100%;
     margin: 0 0 0 8px;
     white-space: nowrap;
     overflow-wrap: break-word;
-
   }
 
   .course-comparison-content {
@@ -203,7 +228,7 @@ export const CourseComparisonWrapper = styled.div`
   }
 
   & .price {
-    max-width: 60px;
+    width: 45px;
   }
 
   .ratings {
@@ -222,7 +247,7 @@ export const CourseComparisonWrapper = styled.div`
   }
 
   & .course-comparison-image-container {
-    width: 10em;
+    width: 95px;
   }
 
   & .rating-score-container {
@@ -284,4 +309,19 @@ export const StyledArrowIcon = styled(IoIosArrowDown)`
   vertical-align: middle; /* Align the icon vertically with the text */
 
   /* Apply the spin animation based on the spinning state */
+`;
+
+export const ReviewsWrapper = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 20px;
+
+  & .rating {
+    margin-top: 4px;
+  }
+
+  & .show-more-btn:hover {
+    background-color: var(--color-gray-200);
+  }
 `;

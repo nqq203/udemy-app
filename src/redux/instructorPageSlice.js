@@ -3,11 +3,11 @@ import { createSlice } from '@reduxjs/toolkit';
 const instructorPageSlice = createSlice({
   name: 'instructorPage',
   initialState: {
-    page: null,
+    page: 1,
   },
   reducers: {
     setInstructorPage: (state, {payload}) => {
-      state.signUp = payload;
+      state.page = payload;
     },
   },
 });

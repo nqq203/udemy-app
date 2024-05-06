@@ -4,7 +4,7 @@ import {Card, Box, CardContent,Typography} from '@mui/material';
 import { Link } from 'react-router-dom';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import {Button} from "../../components/Button/Button.js"
 import {Chip} from "../../components/Chip/Chip.js"
@@ -27,6 +27,17 @@ export const StyleH4 = styled.h4`
     font-weight: 700;
     margin-bottom: 3px;
     font-size: 17px;
+    height: 3rem;
+
+    &.wrap{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2; /* number of lines to show */
+        line-height: 1.5rem; 
+        max-height: 3rem;       
+    }
 `;
 
 export const HomePageWrapper = styled.div`
@@ -50,11 +61,14 @@ export const HomePageWrapper = styled.div`
 
 export const Herobanner = styled.div`
     height: 400px;
-    width: auto;
+    width: 100vw;
     display: flex;
     align-items: center;
     background-image: url('/imgs/herobanner.png');
     padding-bottom: 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 `
 
 export const QuoteCard = () => {
@@ -69,9 +83,11 @@ export const QuoteCard = () => {
                         Get what you left in your cart for less during this limited-time “don’t leave learning behind” sale.
                     </Typography>
 
-                    <Button background-color="var(--color-black)" color="var(--color-white)" width="fit-content">
-                        Go to Cart
-                    </Button>
+                    <Link to={`/shopping-cart`}>
+                        <Button background-color="var(--color-black)" color="var(--color-white)" width="fit-content">
+                            Go to Cart
+                        </Button>
+                    </Link>
                 </CardContent>
             </Card>
         </Box>
@@ -84,7 +100,9 @@ export const CatogoryStyle = styled.div`
     align-items: center;
     justify-content: center;
     background-color: var(--color-white);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 4px 12px rgba(0, 0, 0, .08);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, .08), 0 6px 12px rgba(0, 0, 0, .08);
+    position: relative;
+    overflow: hidden;
 
     ul{
         list-style: none;
@@ -117,16 +135,24 @@ export const CatogoryStyle = styled.div`
 `;
 
 export const CatogoriesList = () => {
+
+    // Navigate to page search
+    // /view-list-courses?keyword=${keyword}&p=${1}&rating=${rating}
+    // /view-list-courses?category=${Development}&p=${1}&rating=${rating}
     return(
         <CatogoryStyle>
             <ul>
-                <li><Link to="/">IT & Software</Link></li>
-                <li><Link to="/">Bussiness</Link></li>
-                <li><Link to="/">Finance</Link></li>
-                <li><Link to="/">Design</Link></li>
-                <li className='long-item'><Link to="/">Personal Development</Link></li>
-                <li><Link to="/">Marketing</Link></li>
-                <li className='long-item'><Link to="/">Office Productivity</Link></li>
+                <li><Link to="/view-list-courses?category=Development&p=1">Development</Link></li>
+                <li><Link to="/view-list-courses?category=Business&p=1">Business</Link></li>
+                <li><Link to="/view-list-courses?category=Design&p=1">Design</Link></li>
+                <li><Link to="/view-list-courses?category=Finance&p=1">Finance</Link></li>
+                <li className='long-item'>
+                    <Link to="/view-list-courses?category=Personal+Development&p=1">Personal Development</Link>
+                </li>
+                <li><Link to="/view-list-courses?category=Marketing&p=1">Marketing</Link></li>
+                <li className='long-item'>
+                    <Link to="/view-list-courses?category=Office+Productivity&p=1">Office Productivity</Link>
+                </li>
             </ul>
         </CatogoryStyle>
     )
@@ -151,9 +177,11 @@ export const UserWelcome = ({username}) => {
         <UserWelcomeStyle>
             <Typography variant="h4" component='div' fontWeight={800} fontFamily={"serif"}>Let's start learning, {username}</Typography>
 
-            <Button className="text-button">
-                My learning
-            </Button>
+            <Link to={`/my-courses/learning`}>
+                <Button className="text-button">
+                    My learning
+                </Button>
+            </Link>
         </UserWelcomeStyle>
     )
 }
@@ -173,7 +201,7 @@ export const CourseItem = (props ) => {
     
     const handleCourseClick = () =>{
         // console.log("Click course");
-        navigate(`/view-lecture?courseId=${id}`);
+        navigate(`/course-detail/${id}`);
     }
 
     return(
@@ -197,7 +225,7 @@ export const CourseItem = (props ) => {
 
 
             <CardContent sx={{pr: 1,pl: 1, mt: 0}}>
-                <StyleH4>
+                <StyleH4 className="wrap">
                     {titleCourse}
                 </StyleH4>
 
@@ -208,7 +236,7 @@ export const CourseItem = (props ) => {
                 <CustomRating rates={ratingCourse} />
 
                 <StyleH4>
-                    <u>đ</u>{formattedPrice}
+                    ${formattedPrice}
                 </StyleH4>
 
                 {chipLabel && <Chip>Bestseller</Chip>}
@@ -276,7 +304,16 @@ export const SliderContainer = (props) => {
     const allCourse = props?.courses || []
     const instructors = props?.instructors || []
     const listCourse = useRef(null)
-    const courseScroll = 260
+    const nextBtn = useRef(null);
+    const courseScroll = 258
+
+    useEffect(() => {
+        if(nextBtn.current != null){
+            if(allCourse?.length*courseScroll <= window.innerWidth){
+                nextBtn.current.style.display = "none"
+            }
+        }
+    },[nextBtn,allCourse?.length])
      
     function slideAction(event){
         const id = event.target.id
@@ -292,13 +329,11 @@ export const SliderContainer = (props) => {
             const scrollAmount = courseScroll*direction;
             listCourse.current.scrollBy({left:scrollAmount, behavior: "smooth"})
         }
-        // handleSlideButtons()
     }
 
     function handleSlideButtons(){
-        const width = 144
         const listCourses = listCourse.current;
-        const maxScrollLeft = (allCourse?.length - 1) * width; //1303
+        const maxScrollLeft = (allCourse?.length - 4)*courseScroll;
 
         const slideButtons = [
             document.getElementById('prev-slide'),
@@ -316,7 +351,7 @@ export const SliderContainer = (props) => {
                 <div className="floating-button position-left" id="prev-slide" onClick={slideAction}>
                     <ArrowBackIosNewIcon id="prev-slide" onClick={slideAction}></ArrowBackIosNewIcon>
                 </div>
-                <div className="floating-button position-right" id="next-slide" onClick={slideAction}>
+                <div ref={nextBtn} className="floating-button position-right" id="next-slide" onClick={slideAction}>
                     <ArrowForwardIosRoundedIcon id="next-slide" onClick={slideAction}></ArrowForwardIosRoundedIcon>
                 </div>
 

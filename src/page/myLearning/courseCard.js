@@ -4,16 +4,15 @@ import { useQuery } from 'react-query';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Rating from '@mui/material/Rating';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { 
   MyCourseCardItemDescription, 
   MyCourseCardItemName, 
-  MyCourseRating,
   CourseCardLoading
 } from './myLearningStyle';
 import { callApiGetUserById } from '../../api/user';
+import { Link } from 'react-router-dom';
 
 const getInstructor = async (userId) => {
   const instructor = await callApiGetUserById(userId);
@@ -21,8 +20,8 @@ const getInstructor = async (userId) => {
 }
 
 export default function CourseCard({ course }) {
-  const { data, isLoading } = useQuery("instructor", () => getInstructor(course.instructorId));
-  const [value, setValue] = React.useState(null);
+  const { data, isLoading } = useQuery("instructor", () => getInstructor(course?.instructorId));
+  const id = course?._id || ""
   
   const instructor = data;
   if(isLoading){
@@ -34,26 +33,36 @@ export default function CourseCard({ course }) {
   }
   
   return (
-    <Card sx={{ maxWidth: 250 }}>
-      <CardMedia
-        sx={{ height: 140 }}
-        image="/images/courses/reactnative.png"
-        title={course.name}
-      />
-      <CardContent sx={{paddingTop: 0}}>
-        <MyCourseCardItemName variant="h6" fontWeight={600}>
-            {course.name}
-        </MyCourseCardItemName>
+    <Link to={`/view-lecture?courseId=${id}`} style={{textDecoration: 'none'}}>
+      <Card sx={{ maxWidth: 250 }}>
+        <CardMedia
+          sx={{ width: 250, height: 140 }}
+          image={course?.imageUrl}
+          title={course?.name}
+        />
+        <CardContent sx={{
+          height: 120,
+          paddingTop: 0, 
+          paddingBottom: 0,
+          display: 'flex', 
+          flexDirection: 'column', 
+          justifyContent: 'space-between',
+          alignItems: 'space-between',
+          "&:last-child": {
+            paddingBottom: 1
+          }
+        }}>
+          <div>
+            <MyCourseCardItemName variant="h6" fontWeight={600}>
+                {course?.name}
+            </MyCourseCardItemName>
 
-        <MyCourseCardItemDescription>
-            By {instructor ? instructor.metadata.fullName : ""}
-        </MyCourseCardItemDescription>
-
-        <MyCourseRating>
-          <Rating name="simple-controlled" value={value} onChange={(event, newValue) => { setValue(newValue);}}/>
-          <MyCourseCardItemDescription>Leave a rating</MyCourseCardItemDescription>
-        </MyCourseRating>
-      </CardContent>
-    </Card>
+          <MyCourseCardItemDescription>
+              By {instructor ? instructor?.metadata?.fullName : ""}
+          </MyCourseCardItemDescription>
+        </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

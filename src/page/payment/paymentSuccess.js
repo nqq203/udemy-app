@@ -15,7 +15,7 @@ export default function PaymentSuccess() {
         <Typography variant="h5" textAlign='center'>Thank you for your purchase.</Typography>
         <Typography variant="h5" textAlign='center'>You can now access your course.</Typography>
       </PaymentThanksDiv>
-      <Link to="/"><Button>Back to home</Button></Link>
+      <Link to="/" reloadDocument><Button>Back to home</Button></Link>
     </PaymentSuccessDiv>
   );
 }

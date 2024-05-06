@@ -7,6 +7,7 @@ export const HeaderWrapper = styled.header`
   padding: 20px 10px;
   background-color: var(--color-white);
   box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 4px 12px rgba(0, 0, 0, .08);
+  overflow: hidden;
 
   img {
     width: 70px;
@@ -110,7 +111,7 @@ export const HeaderWrapper = styled.header`
     background-color: #f9f9f9;
     min-width: 200px; /* or any desired size */
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
+    z-index: 3;
   }
   
   /* The container div that shows the dropdown on hover */
@@ -154,6 +155,13 @@ export const HeaderWrapper = styled.header`
   }
 
   .dropdown-content-item:hover, .dropdown-content-info-item:hover {
+    color: var(--color-purple-300);
+  }
+
+  .link {
+    color: var(--color-gray-500);
+  }
+  .link:hover {
     color: var(--color-purple-300);
   }
 `

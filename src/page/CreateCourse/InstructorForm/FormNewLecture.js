@@ -11,7 +11,7 @@ import { useDispatch } from "react-redux";
 import { setLecturesData } from "../../../redux/lecturesSlice";
 
 
-function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCreateNewLecture, setLectures, lectures, sectionId}) {
+function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCreateNewLecture, setLectures, lectures, sectionId, setIsLoading}) {
   const [lectureTitle, setLectureTitle] = useState(null);
   const [lectureURL, setLectureURL] = useState(null);
   const [filename, setFilename] = useState(null);
@@ -26,10 +26,17 @@ function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCre
   useEffect(() => {
     console.log(sectionId);
   }, [sectionId]);
+
+  useEffect(() => {
+    console.log(file);
+  }, [file])
   
   const createSectionMutation = useMutation(
     (sectionData) => callApiCreateLecture(sectionData),
     {
+      onMutate: () => {
+        setIsLoading(true);
+      },
       onSuccess: (data) => {
         console.log(data);
         setNotification({
@@ -56,11 +63,15 @@ function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCre
              sectionId: data?.metadata?.sectionId,
              _id: data?.metadata?._id,
              title: data?.metadata?.title,
-             url: lectureURL,
-             duration: 0,
+             url: data?.metadata?.url,
+             duration: data?.metadata?.duration,
              file: file,
            }
          ]));
+         setIsLoading(false);
+      },
+      onError: (error) => {
+        setIsLoading(false);
       }
     }
   )
@@ -139,7 +150,7 @@ function FormTitleAndLink({selectedType, setIsOpenFormTitleAndLink, setIsOpenCre
   );
 }
 
-export default function FormNewLecture({lectures, setLectures, setIsOpenCreateNewLecture, sectionId}) {
+export default function FormNewLecture({lectures, setLectures, setIsOpenCreateNewLecture, sectionId, setIsLoading}) {
   const lectureType = ["Lecture", "Quiz", "Coding Exercise"];
   const [isOpenFormTitleAndLink, setIsOpenFormTitleAndLink] = useState(false);
   const [selectedType, setSelectedType] = useState();
@@ -165,7 +176,7 @@ export default function FormNewLecture({lectures, setLectures, setIsOpenCreateNe
         }}/>
     </FormNewLectureWrapper>
     ) : (
-      <FormTitleAndLink selectedType={selectedType} setIsOpenFormTitleAndLink={setIsOpenFormTitleAndLink} setIsOpenCreateNewLecture={setIsOpenCreateNewLecture} setLectures={setLectures} lectures={lectures} sectionId={sectionId}/>
+      <FormTitleAndLink selectedType={selectedType} setIsOpenFormTitleAndLink={setIsOpenFormTitleAndLink} setIsOpenCreateNewLecture={setIsOpenCreateNewLecture} setLectures={setLectures} lectures={lectures} sectionId={sectionId} setIsLoading={setIsLoading}/>
     )}
     </Fragment>
   );

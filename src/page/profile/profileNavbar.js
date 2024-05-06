@@ -20,6 +20,10 @@ const pages = [
         name: 'Privacy settings',
         path: '/profile/privacy',
     }, 
+    {
+        name: 'Payment history',
+        path: '/profile/payment-history',
+    },
 ];
 
 const StyledButton = styled(Button)({

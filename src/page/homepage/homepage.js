@@ -4,22 +4,21 @@ import { useQuery } from "react-query";
 import { useState,useEffect } from "react";
 import { PropagateLoader } from 'react-spinners';
 import { useAuth } from "../../context/AuthContext";
-
-
+import { Divider } from "@mui/material";
 
 export default function HomePage(){
   const [loading,setLoading] = useState(true)
   const [courses,setCourses] = useState([])
   const [instructors,setInstructors] = useState([])
   const { isAuthenticated } = useAuth()
-  const [username, setUsername] = useState(localStorage.getItem("fullname") || null);
+  const [username, setUsername] = useState(null);
 
-  const {data: fetchCourses, isSuccess, isLoading, isError,refetch } = useQuery(
+  const {refetch } = useQuery(
     "fetch10Courses",
     () => callApiGetCoursesPagination(1,10),
     {
       onSuccess: (data) => {
-        console.log(data)
+        // console.log(data)
         setCourses(data?.metadata?.results)
         setInstructors(data?.metadata?.instructors)
         setLoading(false)
@@ -33,14 +32,15 @@ export default function HomePage(){
   )
 
   useEffect(() => {
-    if(!isAuthenticated) {
-      setUsername(null)
+    if(isAuthenticated) {
+      setUsername(localStorage.getItem("fullname"))
     }
     refetch()
-  }, [isAuthenticated])  
+  }, [isAuthenticated,refetch])  
 
   return(
     <HomePageWrapper>
+      <Divider component="div"/>
       <CatogoriesList></CatogoriesList>
       <Herobanner>
         <QuoteCard title="Did you forget something?">

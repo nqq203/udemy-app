@@ -1,9 +1,9 @@
-import {SearchResultContainer, FilterList,ViewListCourseStyle,
+import { ViewListCourseStyle,
   StyleH4,ListCourseStyle,Divider,CourseRowItem} from "./viewListSearchStyle.js"
 import {Grid} from '@mui/material';
-import {callApiGetCoursesBySearching} from '../../api/course'
+import {callApiGetCoursesBySearching,callApiGetCoursesByCategory} from '../../api/course'
 import { useQuery } from 'react-query';
-import { useEffect,useState,useRef } from "react";
+import { useEffect,useState } from "react";
 import { PropagateLoader } from 'react-spinners';
 
 import { useNavigate } from "react-router-dom";
@@ -36,21 +36,29 @@ export default function ViewListCourse() {
 
   const [currentRating, setCurrentRating] = useState(parseFloat(queryParams.get('rating')) || 0)
 
-  const keyword = queryParams.get('keyword');
+  const keyword = queryParams.get('keyword') || "";
+  const category = queryParams.get('category') || "";
   const [pageNumber,setPageNumber] = useState(parseInt(queryParams.get('p')) || 1)
 
-  const {data: fetchCourses, isSuccess, isLoading, isError, refetch, isRefetching } = useQuery(
-    "searchByKeyword-page" + pageNumber,
-    () => callApiGetCoursesBySearching(keyword,pageNumber,currentRating),
+  const {data: fetchCourses, isSuccess, isLoading, isError, refetch } = useQuery(
+    "search-page" + pageNumber,
+    () => { 
+      if(category !== ""){
+        // console.log("Category search")
+        return callApiGetCoursesByCategory(category,pageNumber,currentRating);
+      } else{
+        // console.log("Keyword search")
+        return callApiGetCoursesBySearching(keyword,pageNumber,currentRating);
+      }
+    },
     {
       onSuccess: (data) => {
         if(isLoading){
           setLoading(true)
         }
 
-        console.log(data)
+        // console.log(data)
         if(data.code === 200){
-          console.log("success fetch")
           setData(data?.metadata)          
         }
         setLoading(false)        
@@ -74,14 +82,22 @@ export default function ViewListCourse() {
 
 
   const handlePagination = (event,value) => {
-    if(pageNumber == value){
+    if(pageNumber === +value){
       return;
     }
     setLoading(true);
-    if(currentRating == 0){
-      navigate(`/view-list-courses?keyword=${keyword}&p=${value}`);
-    } else{
-      navigate(`/view-list-courses?keyword=${keyword}&p=${value}&rating=${currentRating}`);
+    if(keyword != ""){
+      if(currentRating === 0){
+        navigate(`/view-list-courses?keyword=${keyword}&p=${value}`);
+      } else{
+        navigate(`/view-list-courses?keyword=${keyword}&p=${value}&rating=${currentRating}`);
+      }
+    } else {
+      if(currentRating === 0){
+        navigate(`/view-list-courses?category=${category}&p=${value}`);
+      } else{
+        navigate(`/view-list-courses?category=${category}&p=${value}&rating=${currentRating}`);
+      }
     }
 
     setPageNumber(+value);
@@ -97,7 +113,7 @@ export default function ViewListCourse() {
 
   const handleFilterRatings = (e) => {
     const rating = +e.target.value || 3;
-    if(currentRating == rating){
+    if(currentRating === rating){
       return;
     }
     setLoading(true)
@@ -105,7 +121,11 @@ export default function ViewListCourse() {
 
     setCurrentRating(rating);
     setPageNumber(1);
-    navigate(`/view-list-courses?keyword=${keyword}&p=${1}&rating=${rating}`);
+    if(keyword != ""){
+      navigate(`/view-list-courses?keyword=${keyword}&p=${1}&rating=${rating}`);
+    } else {
+      navigate(`/view-list-courses?category=${category}&p=${1}&rating=${rating}`);
+    }
   }
 
   useEffect(() =>{
@@ -120,6 +140,7 @@ export default function ViewListCourse() {
         </div>
       ) : (
         total === 0 ? (
+          keyword !== "" ? (
           <div className="container">
             <h2>
               Sorry, we couldn't find any results for "{keyword}"
@@ -131,9 +152,21 @@ export default function ViewListCourse() {
               <li>Try more general search terms</li>
             </ul>
           </div>
+          ) : (
+            <div className="container">
+              <h2>
+                Sorry, we haven't got courses for the category "{category}"
+              </h2>
+            </div>
+          )
         ) : (
           <div>
-            <h1>{total} results for "{keyword}"</h1>
+            {keyword !== "" ? (
+              <h1>{total} results for keyword "{keyword}"</h1>
+            ) : (
+              <h1 style={{fontFamily:"serif",fontSize:"40px"}}>{category} Course</h1>
+            )
+            }
             <Grid container spacing={2}>
   
               <Grid item xs={3}>
@@ -157,7 +190,7 @@ export default function ViewListCourse() {
                             key={value} value={value} 
                             control= {<Radio onChange={(e) => handleFilterRatings(e)} />} 
                             label={value + " & up"} 
-                            checked={currentRating == value}
+                            checked={currentRating === value}
                           />
                         ))}
                         
@@ -177,7 +210,7 @@ export default function ViewListCourse() {
                   {allCourses?.map((course, index) => (
                     <CourseRowItem
                         key={index}
-                        id = {"Course_" + index}
+                        id = {course._id}
                         title={course.name}
                         author={instructors[index]}
                         rating={course.ratings}

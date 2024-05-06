@@ -16,14 +16,6 @@ const pages = [
         name: 'Wishlist',
         path: '/my-courses/wishlist',
     }, 
-    {
-        name: 'Archived',
-        path: '/my-courses/archived',
-    }, 
-    {
-        name: 'Learning tools',
-        path: '/my-courses/learning-tools',
-    }, 
 ];
 
 const StyledButton = styled(Button)({
@@ -51,14 +43,14 @@ export default function MyLearningNavBar() {
             <Box>
                 <Toolbar disableGutters>
                     <Box sx={{ flexGrow: 1, display: 'flex' }}>
-                        {pages.map((page, index) => (
-                            <Link to={page.path} style={{textDecoration: 'none'}} key={index}>
+                        {pages?.map((page, index) => (
+                            <Link to={page?.path} style={{textDecoration: 'none'}} key={index}>
                                 <StyledButton
-                                    key={page.name}
+                                    key={page?.name}
                                     disableElevation
-                                    className={active === page.path ? 'active' : ''}
+                                    className={active === page?.path ? 'active' : ''}
                                 >
-                                    <h4 style={{margin: 0}}>{page.name}</h4>
+                                    <h4 style={{margin: 0}}>{page?.name}</h4>
                                 </StyledButton>
                             </Link>
                         ))}

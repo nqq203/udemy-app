@@ -1,4 +1,4 @@
-import { SignUpWrapper, SignUpTitle, SignUpStateWrapper, CustomFormGroup, InputLabel, Input, FormControl } from "./SignUpStyle";
+import { SignUpWrapper, SignUpTitle, SignUpStateWrapper, CustomFormGroup, InputLabel, Input, FormControl, GlobalStyles } from "./SignUpStyle";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "../../components/Button/Button";
 import Notification from "../../components/Notification/Notification";
@@ -129,6 +129,15 @@ export default function SignUp() {
   });
   
   async function handleOnSubmitRegistration() {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setNotification({
+        message: 'Email must have @',
+        visible: true,
+        bgColor: 'red'
+      });
+      return;
+    }
     if (password.length < 10) {
       setNotification({
         message: 'Password must be at least 10 characters long',
@@ -152,6 +161,34 @@ export default function SignUp() {
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
+  
+  useEffect(() => {
+    const fullnameInput = inputRefFullname.current;
+    const emailInput = inputRefEmail.current;
+    const passwordInput = inputRefPassword.current;
+  
+    const handleAutofill = (e) => {
+      const target = e.target;
+      if (target === fullnameInput) {
+        setFocusInputFullname(true);
+      } else if (target === emailInput) {
+        setFocusInputEmail(true);
+      } else if (target === passwordInput) {
+        setFocusInputPassword(true);
+      }
+    };
+  
+    // Listening to animationstart event
+    fullnameInput.addEventListener('animationstart', handleAutofill, false);
+    emailInput.addEventListener('animationstart', handleAutofill, false);
+    passwordInput.addEventListener('animationstart', handleAutofill, false);
+  
+    return () => {
+      fullnameInput.removeEventListener('animationstart', handleAutofill, false);
+      emailInput.removeEventListener('animationstart', handleAutofill, false);
+      passwordInput.removeEventListener('animationstart', handleAutofill, false);
+    };
+  }, []);
 
   return (
     <SignUpWrapper>
@@ -165,31 +202,31 @@ export default function SignUp() {
         <FormControl onClick={() => inputRefFullname.current.focus()}>
           <InputLabel htmlFor="sign-up-fullname" focus={focusInputFullname}>Full name</InputLabel>
           <Input id="sign-up-fullname"
+            name="fullname"
             onFocus={() => setFocusInputFullname(true)}
             onBlur={onBlurInput}
             onChange={(e) => setFullname(e.target.value)}
             value={fullname}
-            focus={focusInputFullname}
             ref={inputRefFullname} />
         </FormControl>
         <FormControl onClick={() => inputRefEmail.current.focus()}>
           <InputLabel htmlFor="sign-up-email" focus={focusInputEmail}>Email</InputLabel>
           <Input id="sign-up-email"
+            name="email"
             onFocus={() => setFocusInputEmail(true)}
             onBlur={onBlurInput}
             onChange={(e) => setEmail(e.target.value)}
             value={email}
-            focus={focusInputEmail}
             ref={inputRefEmail} />
         </FormControl>
         <FormControl onClick={() => inputRefPassword.current.focus()}>
           <InputLabel htmlFor="sign-up-password" focus={focusInputPassword}>Password</InputLabel>
           <Input id="sign-up-password" type="password"
+            name="password"
             onFocus={() => setFocusInputPassword(true)}
             onBlur={onBlurInput}
             onChange={(e) => setPassword(e.target.value)}
             value={password}
-            focus={focusInputPassword}
             ref={inputRefPassword} />
         </FormControl>
       </CustomFormGroup>

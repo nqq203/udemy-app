@@ -10,10 +10,10 @@ import { useMutation } from "react-query";
 
 // const listPriceTier = ["USD", "VND", "EUR"];
 // const listUSD = ["19.99", "22.99", "24.99", "27.99", "29.99", "34.99", "39.99"];
-const listVND = ["390000", "449000", "499000", "549000", "599000", "649000", "699000"];
+const listVND = ["9", "19", "29", "39", "49", "59", "69", "79", "89", "99", "109", "119", "129", "139", "149", "159", "169", "179"];
 // const listEUR = ["19.99", "22.99", "24.99", "29.99", "34.99", "39.99", "44.99"];
 
-export default function InstructorPricing() {
+export default function InstructorPricing({ isPublished, setIsPublished}) {
   const globalPrice = useSelector(state => state.courses.courseData.price);
   const globalCourseData = useSelector(state => state.courses.courseData);
   const courseType = useSelector(state => state.courseManagement.type);
@@ -26,6 +26,18 @@ export default function InstructorPricing() {
     visible: false,
     bgColor: 'green'
   });
+
+  useEffect(() => {
+    if (isPublished === true) {
+      setNotification({
+        message: 'Published course successfully',
+        visible: true,
+        bgColor: 'green'
+      });
+      setIsPublished(false);
+    }
+  }, [isPublished]);
+
   const updateCourseMutation = useMutation(
     (courseData) => callApiUpdateCourse(courseData),
     {
@@ -39,12 +51,13 @@ export default function InstructorPricing() {
     if (courseType === 'create') 
       setPrice(null);
     if (globalPrice)
-      setPrice("đ" + globalPrice);
+      setPrice("$" + globalPrice);
   }, [globalPrice, courseType]);
 
   async function onSavePrice() {
-    const newPrice = Number(price?.split("đ")[1]);
+    const newPrice = Number(price?.split("$")[1]);
     dispatch(setCoursePrice(newPrice));
+    console.log(newPrice);
     const newData = {
       ...globalCourseData,
       price: newPrice
@@ -79,7 +92,7 @@ export default function InstructorPricing() {
               })}
             </select> */}
             <select>
-              <option key="">VND</option>
+              <option key="">USD</option>
             </select>
           </CourseContent>
           <CourseContent>
@@ -91,7 +104,7 @@ export default function InstructorPricing() {
               {tier?.map((item) => {
                 return (
                   // <option key={item}> {currency === listPriceTier[0] ? '$' : (currency === listPriceTier[1] ? 'đ' : '€')}{item}</option>
-                  <option key={item}>đ{item}</option>
+                  <option key={item}>${item}</option>
                 );
               })}
             </select>

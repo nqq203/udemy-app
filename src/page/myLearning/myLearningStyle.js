@@ -6,7 +6,7 @@ export const MyLearningContainer = styled.div`
 `
 
 export const MyLearningHeadingContainer = styled.div`
-    padding: 48px 200px 0px;
+    padding: 48px 160px 0px;
     background-color: var(--color-gray-500);
     h1 {
         color: var(--color-white);
@@ -44,3 +44,9 @@ export const CourseCardLoading = styled.div`
     height: 100%;
 `
 
+export const WishlistItemContainer = styled.div`
+ & .rating {
+    display: flex;
+    align-items: center;
+ }
+`

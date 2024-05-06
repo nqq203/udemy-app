@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { SearchBar } from "../SearchBar/SearchBar";
 import { MdLanguage, MdOutlineShoppingCart } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
 import { HeaderWrapper } from "./HeaderStyle";
 import { useAuth } from "../../context/AuthContext";
+import { callApiLogOut } from "../../api/user";
+
 
 const Header = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const [isHovering, setIsHovering] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const handleMouseOver = () => {
     setIsHovering(true);
   };
@@ -18,21 +22,28 @@ const Header = () => {
   };
 
   useEffect(() => {
-    console.log(isAuthenticated);
-    if (!isAuthenticated) {
-      // Log out the user
-      // localStorage.removeItem("accessToken");
-      // localStorage.removeItem("email");
-      // localStorage.removeItem("fullname");
-      // localStorage.removeItem("role");
-      // localStorage.removeItem("_id");
-      setIsAuthenticated(false);
-    }
-  }, [isAuthenticated, setIsAuthenticated]);
+    const checkAuth = async () => {
+      // Add your authentication check logic here
+      const accessToken = localStorage.getItem("accessToken");
+      setIsAuthenticated(!!accessToken); // Set authenticated based on session existence
+      setLoading(false); // Set loading to false once the check is complete
+    };
 
-  function onLogout() {
-    setIsAuthenticated(false);
-    localStorage.clear();
+    checkAuth();
+  }, [setIsAuthenticated]);
+
+  async function onLogout() {
+    // setIsAuthenticated(false);
+    await callApiLogOut();
+    window.location.href = "https://enlightify.onrender.com";
+  }
+
+  useEffect(() => {
+    console.log(isAuthenticated);
+  }, [isAuthenticated]);
+
+  if (loading) {
+    return <div></div>;
   }
 
   return (
@@ -44,9 +55,9 @@ const Header = () => {
               <img src="../../../assets/udemy.png" alt="udemy-logo" />
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link to="/courses">Categories</Link>
-          </li>
+          </li> */}
         </ul>
       </nav>
       <div className="header-search-bar">
@@ -79,7 +90,10 @@ const Header = () => {
           <Link to="/shopping-cart">
             <MdOutlineShoppingCart size={31} className="shopping" />
           </Link>
+          <Link to="/my-courses/wishlist">
           <CiHeart size={31} className="shopping" />
+
+          </Link>
           <Link
             className="profile"
             onMouseOver={handleMouseOver}
@@ -87,7 +101,7 @@ const Header = () => {
           >
             <Link to="/profile/info">
               <img
-                src="https://pluspng.com/img-png/user-png-icon-download-icons-logos-emojis-users-2240.png"
+                src={localStorage.getItem("avatar") || "https://pluspng.com/img-png/user-png-icon-download-icons-logos-emojis-users-2240.png"}
                 style={{ width: "40px" }}
                 alt="user-profile"
               />
@@ -97,32 +111,49 @@ const Header = () => {
                 <div className="dropdown-content-info">
                   <img
                     className="dropdown-content-info-item"
-                    src="https://pluspng.com/img-png/user-png-icon-download-icons-logos-emojis-users-2240.png"
+                    src={localStorage.getItem("avatar") || "https://pluspng.com/img-png/user-png-icon-download-icons-logos-emojis-users-2240.png"}
                     alt="uesr-profile"
                     style={{ width: "60px" }}
                   />
-                  <div className="dropdown-content-info-item">
+                  <Link
+                    to="/profile/info"
+                    className="dropdown-content-info-item"
+                  >
                     <div className="dropdown-content-info-item-name">
                       {localStorage.getItem("fullname")}
                     </div>
                     <div className="dropdown-content-info-item-email">
                       {localStorage.getItem("email")}
                     </div>
-                  </div>
+                  </Link>
                 </div>
                 <div className="dropdown-content">
-                  <div className="dropdown-content-item">My Learning</div>
-                  <div className="dropdown-content-item">My Cart</div>
-                  <div className="dropdown-content-item">Wish List</div>
                   <div className="dropdown-content-item">
-                    Instructor Dashboard
+                    <Link to="/my-courses/learning" className="link">
+                      My Learning
+                    </Link>
+                  </div>
+                  <div className="dropdown-content-item">
+                    <Link to="/shopping-cart" className="link">My Cart</Link>
+                  </div>
+                  <div className="dropdown-content-item">
+                    <Link to="/my-courses/wishlist" className="link">
+                      Wishlist
+                    </Link>
+                  </div>
+                  <div className="dropdown-content-item">
+                    <Link to="/instructor/courses" className="link">Instructor Dashboard</Link>
                   </div>
                 </div>
                 <div className="dropdown-content">
-                  <Link to="/profile/info">
+                  <Link to="/profile/info" className="link">
                     <div className="dropdown-content-item">Edit Profile</div>
                   </Link>
-                  <div className="dropdown-content-item">Payment Methods</div>
+                  <Link to="/profile/payment-history" className="link">
+                    <div className="dropdown-content-item">
+                      Purchase History
+                    </div>
+                  </Link>
                 </div>
                 <div className="dropdown-content">
                   <Link to="/">
