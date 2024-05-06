@@ -61,7 +61,7 @@ export const HomePageWrapper = styled.div`
 
 export const Herobanner = styled.div`
     height: 400px;
-    width: 100vw;
+    width: 100%;
     display: flex;
     align-items: center;
     background-image: url('/imgs/herobanner.png');
@@ -69,6 +69,7 @@ export const Herobanner = styled.div`
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    overflow: hidden;
 `
 
 export const QuoteCard = () => {
@@ -333,7 +334,8 @@ export const SliderContainer = (props) => {
 
     function handleSlideButtons(){
         const listCourses = listCourse.current;
-        const maxScrollLeft = (allCourse?.length - 4)*courseScroll;
+        const coursesInScreen = Math.floor(window.innerWidth/courseScroll)
+        const maxScrollLeft = (allCourse?.length - coursesInScreen)*courseScroll;
 
         const slideButtons = [
             document.getElementById('prev-slide'),
