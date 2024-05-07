@@ -23,7 +23,7 @@ export const SearchBar = () =>{
       const urlSearchParams = new URLSearchParams(formData).toString();
 
       navigate(`/view-list-courses?${urlSearchParams}&p=1`);
-      if(window.location.href !== "http://localhost:3030"){
+      if(window.location.href !== "https://enlightify.onrender.com"){
         window.location.reload();
       }
     }    
