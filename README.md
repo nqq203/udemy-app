@@ -21,11 +21,11 @@ npm start
 ```
 
 ## Contributors
-**21127709 – Trần Minh Anh**
-**21127489 – Đinh Thế Anh**
-**21127679- Ngô Quốc Quý**
-**21127706 - Nguyễn Thị Ngọc Trâm**
-**21127727 - Nguyễn Thị Khánh Lam**
+21127709 – Trần Minh Anh\
+21127489 – Đinh Thế Anh\
+21127679- Ngô Quốc Quý\
+21127706 - Nguyễn Thị Ngọc Trâm\
+21127727 - Nguyễn Thị Khánh Lam\
 
 ## Deployment
 https://enlightify.onrender.com
